@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NamedNativeQuery(name ="AdaptionValues.getNewerThan",
-        query ="SELECT (id, vehicleid, timestamp, productionDate, mileage, operatingseconds, adaptionvalues) FROM adaptionvalues WHERE timestamp >= ?1")
+        query ="SELECT * FROM adaptionvalues WHERE timestamp >= ?1")
 @NamedNativeQuery(name ="AdaptionValues.upload",
         query ="INSERT INTO adaptionvalues (id, vehicleid, timestamp, productionDate, mileage, operatingseconds, adaptionvalues) VALUES ?1")
 public class AdaptionValues {

@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NamedNativeQuery(name ="LoadCollectives.getNewerThan",
-        query ="SELECT (id, vehicleid, timestamp, productionDate, mileage, operatingseconds, loadcollectives) FROM loadcollectives WHERE timestamp >= ?1")
+        query ="SELECT * FROM loadcollectives WHERE timestamp >= ?1")
 @NamedNativeQuery(name ="LoadCollectives.upload",
         query ="INSERT INTO loadcollectives (id, vehicleid, timestamp, productionDate, mileage, operatingseconds, loadcollectives) VALUES ?1")
 public class LoadCollectives {
@@ -36,5 +36,5 @@ public class LoadCollectives {
 
     @Type(type = "string-array")
     @Column(nullable=false,columnDefinition="text[]")
-    private String[] loadcollective;
+    private String[] loadcollectives;
 }

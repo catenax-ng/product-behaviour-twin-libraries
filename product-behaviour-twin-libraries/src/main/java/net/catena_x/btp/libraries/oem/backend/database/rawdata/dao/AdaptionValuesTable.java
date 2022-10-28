@@ -3,7 +3,7 @@ package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.database.RawAdaptionValuesRepository;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.model.AdaptionValues;
 import net.catena_x.btp.libraries.oem.backend.database.util.OemDatabaseException;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputAdaptionValuesList;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputAdaptionValues;
 import net.catena_x.btp.libraries.oem.backend.util.SQLFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,8 +29,8 @@ public class AdaptionValuesTable {
     private RawAdaptionValuesRepository rawAdaptionValuesRepository;
 
     @Transactional
-    public void uploadAdaptionValues(InputAdaptionValuesList newAdaptionValues) throws OemDatabaseException {
-
+    public void uploadAdaptionValues(InputAdaptionValues newAdaptionValues) throws OemDatabaseException {
+/*
 
         // TODO the insertion of multiple values with one query can probably be solved more elegantly
         String valuesStr = Arrays.stream(newAdaptionValues.adaptionValues()).map(
@@ -52,6 +52,8 @@ public class AdaptionValuesTable {
         catch(Exception exception) {
             throw new OemDatabaseException("Insert of new adaption values failed!");
         }
+
+ */
     }
 
     @Transactional

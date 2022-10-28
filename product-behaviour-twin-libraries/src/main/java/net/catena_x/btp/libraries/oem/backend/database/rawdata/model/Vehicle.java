@@ -11,7 +11,7 @@ import javax.persistence.*;
 @NamedNativeQuery(name ="Vehicle.register",
         query ="INSERT INTO vehicles (id, van, productionDate) VALUES(?1, ?2, ?3)")
 @NamedNativeQuery(name ="Vehicle.getSinceDate",
-        query ="SELECT (id, van, productionDate, newestcollectiveid, newestadaptionvaluesid) FROM vehicles WHERE updateTimestamp >= ?1")
+        query ="SELECT * FROM vehicles WHERE updateTimestamp >= ?1")
 @Getter
 @Setter
 public class Vehicle {

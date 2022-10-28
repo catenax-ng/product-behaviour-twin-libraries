@@ -5,5 +5,5 @@ public record InputAdaptionValues(
     java.time.Instant timestamp,
     float mileage,
     long operatingseconds,
-    double[] adaptionvalues
+    double[][] adaptionvalues
 ){}
