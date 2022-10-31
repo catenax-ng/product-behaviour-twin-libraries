@@ -4,7 +4,8 @@ import net.catena_x.btp.libraries.oem.backend.database.rawdata.converter.base.Te
 
 import java.util.List;
 
-public record InputAdaptionValues (
-    VehicleState state,
-    List<double[]> adaptionvalues
-) implements TelemetricsRawInputSource {}
+public record InputLoadCollectives(
+        VehicleState state,
+        List<String> loadcollectives)
+        implements TelemetricsRawInputSource {
+}

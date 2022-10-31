@@ -2,9 +2,11 @@ package net.catena_x.btp.libraries.oem.backend.database.rawdata.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.converter.base.TelemetricsDBEntityDestination;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "loadcollectives")
@@ -13,8 +15,8 @@ import javax.persistence.*;
 @NamedNativeQuery(name ="LoadCollectives.getNewerThan",
         query ="SELECT * FROM loadcollectives WHERE timestamp >= ?1")
 @NamedNativeQuery(name ="LoadCollectives.upload",
-        query ="INSERT INTO loadcollectives (id, vehicleid, timestamp, productionDate, mileage, operatingseconds, loadcollectives) VALUES ?1")
-public class LoadCollectives {
+        query ="INSERT INTO loadcollectives (id, vehicleid, timestamp, mileage, operatingseconds, loadcollectives) VALUES ?1")
+public class LoadCollectives implements TelemetricsDBEntityDestination {
     @Id
     @Column(length=50, nullable=false, unique=true)
     private String id;
@@ -26,15 +28,12 @@ public class LoadCollectives {
     private java.time.Instant timestamp;
 
     @Column(nullable=false)
-    private java.time.Instant productionDate; //Redundant
-
-    @Column(nullable=false)
     private float mileage;
 
     @Column(nullable=false)
     private long operatingseconds;
 
-    @Type(type = "string-array")
-    @Column(nullable=false,columnDefinition="text[]")
-    private String[] loadcollectives;
+    @Column(nullable=false)
+    @ElementCollection
+    private List<String> loadcollectives;
 }

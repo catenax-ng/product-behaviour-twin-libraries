@@ -7,6 +7,7 @@ import net.catena_x.btp.libraries.oem.backend.datasource.model.registration.Vehi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
@@ -16,13 +17,11 @@ import java.util.List;
 @Component
 @EnableTransactionManagement
 public class VehicleTable {
-    @PersistenceContext
-    private EntityManager entityManager;
+    @PersistenceContext private EntityManager entityManager;
 
-    @Autowired
-    private RawVehicleRepository rawVehicleRepository;
+    @Autowired private RawVehicleRepository rawVehicleRepository;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
     public void registerVehicle(VehicleInfo newVehicleInfo) throws OemDatabaseException {
         Query register = entityManager.createNamedQuery("Vehicle.register");
         register.setParameter(1, newVehicleInfo.id() );
@@ -33,20 +32,42 @@ public class VehicleTable {
             register.executeUpdate();
         }
         catch(Exception exception) {
-            throw new OemDatabaseException("Insert of new vehicle failed!");
+            queryingVehiclesFailed();
         }
     }
 
-    @Transactional
-    public List<Vehicle> getVehiclesUpdatedSince(Instant timestamp) throws OemDatabaseException {
-        TypedQuery<Vehicle> query = entityManager.createNamedQuery("Vehicle.getSinceDate", Vehicle.class)
-                .setParameter(1, timestamp.toString());
-
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
+    public List<Vehicle> getVehicles() throws OemDatabaseException {
         try {
-            return query.getResultList();
+            return rawVehicleRepository.findAll();
         }
         catch(Exception exception) {
-            throw new OemDatabaseException("Querying database for vehicles failed!");
+            return queryingVehiclesFailed();
         }
+    }
+
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
+    public List<Vehicle> getVehiclesUpdatedSince(Instant timestamp) throws OemDatabaseException {
+        try {
+            return rawVehicleRepository.findByUpdateTimestampGreaterThan(timestamp);
+        }
+        catch(Exception exception) {
+            return queryingVehiclesFailed();
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
+    public List<Vehicle> getVehiclesProducedBetween(Instant producedSince, Instant producedUntil)
+            throws OemDatabaseException {
+        try {
+            return rawVehicleRepository.findByProductionDateBetween(producedSince, producedUntil);
+        }
+        catch(Exception exception) {
+            return queryingVehiclesFailed();
+        }
+    }
+
+    private List<Vehicle> queryingVehiclesFailed() throws OemDatabaseException {
+        throw new OemDatabaseException("Querying database for vehicles failed!");
     }
 }

@@ -13,7 +13,8 @@ public class InfoItem {
     public enum InfoKey {
         dataversion,
         adaptionvalueinfo,
-        collectiveinfo
+        collectiveinfo,
+        lastcalculationstarted
     }
 
     @Id
