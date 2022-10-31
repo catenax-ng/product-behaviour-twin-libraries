@@ -1,7 +1,5 @@
 package net.catena_x.btp.libraries.oem.backend.util;
 
-static final boolean DEBUG = false;
-
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GetObjectRequest;
