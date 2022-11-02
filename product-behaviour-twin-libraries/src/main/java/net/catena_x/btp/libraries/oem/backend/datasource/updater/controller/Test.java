@@ -4,9 +4,8 @@ import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.InfoTable;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.VehicleTable;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.model.InfoItem;
 import net.catena_x.btp.libraries.oem.backend.database.util.OemDatabaseException;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.database.RawAdaptionValuesRepository;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.database.RawInfoItemRepository;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.database.RawLoadCollectivesRepository;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.database.RawTelemetricsDataRepository;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.database.RawVehicleRepository;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.registration.VehicleInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +30,7 @@ public class Test {
     private RawVehicleRepository rawVehicleRepository;
 
     @Autowired
-    private RawAdaptionValuesRepository rawAdaptionValuesRepository;
-
-    @Autowired
-    private RawLoadCollectivesRepository rawLoadCollectivesRepository;
+    private RawTelemetricsDataRepository rawTelemetricsDataRepository;
 
     @Autowired
     private VehicleTable vehicleTable;
@@ -59,7 +55,6 @@ public class Test {
            infoTable.setInfoItem(InfoItem.InfoKey.dataversion, "DV_0.0.99");
            infoTable.setInfoItem(InfoItem.InfoKey.adaptionvalueinfo, "{}");
            infoTable.setInfoItem(InfoItem.InfoKey.collectiveinfo, "{\"names\" : [ \"AV1\", \"AV2\", \"AV3\", \"AV4\" ]}");
-           infoTable.setInfoItem(InfoItem.InfoKey.lastcalculationstarted, null);
            return ok("");
        }
        catch(OemDatabaseException exception) {

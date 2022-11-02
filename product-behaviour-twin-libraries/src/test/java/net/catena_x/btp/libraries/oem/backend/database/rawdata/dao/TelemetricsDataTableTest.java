@@ -1,12 +1,9 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao;
 
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.model.AdaptionValues;
-import net.catena_x.btp.libraries.oem.backend.database.util.OemDatabaseException;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputAdaptionValues;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.VehicleState;
 import net.catena_x.btp.libraries.oem.backend.datasource.updater.OemDataUpdaterApplication;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -16,11 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @ActiveProfiles(profiles = "dataupdater")
@@ -31,12 +24,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         "net.catena_x.btp.libraries.oem.backend.database.rawdata"})
 @EntityScan(basePackages = {"net.catena_x.btp.libraries.oem.backend.database.rawdata.model"})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class AdaptionValuesTableTest {
-    @Autowired
-    private AdaptionValuesTable adaptionValuesTable;
+class TelemetricsDataTableTest {
+    @BeforeEach
+    void setUp() {
+    }
+
+    @AfterEach
+    void tearDown() {
+    }
 
     @Test
-    void uploadAdaptionValues() throws OemDatabaseException {
+    void uploadTelemetricsData() {
+        /*
         ArrayList<double[]> valueList = new ArrayList<double[]>();
         valueList.add(new double[]{0.1, 0.2, 0.3});
         valueList.add(new double[]{1.1, 1.2});
@@ -49,5 +48,7 @@ class AdaptionValuesTableTest {
         List<AdaptionValues> adaptionValues = adaptionValuesTable.getAdaptionValues();
 
         assertEquals(adaptionValues.size(), 1);
+
+        */
     }
 }

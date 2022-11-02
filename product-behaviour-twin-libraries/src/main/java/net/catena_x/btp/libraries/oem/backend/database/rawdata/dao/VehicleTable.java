@@ -11,8 +11,10 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
+import javax.swing.text.html.Option;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @EnableTransactionManagement
@@ -22,52 +24,117 @@ public class VehicleTable {
     @Autowired private RawVehicleRepository rawVehicleRepository;
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
+    public void flushAndClearCache() {
+        this.entityManager.flush();
+        this.entityManager.clear();
+    }
+
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
     public void registerVehicle(VehicleInfo newVehicleInfo) throws OemDatabaseException {
-        Query register = entityManager.createNamedQuery("Vehicle.register");
-        register.setParameter(1, newVehicleInfo.id() );
-        register.setParameter(2, newVehicleInfo.van() );
-        register.setParameter(3, newVehicleInfo.productionDate() );
+        Vehicle vehicle = new Vehicle();
+        vehicle.setId(newVehicleInfo.id());
+        vehicle.setVan(newVehicleInfo.van());
+        vehicle.setProductionDate(newVehicleInfo.productionDate());
 
         try {
-            register.executeUpdate();
+            this.entityManager.persist(vehicle);
+            this.entityManager.flush();
+            this.entityManager.refresh(vehicle);
         }
         catch(Exception exception) {
-            queryingVehiclesFailed();
+            queryingFailed();
         }
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
-    public List<Vehicle> getVehicles() throws OemDatabaseException {
+    public void deleteById(String id) throws OemDatabaseException {
+        try {
+            rawVehicleRepository.deleteById(id);
+        }
+        catch(Exception exception) {
+            queryingFailed();
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
+    public void deleteByVan(String van) throws OemDatabaseException {
+        try {
+            rawVehicleRepository.deleteByVan(van);
+        }
+        catch(Exception exception) {
+            queryingFailed();
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
+    public Optional<Vehicle> findById(String id) throws OemDatabaseException {
+        try {
+            return rawVehicleRepository.findById(id);
+        }
+        catch(Exception exception) {
+            queryingFailed();
+            return null;
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
+    public Optional<Vehicle> findByVan(String van) throws OemDatabaseException {
+        try {
+            return rawVehicleRepository.findByVan(van);
+        }
+        catch(Exception exception) {
+            queryingFailed();
+            return null;
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
+    public List<Vehicle> getAll() throws OemDatabaseException {
         try {
             return rawVehicleRepository.findAll();
         }
         catch(Exception exception) {
-            return queryingVehiclesFailed();
+            return queryingFailed();
         }
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
-    public List<Vehicle> getVehiclesUpdatedSince(Instant timestamp) throws OemDatabaseException {
+    public List<Vehicle> getAllDetached() throws OemDatabaseException {
         try {
+            List<Vehicle> vehicles = rawVehicleRepository.findAll();
+            for (Vehicle vehicle:vehicles) {
+                this.entityManager.detach(vehicle);
+            }
+            return vehicles;
+        }
+        catch(Exception exception) {
+            return queryingFailed();
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
+    public List<Vehicle> getUpdatedSince(Instant timestamp) throws OemDatabaseException {
+        try {
+            this.entityManager.clear();
             return rawVehicleRepository.findByUpdateTimestampGreaterThan(timestamp);
         }
         catch(Exception exception) {
-            return queryingVehiclesFailed();
+            return queryingFailed();
         }
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
-    public List<Vehicle> getVehiclesProducedBetween(Instant producedSince, Instant producedUntil)
+    public List<Vehicle> getProducedBetween(Instant producedSince, Instant producedUntil)
             throws OemDatabaseException {
         try {
             return rawVehicleRepository.findByProductionDateBetween(producedSince, producedUntil);
         }
         catch(Exception exception) {
-            return queryingVehiclesFailed();
+            return queryingFailed();
         }
     }
 
-    private List<Vehicle> queryingVehiclesFailed() throws OemDatabaseException {
+    private List<Vehicle> queryingFailed() throws OemDatabaseException {
         throw new OemDatabaseException("Querying database for vehicles failed!");
     }
 }

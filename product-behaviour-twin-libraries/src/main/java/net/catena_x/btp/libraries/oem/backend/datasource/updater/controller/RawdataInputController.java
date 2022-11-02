@@ -57,7 +57,6 @@ public class RawdataInputController {
             infoTable.setInfoItem(InfoItem.InfoKey.dataversion, "DV_0.0.99");
             infoTable.setInfoItem(InfoItem.InfoKey.adaptionvalueinfo, "{}");
             infoTable.setInfoItem(InfoItem.InfoKey.collectiveinfo, "{\"names\" : [ \"AV1\", \"AV2\", \"AV3\", \"AV4\" ]}");
-            infoTable.setInfoItem(InfoItem.InfoKey.lastcalculationstarted, null);
             return ok("");
         }
         catch(OemDatabaseException exception) {

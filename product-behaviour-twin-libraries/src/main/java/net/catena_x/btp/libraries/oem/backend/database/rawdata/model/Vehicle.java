@@ -4,33 +4,32 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.Instant;
 
 @Entity
+@Cacheable(false)
 @Table(name = "vehicles", uniqueConstraints={@UniqueConstraint(columnNames = {"id"}),
                                              @UniqueConstraint(columnNames = {"van"})})
-@NamedNativeQuery(name ="Vehicle.register",
-        query ="INSERT INTO vehicles (id, van, productionDate) VALUES(?1, ?2, ?3)")
-@NamedNativeQuery(name ="Vehicle.getSinceDate",
-        query ="SELECT * FROM vehicles WHERE updateTimestamp >= ?1")
 @Getter
 @Setter
 public class Vehicle {
     @Id
-    @Column(length=50, nullable=false)
+    @Column(name="id", length=50, nullable=false)
     private String id;
 
-    @Column(length=50, nullable=false)
+    @Column(name="van", length=50, nullable=false)
     private String van;
 
-    @Column(nullable=false, unique=false)
-    private java.time.Instant productionDate;
+    @Column(name="production_date", nullable=false, unique=false)
+    private Instant productionDate;
 
-    @Column()
-    private java.time.Instant updateTimestamp;
+    @Column(name="update_timestamp", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+            insertable=false, updatable=false, nullable=false)
+    private Instant updateTimestamp;
 
-    @Column(length=50)
-    private String newestcollectiveid;
+    @Column(name="newest_collective_id", length=50)
+    private String newestCollectiveId;
 
-    @Column(length=50)
-    private String newestadaptionvaluesid;
+    @Column(name="newest_adaption_values_id", length=50)
+    private String newestAdaptionValuesId;
 }

@@ -4,8 +4,8 @@ import java.time.Instant;
 
 public interface TelemetricsDBEntityDestination {
     void setId(String id);
-    void setVehicleid(String vehicleid);
-    void setTimestamp(Instant timestamp);
+    void setVehicleId(String vehicleId);
+    void setCreationTimestamp(Instant creationTimestamp);
     void setMileage(float mileage);
-    void setOperatingseconds(long operatingseconds);
+    void setOperatingSeconds(long operatingSeconds);
 }

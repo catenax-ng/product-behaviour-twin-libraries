@@ -1,54 +1,55 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao;
 
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.converter.AdaptionValuesConverter;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.database.RawAdaptionValuesRepository;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.model.AdaptionValues;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.converter.TelemetricsDataConverter;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.database.RawTelemetricsDataRepository;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.model.TelemetricsData;
 import net.catena_x.btp.libraries.oem.backend.database.util.OemDatabaseException;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputAdaptionValues;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelemetricsData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import java.time.Instant;
+
 import java.util.List;
 import java.util.UUID;
 
+
 @Component
 @EnableTransactionManagement
-public class AdaptionValuesTable {
+public class TelemetricsDataTable {
     @PersistenceContext private EntityManager entityManager;
 
-    @Autowired private RawAdaptionValuesRepository rawAdaptionValuesRepository;
-    @Autowired private AdaptionValuesConverter adaptionValuesConverter;
+    @Autowired private RawTelemetricsDataRepository rawTelemetricsDataRepository;
+    @Autowired private TelemetricsDataConverter loadCollectivesConverter;
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
-    public void uploadAdaptionValues(InputAdaptionValues newAdaptionValues) throws OemDatabaseException {
-        AdaptionValues adaptionValuesConverted = new AdaptionValues();
+    public void uploadTelemetricsData(InputTelemetricsData newTelemetricsData) throws OemDatabaseException {
+        TelemetricsData telemetricsDataConverted = new TelemetricsData();
+        loadCollectivesConverter.convertAndSetId(newTelemetricsData, telemetricsDataConverted,
+                                                 UUID.randomUUID().toString());
 
-        adaptionValuesConverter.convertAndSetId(newAdaptionValues, adaptionValuesConverted,
-                                                UUID.randomUUID().toString());
-
-        this.entityManager.persist(adaptionValuesConverted);
+        this.entityManager.persist(telemetricsDataConverted);
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
-    public List<AdaptionValues> getNewerThan(Instant timestamp) throws OemDatabaseException {
-        TypedQuery<AdaptionValues> query = entityManager.createNamedQuery("AdaptionValues.getNewerThan",
-                        AdaptionValues.class)
+    public List<TelemetricsData> getNewerThan(Instant timestamp) throws OemDatabaseException {
+        TypedQuery<TelemetricsData> query = entityManager.createNamedQuery("LoadCollectives.getNewerThan",
+                        TelemetricsData.class)
                 .setParameter(1, timestamp.toString());
+
         try {
             return query.getResultList();
         }
         catch(Exception exception) {
-            throw new OemDatabaseException("Querying database for adaption values failed!");
+            throw new OemDatabaseException("Querying database for load collectives failed!");
         }
     }
 
+    /*
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
     public List<AdaptionValues> getAdaptionValues() throws OemDatabaseException {
         try {
@@ -62,4 +63,5 @@ public class AdaptionValuesTable {
     private List<AdaptionValues> queryingAdaptionValuesFailed() throws OemDatabaseException {
         throw new OemDatabaseException("Querying database for adaption values failed!");
     }
+    */
 }

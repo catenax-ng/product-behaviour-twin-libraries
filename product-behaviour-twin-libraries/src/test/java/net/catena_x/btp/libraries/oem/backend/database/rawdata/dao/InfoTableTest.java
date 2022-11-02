@@ -1,11 +1,9 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao;
 
-import jdk.jfr.Timespan;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.model.Vehicle;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.model.InfoItem;
 import net.catena_x.btp.libraries.oem.backend.database.util.OemDatabaseException;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.registration.VehicleInfo;
 import net.catena_x.btp.libraries.oem.backend.datasource.updater.OemDataUpdaterApplication;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +16,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
+import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -30,58 +27,28 @@ import static org.junit.jupiter.api.Assertions.*;
 @EnableAutoConfiguration
 @TestPropertySource(locations = {"classpath:test-rawdatadb.properties"})
 @ComponentScan(basePackages = {"net.catena_x.btp.libraries.oem.backend.datasource.updater",
-                               "net.catena_x.btp.libraries.oem.backend.database.rawdata"})
+        "net.catena_x.btp.libraries.oem.backend.database.rawdata"})
 @EntityScan(basePackages = {"net.catena_x.btp.libraries.oem.backend.database.rawdata.model"})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class VehicleTableTest {
-    @Autowired private VehicleTable vehicleTable;
+class InfoTableTest {
+    @Autowired private InfoTable infoTable;
 
     @BeforeEach
-    void setUp() {
-    }
-
-    @AfterEach
-    void tearDown() {
-    }
-
-    @Test
-    void injectedComponentsAreNotNull(){
-        assertThat(vehicleTable).isNotNull();
+    void setUp() throws OemDatabaseException {
+        infoTable.setInfoItem(InfoItem.InfoKey.dataversion, "DV_0.0.99");
+        infoTable.setInfoItem(InfoItem.InfoKey.adaptionvalueinfo, "{}");
+        infoTable.setInfoItem(InfoItem.InfoKey.collectiveinfo, "{\"names\" : [ \"AV1\", \"AV2\", \"AV3\", \"AV4\" ]}");
     }
 
     @Test
-    void registerVehicle() throws OemDatabaseException {
-        VehicleInfo newVehilce = new VehicleInfo("veh1", "van1",
-                Instant.parse("2020-10-27T14:35:24.00Z"));
-        vehicleTable.registerVehicle(newVehilce);
+    void checkCurrentDatabaseTimestamp() throws OemDatabaseException, InterruptedException {
+        Instant currentTimestamp1 = infoTable.getCurrentDatabaseTimestamp();
+        Thread.sleep(200);
+        Instant currentTimestamp2 = infoTable.getCurrentDatabaseTimestamp();
 
-        List<Vehicle> vehicles = vehicleTable.getAll();
+        long duration_ms = Duration.between(currentTimestamp1, currentTimestamp2).toMillis();
 
-        /*
-        Instant now = Instant.now();
-
-        try {
-            Thread.sleep(1000);
-        }
-        catch(Exception exception) {
-        }
-
-        vehicles.get(0).setVan("BLABLA");
-        vehicleTable.flushAndClearCache();
-
-        List<Vehicle> vehicles2 = vehicleTable.getAll();
-
-        assertEquals(vehicles.size(), 1);
-
-*/
+        Assert.assertTrue(String.format("Duration %d between database queries is invalid!", duration_ms ),
+                duration_ms >= 100 && duration_ms <= 5000);
     }
-
-    @Test
-    void getVehiclesUpdatedSince() {
-    }
-
-/*
-    List<Vehicle> vehicles = vehicleTable.getVehiclesProducedBetween(Instant.parse("2020-12-27T14:35:24.00Z"),
-            Instant.parse("2020-11-27T14:35:24.00Z"));
-*/
 }
