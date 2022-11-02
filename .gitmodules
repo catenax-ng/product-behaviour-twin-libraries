@@ -2,7 +2,9 @@
 	path = product-oem-hi-app
 	url = https://github.com/catenax-ng/product-oem-hi-app.git
 	branch = main
+	update = merge
 [submodule "product-oem-rul-backend"]
 	path = product-oem-rul-backend
 	url = https://github.com/catenax-ng/product-oem-rul-backend.git
 	branch = main
+	update = merge
