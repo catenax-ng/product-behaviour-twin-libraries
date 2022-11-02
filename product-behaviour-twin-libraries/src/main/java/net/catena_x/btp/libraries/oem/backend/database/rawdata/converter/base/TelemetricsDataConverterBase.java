@@ -22,5 +22,6 @@ public abstract class TelemetricsDataConverterBase<RawInputType extends Telemetr
         converted.setOperatingSeconds(state.operatingSeconds());
     }
 
+    /* This methode has to implement all conversions, except the common state item. */
     protected abstract void convertSpecificData(RawInputType source, DBEntityType destination);
 }

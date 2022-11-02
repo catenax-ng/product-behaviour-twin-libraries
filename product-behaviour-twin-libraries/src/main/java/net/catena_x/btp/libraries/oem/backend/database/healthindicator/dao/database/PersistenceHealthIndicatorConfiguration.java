@@ -26,35 +26,35 @@ import static org.hibernate.cfg.AvailableSettings.*;
 )
 
 public class PersistenceHealthIndicatorConfiguration {
-    @Autowired
-    private Environment env;
+    @Autowired private Environment environment;
 
     @Bean
     public LocalContainerEntityManagerFactoryBean healthindicatorEntityManager() {
-        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(healthindicatorDataSource());
-        em.setPackagesToScan(new String[] { "net.catena_x.btp.libraries.oem.backend.database.healthindicator.model" });
+        LocalContainerEntityManagerFactoryBean entityManager = new LocalContainerEntityManagerFactoryBean();
+        entityManager.setDataSource(healthindicatorDataSource());
+        entityManager.setPackagesToScan(
+                new String[] { "net.catena_x.btp.libraries.oem.backend.database.healthindicator.model" });
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        em.setJpaVendorAdapter(vendorAdapter);
+        entityManager.setJpaVendorAdapter(vendorAdapter);
         HashMap<String, Object> properties = new HashMap<>();
-        properties.put(DIALECT, env.getProperty("healthindicatordb.hibernate.dialect"));
-        properties.put(SHOW_SQL, env.getProperty("healthindicatordb.show-sql"));
-        properties.put(HBM2DDL_AUTO, env.getProperty("healthindicatordb.hibernate.hbm2ddl.auto"));
+        properties.put(DIALECT, environment.getProperty("healthindicatordb.hibernate.dialect"));
+        properties.put(SHOW_SQL, environment.getProperty("healthindicatordb.show-sql"));
+        properties.put(HBM2DDL_AUTO, environment.getProperty("healthindicatordb.hibernate.hbm2ddl.auto"));
 
-        em.setJpaPropertyMap(properties);
+        entityManager.setJpaPropertyMap(properties);
 
-        return em;
+        return entityManager;
     }
 
     @Bean
     public DataSource healthindicatorDataSource() {
 
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(env.getProperty("healthindicatordb.drivername"));
-        dataSource.setUrl(env.getProperty("healthindicatordb.url"));
-        dataSource.setUsername(env.getProperty("healthindicatordb.username"));
-        dataSource.setPassword(env.getProperty("healthindicatordb.password"));
+        dataSource.setDriverClassName(environment.getProperty("healthindicatordb.drivername"));
+        dataSource.setUrl(environment.getProperty("healthindicatordb.url"));
+        dataSource.setUsername(environment.getProperty("healthindicatordb.username"));
+        dataSource.setPassword(environment.getProperty("healthindicatordb.password"));
 
         return dataSource;
     }

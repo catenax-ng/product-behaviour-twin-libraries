@@ -10,7 +10,6 @@ import java.time.Instant;
 import java.util.List;
 
 @Entity
-@Cacheable(false)
 @Table(name = "telemetrics_data")
 @Getter
 @Setter

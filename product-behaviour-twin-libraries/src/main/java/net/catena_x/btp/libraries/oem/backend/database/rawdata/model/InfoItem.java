@@ -1,6 +1,5 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.model;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Formula;
@@ -9,7 +8,6 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Cacheable(false)
 @Table(name = "info")
 @Getter
 @Setter

@@ -1,6 +1,7 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao;
 
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.converter.TelemetricsDataConverter;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.RawTableBase;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.database.RawTelemetricsDataRepository;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.model.TelemetricsData;
 import net.catena_x.btp.libraries.oem.backend.database.util.OemDatabaseException;
@@ -20,48 +21,53 @@ import java.util.UUID;
 
 @Component
 @EnableTransactionManagement
-public class TelemetricsDataTable {
+public class TelemetricsDataTable extends RawTableBase<TelemetricsData> {
     @PersistenceContext private EntityManager entityManager;
 
     @Autowired private RawTelemetricsDataRepository rawTelemetricsDataRepository;
-    @Autowired private TelemetricsDataConverter loadCollectivesConverter;
+    @Autowired private TelemetricsDataConverter telemetricsDataConverter;
+
+    protected EntityManager getEntityManager() {
+        return entityManager;
+    }
+
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
+    public void flushAndClearCache() {
+        this.entityManager.flush();
+        this.entityManager.clear();
+    }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
     public void uploadTelemetricsData(InputTelemetricsData newTelemetricsData) throws OemDatabaseException {
         TelemetricsData telemetricsDataConverted = new TelemetricsData();
-        loadCollectivesConverter.convertAndSetId(newTelemetricsData, telemetricsDataConverted,
+        telemetricsDataConverter.convertAndSetId(newTelemetricsData, telemetricsDataConverted,
                                                  UUID.randomUUID().toString());
 
-        this.entityManager.persist(telemetricsDataConverted);
+        try {
+            rawTelemetricsDataRepository.saveAndFlush(telemetricsDataConverted);
+        }
+        catch(Exception exception) {
+            queryingFailed();
+        }
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
-    public List<TelemetricsData> getNewerThan(Instant timestamp) throws OemDatabaseException {
-        TypedQuery<TelemetricsData> query = entityManager.createNamedQuery("LoadCollectives.getNewerThan",
-                        TelemetricsData.class)
-                .setParameter(1, timestamp.toString());
-
+    public List<TelemetricsData> getUpdatedSince(Instant timestamp) throws OemDatabaseException {
         try {
-            return query.getResultList();
+            return refreshAndDetach(rawTelemetricsDataRepository.findByStorageTimestampGreaterThanEqual(timestamp));
         }
         catch(Exception exception) {
-            throw new OemDatabaseException("Querying database for load collectives failed!");
+            return queryingListFailed("Querying database for telematics data failed!");
         }
     }
 
-    /*
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
-    public List<AdaptionValues> getAdaptionValues() throws OemDatabaseException {
+    public List<TelemetricsData> getAll() throws OemDatabaseException {
         try {
-            return rawAdaptionValuesRepository.findAll();
+            return refreshAndDetach(rawTelemetricsDataRepository.findAll());
         }
         catch(Exception exception) {
-            return queryingAdaptionValuesFailed();
+            return queryingListFailed("Querying database for telematics data failed!");
         }
     }
-
-    private List<AdaptionValues> queryingAdaptionValuesFailed() throws OemDatabaseException {
-        throw new OemDatabaseException("Querying database for adaption values failed!");
-    }
-    */
 }

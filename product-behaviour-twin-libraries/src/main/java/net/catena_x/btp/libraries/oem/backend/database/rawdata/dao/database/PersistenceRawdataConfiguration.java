@@ -1,6 +1,5 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.database;
 
-import org.hibernate.FlushMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,12 +13,8 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.persistence.CacheRetrieveMode;
-import javax.persistence.CacheStoreMode;
-import javax.persistence.SharedCacheMode;
 import javax.sql.DataSource;
 import java.util.HashMap;
-import java.util.logging.Level;
 
 import static org.hibernate.cfg.AvailableSettings.*;
 
@@ -49,6 +44,7 @@ public class PersistenceRawdataConfiguration {
         properties.put(SHOW_SQL, env.getProperty("rawdatadb.show-sql"));
         properties.put(HBM2DDL_AUTO, env.getProperty("rawdatadb.hibernate.hbm2ddl.auto"));
 /*
+        // Disabling cache?
         properties.put(USE_SECOND_LEVEL_CACHE, false);
         properties.put(JPA_SHARED_CACHE_MODE, SharedCacheMode.NONE);
         properties.put(JAKARTA_JPA_SHARED_CACHE_MODE, SharedCacheMode.NONE);

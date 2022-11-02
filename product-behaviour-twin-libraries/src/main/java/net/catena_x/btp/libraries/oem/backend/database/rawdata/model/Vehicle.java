@@ -7,7 +7,6 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Cacheable(false)
 @Table(name = "vehicles", uniqueConstraints={@UniqueConstraint(columnNames = {"id"}),
                                              @UniqueConstraint(columnNames = {"van"})})
 @Getter
@@ -27,9 +26,8 @@ public class Vehicle {
             insertable=false, updatable=false, nullable=false)
     private Instant updateTimestamp;
 
-    @Column(name="newest_collective_id", length=50)
-    private String newestCollectiveId;
-
-    @Column(name="newest_adaption_values_id", length=50)
-    private String newestAdaptionValuesId;
+    @OneToOne(fetch = FetchType.EAGER, cascade={CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.REFRESH, CascadeType.DETACH}, optional=true)
+    @JoinColumn(name="newest_telemetrics_id", referencedColumnName = "id", nullable = true)
+    private TelemetricsData telemetricsData;
 }
