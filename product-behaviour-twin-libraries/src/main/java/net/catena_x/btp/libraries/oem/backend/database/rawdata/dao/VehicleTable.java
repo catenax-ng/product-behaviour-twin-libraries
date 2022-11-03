@@ -5,7 +5,6 @@ import net.catena_x.btp.libraries.oem.backend.database.rawdata.converter.Vehicle
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.converter.base.TelemetricsRawInputSource;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.RawTableBase;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.database.RawVehicleRepository;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.model.InfoItem;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.model.TelemetricsData;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.model.Vehicle;
 import net.catena_x.btp.libraries.oem.backend.database.util.OemDatabaseException;
@@ -17,12 +16,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.*;
-import javax.swing.text.html.Option;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Component
 @EnableTransactionManagement
@@ -38,50 +36,38 @@ public class VehicleTable extends RawTableBase<Vehicle> {
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
-    public void flushAndClearCache() {
-        this.entityManager.flush();
-        this.entityManager.clear();
+    public void registerVehicle(VehicleInfo newVehicleInfo) throws OemDatabaseException {
+        saveVehicle(vehicleConverter.convert(newVehicleInfo));
     }
 
-    @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
-    public void registerVehicle(VehicleInfo newVehicleInfo) throws OemDatabaseException {
-        Vehicle vehicleConverted = new Vehicle();
-        vehicleConverter.convert(newVehicleInfo, vehicleConverted);
-
+    private void saveVehicle(Vehicle vehicle) throws OemDatabaseException {
         try {
-            rawVehicleRepository.saveAndFlush(vehicleConverted);
+            this.entityManager.persist(vehicle);
+            this.entityManager.flush();
         }
         catch(Exception exception) {
-            queryingFailed();
+            this.entityManager.clear();
+            executingFailed("Failed to register vehicle!");
         }
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.SERIALIZABLE)
     public void appendTelematicsDataById(String id, InputTelemetricsData newTelemetricsData)
             throws OemDatabaseException {
-        Vehicle vehicle = findById(id);
-        appendTelematicsData(vehicle, newTelemetricsData);
+        appendTelematicsData(findById(id), newTelemetricsData);
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.SERIALIZABLE)
     public void appendTelematicsDataByVan(String van, InputTelemetricsData newTelemetricsData)
             throws OemDatabaseException {
-        Vehicle vehicle = findById(van);
-        appendTelematicsData(vehicle, newTelemetricsData);
+        appendTelematicsData(findByVan(van), newTelemetricsData);
     }
 
     private void appendTelematicsData(Vehicle vehicle, InputTelemetricsData newTelemetricsData)
             throws OemDatabaseException {
 
-        this.entityManager.detach(vehicle);
-
-        if( telemetricsDataIsNewer(newTelemetricsData, vehicle.getTelemetricsData() ) ) {
-            TelemetricsData telemetricsDataConverted = new TelemetricsData();
-
-            telemetricsDataConverter.convertAndSetId(newTelemetricsData, telemetricsDataConverted,
-                                                     UUID.randomUUID().toString());
-
-            vehicle.setTelemetricsData(telemetricsDataConverted);
+        if( telemetricsDataIsNewer(newTelemetricsData, vehicle.getTelemetricsData()) ) {
+            applyNewTelemetricsData(vehicle, newTelemetricsData);
             rawVehicleRepository.saveAndFlush(vehicle);
         }
     }
@@ -95,12 +81,17 @@ public class VehicleTable extends RawTableBase<Vehicle> {
         return newTelemetricsData.state().creationTimestamp().isAfter(telemetricsData.getCreationTimestamp());
     }
 
+    private void applyNewTelemetricsData(Vehicle vehicle, InputTelemetricsData newTelemetricsData) {
+        vehicle.setTelemetricsData(telemetricsDataConverter.convertAndSetId(newTelemetricsData, generateNewId()));
+    }
+
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
     public void deleteById(String id) throws OemDatabaseException {
         try {
             rawVehicleRepository.deleteById(id);
         }
         catch(Exception exception) {
+            this.entityManager.clear();
             executingFailed("Deleting vehicle by id failed!");
         }
     }
@@ -111,37 +102,42 @@ public class VehicleTable extends RawTableBase<Vehicle> {
             rawVehicleRepository.deleteByVan(van);
         }
         catch(Exception exception) {
+            this.entityManager.clear();
             executingFailed("Deleting vehicle by van failed!");
         }
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
     public Vehicle findById(String id) throws OemDatabaseException {
-        try {
-            Optional<Vehicle> vehicle = rawVehicleRepository.findById(id);
+        Optional<Vehicle> vehicle = null;
 
-            if (vehicle.isPresent()) {
-                return refreshAndDetach(vehicle.get());
-            } else {
-                return queryingSingleFailed("Querying vehicle by id failed, vehicle not present!");
-            }
+        try {
+            vehicle = rawVehicleRepository.findById(id);
         } catch (Exception exception) {
             return queryingSingleFailed("Querying vehicle by id failed!");
         }
+
+        return unwrap(vehicle);
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
     public Vehicle findByVan(String van) throws OemDatabaseException {
-        try {
-            Optional<Vehicle> vehicle = rawVehicleRepository.findByVan(van);
+        Optional<Vehicle> vehicle = null;
 
-            if (vehicle.isPresent()) {
-                return refreshAndDetach(vehicle.get());
-            } else {
-                return queryingSingleFailed("Querying vehicle by van failed, vehicle not present!");
-            }
+        try {
+            vehicle = rawVehicleRepository.findByVan(van);
         } catch (Exception exception) {
             return queryingSingleFailed("Querying vehicle by van failed!");
+        }
+
+        return unwrap(vehicle);
+    }
+
+    private Vehicle unwrap(Optional<Vehicle> vehicle) throws OemDatabaseException {
+        if (vehicle.isPresent()) {
+            return refreshAndDetach(vehicle.get());
+        } else {
+            return queryingSingleFailed("Querying vehicle failed, vehicle not present!");
         }
     }
 
@@ -151,6 +147,7 @@ public class VehicleTable extends RawTableBase<Vehicle> {
             return refreshAndDetach(rawVehicleRepository.findAll());
         }
         catch(Exception exception) {
+            this.entityManager.clear();
             return queryingListFailed("Querying vehicles failed!");
         }
     }
@@ -161,6 +158,7 @@ public class VehicleTable extends RawTableBase<Vehicle> {
             return refreshAndDetach(rawVehicleRepository.findByUpdateTimestampGreaterThan(timestamp));
         }
         catch(Exception exception) {
+            this.entityManager.clear();
             return queryingListFailed("Querying vehicles failed!");
         }
     }
@@ -172,6 +170,7 @@ public class VehicleTable extends RawTableBase<Vehicle> {
             return refreshAndDetach(rawVehicleRepository.findByProductionDateBetween(producedSince, producedUntil));
         }
         catch(Exception exception) {
+            this.entityManager.clear();
             return queryingListFailed("Querying vehicles failed!");
         }
     }

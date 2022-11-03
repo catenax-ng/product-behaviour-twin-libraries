@@ -5,14 +5,23 @@ import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.VehicleSt
 public abstract class TelemetricsDataConverterBase<RawInputType extends TelemetricsRawInputSource,
         DBEntityType extends TelemetricsDBEntityDestination> {
 
-    public void convertWithoutId(RawInputType source, DBEntityType destination) {
+    /* This methode has to implement all conversions, except the common state item. */
+    protected abstract void convertSpecificData(RawInputType source, DBEntityType destination);
+
+    /* Factory to generate new destination Objects. */
+    protected abstract DBEntityType makeNew();
+
+    public DBEntityType convertWithoutId(RawInputType source) {
+        DBEntityType destination = makeNew();
         convertState(destination, source.state());
         convertSpecificData(source, destination);
+        return destination;
     }
 
-    public void convertAndSetId(RawInputType source, DBEntityType destination, String id) {
-        convertWithoutId(source, destination);
+    public DBEntityType convertAndSetId(RawInputType source, String id) {
+        DBEntityType destination = convertWithoutId(source);
         destination.setId(id);
+        return destination;
     }
 
     private void convertState(DBEntityType converted, VehicleState state) {
@@ -21,7 +30,4 @@ public abstract class TelemetricsDataConverterBase<RawInputType extends Telemetr
         converted.setMileage(state.mileage());
         converted.setOperatingSeconds(state.operatingSeconds());
     }
-
-    /* This methode has to implement all conversions, except the common state item. */
-    protected abstract void convertSpecificData(RawInputType source, DBEntityType destination);
 }

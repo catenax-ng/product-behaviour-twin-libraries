@@ -2,11 +2,11 @@ package net.catena_x.btp.libraries.oem.backend.datasource.updater.controller;
 
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.InfoTable;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.VehicleTable;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.model.InfoItem;
-import net.catena_x.btp.libraries.oem.backend.database.util.OemDatabaseException;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.database.RawInfoItemRepository;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.database.RawTelemetricsDataRepository;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.database.RawVehicleRepository;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.model.InfoItem;
+import net.catena_x.btp.libraries.oem.backend.database.util.OemDatabaseException;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.registration.VehicleInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -14,7 +14,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
 

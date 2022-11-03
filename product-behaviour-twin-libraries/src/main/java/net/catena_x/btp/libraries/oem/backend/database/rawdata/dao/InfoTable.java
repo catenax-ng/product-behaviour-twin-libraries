@@ -7,7 +7,7 @@ import net.catena_x.btp.libraries.oem.backend.database.util.OemDatabaseException
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -26,29 +26,39 @@ public class InfoTable extends RawTableBase<InfoItem> {
     }
 
     public void setInfoItem(InfoItem.InfoKey key, String value) throws OemDatabaseException {
-        InfoItem infoItem = new InfoItem();
-        infoItem.setKey(key);
-        infoItem.setValue(value);
-
         try {
-            rawInfoItemRepository.saveAndFlush(infoItem);
+            rawInfoItemRepository.saveAndFlush(buildInfoItem(key, value));
         } catch (Exception exception) {
             executingFailed("Inserting info value failed!");
         }
     }
 
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-    public InfoItem getInfoItem(InfoItem.InfoKey key) throws OemDatabaseException {
-        try {
-            Optional<InfoItem> infoItem = rawInfoItemRepository.findById(key);
+    private InfoItem buildInfoItem(InfoItem.InfoKey key, String value) {
+        InfoItem infoItem = new InfoItem();
+        infoItem.setKey(key);
+        infoItem.setValue(value);
 
-            if (infoItem.isPresent()) {
-                return refreshAndDetach(infoItem.get());
-            } else {
-                return queryingSingleFailed("Info item is not present!");
-            }
+        return infoItem;
+    }
+
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
+    public InfoItem getInfoItem(InfoItem.InfoKey key) throws OemDatabaseException {
+        Optional<InfoItem> infoItem = null;
+
+        try {
+            infoItem = rawInfoItemRepository.findById(key);
         } catch (Exception exception) {
             return queryingSingleFailed("Reading info item failed!");
+        }
+
+        return unwrap(infoItem);
+    }
+
+    private InfoItem unwrap(Optional<InfoItem> infoItem) throws OemDatabaseException {
+        if (infoItem.isPresent()) {
+            return refreshAndDetach(infoItem.get());
+        } else {
+            return queryingSingleFailed("Querying info item failed, item is not present!");
         }
     }
 

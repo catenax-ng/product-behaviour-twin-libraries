@@ -6,7 +6,14 @@ import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTele
 import org.springframework.stereotype.Component;
 
 @Component
-public final class TelemetricsDataConverter extends TelemetricsDataConverterBase<InputTelemetricsData, TelemetricsData> {
+public final class TelemetricsDataConverter
+        extends TelemetricsDataConverterBase<InputTelemetricsData, TelemetricsData> {
+
+    @Override
+    protected TelemetricsData makeNew() {
+        return new TelemetricsData();
+    }
+
     @Override
     protected void convertSpecificData(InputTelemetricsData source, TelemetricsData destination) {
         destination.setLoadCollectives(source.loadCollectives());

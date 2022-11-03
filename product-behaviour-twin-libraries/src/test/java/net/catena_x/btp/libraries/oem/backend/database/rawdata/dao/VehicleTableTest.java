@@ -1,13 +1,13 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao;
 
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.model.InfoItem;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.model.TelemetricsData;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.model.Vehicle;
 import net.catena_x.btp.libraries.oem.backend.database.util.OemDatabaseException;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelemetricsData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.VehicleState;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.registration.VehicleInfo;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -22,8 +22,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJpaTest
 @ActiveProfiles(profiles = "dataupdater")
@@ -37,92 +36,102 @@ class VehicleTableTest {
     @Autowired private VehicleTable vehicleTable;
     @Autowired private TelemetricsDataTable telemetricsDataTable;
 
-    @BeforeEach
-    void setUp() {
-    }
-
-    @AfterEach
-    void tearDown() {
+    @Test
+    void injectedComponentsAreNotNull() {
+        Assert.assertNotNull(vehicleTable);
+        Assert.assertNotNull(telemetricsDataTable);
     }
 
     @Test
-    void injectedComponentsAreNotNull(){
-        assertThat(vehicleTable).isNotNull();
-    }
-
-    @Test
-    void registerVehicle() throws OemDatabaseException {
-        VehicleInfo newVehilce = new VehicleInfo("veh1", "van1",
-                Instant.parse("2020-10-27T14:35:24.00Z"));
-        vehicleTable.registerVehicle(newVehilce);
+    void registerVehicles() throws OemDatabaseException {
+        register3TestVehicles();
 
         List<Vehicle> vehicles = vehicleTable.getAll();
 
-        /*
-        Instant now = Instant.now();
+        Assert.assertEquals(vehicles.size(), 3);
+        Assert.assertNotNull(vehicles.get(0).getUpdateTimestamp());
 
-        try {
-            Thread.sleep(1000);
-        }
-        catch(Exception exception) {
-        }
+        assertThrows(OemDatabaseException.class, () -> {
+            vehicleTable.registerVehicle(new VehicleInfo("veh1", "van4",
+                    Instant.parse("2022-10-27T14:35:24.00Z")));
+        });
 
-        vehicles.get(0).setVan("BLABLA");
-        vehicleTable.flushAndClearCache();
+        assertThrows(OemDatabaseException.class, () -> {
+            vehicleTable.registerVehicle(new VehicleInfo("veh4", "van1",
+                    Instant.parse("2019-10-27T14:35:24.00Z")));
+        });
 
-        List<Vehicle> vehicles2 = vehicleTable.getAll();
-
-        assertEquals(vehicles.size(), 1);
-
-*/
+        vehicleTable.registerVehicle(new VehicleInfo("veh4", "van4",
+                Instant.parse("2019-10-27T14:35:24.00Z")));
     }
 
     @Test
     void checkTelematicsRelation() throws OemDatabaseException {
-        VehicleInfo newVehilce = new VehicleInfo("veh1", "van1",
-                Instant.parse("2020-10-27T14:35:24.00Z"));
-        vehicleTable.registerVehicle(newVehilce);
+        register1TestVehicles();
 
-        InputTelemetricsData newData = new InputTelemetricsData( helperGenerateState("veh1"),
-                helperGenerateLoadCollectives(), helperGenerateAdaptionValues() );
-
-        vehicleTable.appendTelematicsDataById("veh1", newData);
-        vehicleTable.flushAndClearCache();
-
-        List<Vehicle> vehicles1 = vehicleTable.getAll();
+        vehicleTable.appendTelematicsDataById("veh1", generateTelematricsTestData("veh1"));
         List<TelemetricsData> telemetricsData1 = telemetricsDataTable.getAll();
+        Assert.assertEquals(telemetricsData1.size(), 1);
 
-        newData = new InputTelemetricsData( helperGenerateState("veh1"),
-                helperGenerateLoadCollectives(), helperGenerateAdaptionValues() );
-        vehicleTable.appendTelematicsDataById("veh1", newData);
-        vehicleTable.flushAndClearCache();
+        //Not working!!
+        Vehicle v = vehicleTable.findByVan("van1");
 
-        List<Vehicle> vehicles2 = vehicleTable.getAll();
-        List<TelemetricsData> telemetricsData2 = telemetricsDataTable.getAll();
-    }
+        vehicleTable.appendTelematicsDataByVan("van1", generateTelematricsTestData("veh1"));
 
-    VehicleState helperGenerateState(String id) {
-        return new VehicleState(id, Instant.now(), 12345.6f, 12345678 );
-    }
+        List<TelemetricsData> telemetricsData2 = telemetricsDataTable.getAllOrderByStorageTimestamp();
+        Assert.assertEquals(telemetricsData2.size(), 2);
 
-    List<String> helperGenerateLoadCollectives() {
-        List<String> list = new ArrayList<>();
-        list.add("{ \"TEST_COLLECTIVE_JSON\": \"TEST\" }");
-        return list;
-    }
+        /* Check relation */
 
-    List<double[]> helperGenerateAdaptionValues() {
-        List<double[]> list = new ArrayList<>();
-        list.add(new double[]{0.4, 0.7, 1.8});
-        return list;
+
+
     }
 
     @Test
     void getVehiclesUpdatedSince() {
     }
 
-/*
+    @Test
+    void getVehiclesByProductionDate() {
+    /*
     List<Vehicle> vehicles = vehicleTable.getVehiclesProducedBetween(Instant.parse("2020-12-27T14:35:24.00Z"),
             Instant.parse("2020-11-27T14:35:24.00Z"));
 */
+    }
+
+    private InputTelemetricsData generateTelematricsTestData(String vehicleId) {
+        return new InputTelemetricsData( helperGenerateState(vehicleId),
+                helperGenerateLoadCollectives(), helperGenerateAdaptionValues() );
+    }
+
+    private VehicleState helperGenerateState(String vehicleId) {
+        return new VehicleState(vehicleId, Instant.now(),
+                12345.6f, 12345678 );
+    }
+
+    private List<String> helperGenerateLoadCollectives() {
+        List<String> list = new ArrayList<>();
+        list.add("{ \"TEST_COLLECTIVE_JSON\": \"TEST\" }");
+        return list;
+    }
+
+    private List<double[]> helperGenerateAdaptionValues() {
+        List<double[]> list = new ArrayList<>();
+        list.add(new double[]{0.4, 0.7, 1.8});
+        return list;
+    }
+
+    private void register1TestVehicles() throws OemDatabaseException {
+        vehicleTable.registerVehicle(new VehicleInfo("veh1", "van1",
+                Instant.parse("2020-10-27T14:35:24.00Z")));
+    }
+
+    private void register3TestVehicles() throws OemDatabaseException {
+        vehicleTable.registerVehicle(new VehicleInfo("veh1", "van1",
+                Instant.parse("2020-10-27T14:35:24.00Z")));
+        vehicleTable.registerVehicle(new VehicleInfo("veh2", "van2",
+                Instant.parse("2019-10-27T14:35:24.00Z")));
+        vehicleTable.registerVehicle(new VehicleInfo("veh3", "van3",
+                Instant.parse("2021-10-27T14:35:24.00Z")));
+    }
 }

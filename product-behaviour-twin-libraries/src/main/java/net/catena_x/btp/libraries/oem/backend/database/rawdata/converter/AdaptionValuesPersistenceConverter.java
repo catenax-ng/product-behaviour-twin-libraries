@@ -10,7 +10,7 @@ import java.util.List;
 
 
 public class AdaptionValuesPersistenceConverter implements AttributeConverter<List<double[]>, String> {
-    ObjectMapper objectMapper = new ObjectMapper();
+    final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public String convertToDatabaseColumn(List<double[]> adaptionValues) {

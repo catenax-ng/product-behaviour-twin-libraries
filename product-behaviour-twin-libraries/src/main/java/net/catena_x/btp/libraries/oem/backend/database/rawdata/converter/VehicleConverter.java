@@ -6,7 +6,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class VehicleConverter {
-    public void convert(VehicleInfo source, Vehicle destination) {
+    public Vehicle convert(VehicleInfo source) {
+        Vehicle destination = new Vehicle();
+        convertMembers(destination, source);
+        return destination;
+    }
+
+    private static void convertMembers(Vehicle destination, VehicleInfo source) {
         destination.setId(source.id());
         destination.setVan(source.van());
         destination.setProductionDate(source.productionDate());

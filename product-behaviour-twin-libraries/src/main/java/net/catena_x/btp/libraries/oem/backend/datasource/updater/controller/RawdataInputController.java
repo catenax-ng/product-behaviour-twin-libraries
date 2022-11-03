@@ -46,7 +46,7 @@ public class RawdataInputController {
         }
         catch(OemDatabaseException exception) {
             return new ResponseEntity<>( String.format( "<html><head><title>HI Backend - Test-EndPoint</title></head><body style=\"font-family:Segoe UI Light,Segoe UI,Calibri,Arial,Helvetia\"><h1>HI-BackEnd</h1><h2>Test-Endpoint</h2><p style=\"color:rgb(192,12,0);font-family:Segoe UI,Segoe UI,Calibri,Arial,Helvetia;font-style:bold\">Failed: %s</p></body></html>",
-                    exception.toString()).getBytes(),
+                    exception).getBytes(),
                     new HttpHeaders(), HttpStatus.OK);
         }
     }
