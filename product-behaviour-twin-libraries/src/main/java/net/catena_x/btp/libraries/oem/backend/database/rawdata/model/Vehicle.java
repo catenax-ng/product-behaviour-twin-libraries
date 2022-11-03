@@ -8,7 +8,8 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "vehicles", uniqueConstraints={@UniqueConstraint(columnNames = {"id"}),
-                                             @UniqueConstraint(columnNames = {"van"})})
+                                             @UniqueConstraint(columnNames = {"van"}),
+                                             @UniqueConstraint(columnNames = {"gearbox_id"})})
 @Getter
 @Setter
 public class Vehicle {
@@ -18,6 +19,9 @@ public class Vehicle {
 
     @Column(name="van", length=50, nullable=false)
     private String van;
+
+    @Column(name="gearbox_id", length=50, nullable=false)
+    private String gearboxId;
 
     @Column(name="production_date", nullable=false, unique=false)
     private Instant productionDate;

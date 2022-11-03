@@ -15,6 +15,7 @@ public class VehicleConverter {
     private static void convertMembers(Vehicle destination, VehicleInfo source) {
         destination.setId(source.id());
         destination.setVan(source.van());
+        destination.setGearboxId(source.gearboxId());
         destination.setProductionDate(source.productionDate());
         destination.setTelemetricsData(null);
         destination.setUpdateTimestamp(null);

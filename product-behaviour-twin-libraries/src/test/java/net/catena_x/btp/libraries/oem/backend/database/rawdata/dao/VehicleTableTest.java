@@ -52,16 +52,16 @@ class VehicleTableTest {
         Assert.assertNotNull(vehicles.get(0).getUpdateTimestamp());
 
         assertThrows(OemDatabaseException.class, () -> {
-            vehicleTable.registerVehicle(new VehicleInfo("veh1", "van4",
+            vehicleTable.registerVehicle(new VehicleInfo("veh1", "van4", "gear4",
                     Instant.parse("2022-10-27T14:35:24.00Z")));
         });
 
         assertThrows(OemDatabaseException.class, () -> {
-            vehicleTable.registerVehicle(new VehicleInfo("veh4", "van1",
+            vehicleTable.registerVehicle(new VehicleInfo("veh4", "van1", "gear4",
                     Instant.parse("2019-10-27T14:35:24.00Z")));
         });
 
-        vehicleTable.registerVehicle(new VehicleInfo("veh4", "van4",
+        vehicleTable.registerVehicle(new VehicleInfo("veh4", "van4", "gear4",
                 Instant.parse("2019-10-27T14:35:24.00Z")));
     }
 
@@ -74,7 +74,7 @@ class VehicleTableTest {
         Assert.assertEquals(telemetricsData1.size(), 1);
 
         //Not working!!
-        Vehicle v = vehicleTable.findByVan("van1");
+        Vehicle veh_van = vehicleTable.findByVanMustExist("van1");
 
         vehicleTable.appendTelematicsDataByVan("van1", generateTelematricsTestData("veh1"));
 
@@ -122,16 +122,16 @@ class VehicleTableTest {
     }
 
     private void register1TestVehicles() throws OemDatabaseException {
-        vehicleTable.registerVehicle(new VehicleInfo("veh1", "van1",
+        vehicleTable.registerVehicle(new VehicleInfo("veh1", "van1", "gear1",
                 Instant.parse("2020-10-27T14:35:24.00Z")));
     }
 
     private void register3TestVehicles() throws OemDatabaseException {
-        vehicleTable.registerVehicle(new VehicleInfo("veh1", "van1",
+        vehicleTable.registerVehicle(new VehicleInfo("veh1", "van1", "gear1",
                 Instant.parse("2020-10-27T14:35:24.00Z")));
-        vehicleTable.registerVehicle(new VehicleInfo("veh2", "van2",
+        vehicleTable.registerVehicle(new VehicleInfo("veh2", "van2", "gear2",
                 Instant.parse("2019-10-27T14:35:24.00Z")));
-        vehicleTable.registerVehicle(new VehicleInfo("veh3", "van3",
+        vehicleTable.registerVehicle(new VehicleInfo("veh3", "van3", "gear3",
                 Instant.parse("2021-10-27T14:35:24.00Z")));
     }
 }

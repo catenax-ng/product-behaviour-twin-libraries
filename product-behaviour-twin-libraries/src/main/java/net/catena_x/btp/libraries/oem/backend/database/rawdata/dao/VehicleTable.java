@@ -122,15 +122,23 @@ public class VehicleTable extends RawTableBase<Vehicle> {
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT)
     public Vehicle findByVan(String van) throws OemDatabaseException {
-        Optional<Vehicle> vehicle = null;
-
         try {
-            vehicle = rawVehicleRepository.findByVan(van);
+            return rawVehicleRepository.findByVan(van);
         } catch (Exception exception) {
             return queryingSingleFailed("Querying vehicle by van failed!");
         }
+    }
 
-        return unwrap(vehicle);
+    public Vehicle findByVanMustExist(String van) throws OemDatabaseException {
+        Vehicle vehicle = findByVan(van);
+        assertExists(vehicle);
+        return vehicle;
+    }
+
+    private void assertExists(Vehicle vehicle) throws OemDatabaseException {
+        if( vehicle == null ) {
+            queryingFailed("Querying vehicle failed!");
+        }
     }
 
     private Vehicle unwrap(Optional<Vehicle> vehicle) throws OemDatabaseException {

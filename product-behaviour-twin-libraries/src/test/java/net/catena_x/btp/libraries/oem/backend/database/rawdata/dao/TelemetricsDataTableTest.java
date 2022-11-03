@@ -40,9 +40,11 @@ class TelemetricsDataTableTest {
     void uploadandQueryTelemetricsData() throws OemDatabaseException, InterruptedException  {
 
         telemetricsDataTable.uploadTelemetricsData(generateTelematricsTestData("veh1"));
-        Thread.sleep(1);
+        Thread.sleep(100);
 
         telemetricsDataTable.uploadTelemetricsData(generateTelematricsTestData("veh2"));
+        Thread.sleep(100);
+
         telemetricsDataTable.uploadTelemetricsData(generateTelematricsTestData("veh1"));
 
         telemetricsDataTable.getEntityManager().clear();
@@ -53,7 +55,7 @@ class TelemetricsDataTableTest {
         Assert.assertEquals(veh2Data.size(), 1);
 
         List<TelemetricsData> updatedSinceVeh2Data = telemetricsDataTable.getUpdatedSince(
-                veh2Data.get(0).getCreationTimestamp());
+                veh2Data.get(0).getStorageTimestamp());
         Assert.assertEquals(updatedSinceVeh2Data.size(), 2);
     }
 
