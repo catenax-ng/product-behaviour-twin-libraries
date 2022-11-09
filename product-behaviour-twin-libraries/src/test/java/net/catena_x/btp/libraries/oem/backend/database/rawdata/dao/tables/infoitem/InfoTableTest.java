@@ -1,0 +1,81 @@
+package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.infoitem;
+
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dto.InfoItem;
+import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+
+import java.time.Duration;
+import java.time.Instant;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@DataJpaTest(properties = {"rawdatadb.hibernate.hbm2ddl.auto=create-drop"})
+@ActiveProfiles(profiles = "dataupdater")
+@ContextConfiguration(classes = {InfoTable.class})
+@TestPropertySource(locations = {"classpath:test-rawdatadb.properties"})
+@ComponentScan(basePackages = {"net.catena_x.btp.libraries.oem.backend.datasource.updater",
+        "net.catena_x.btp.libraries.oem.backend.database.rawdata"})
+@EntityScan(basePackages = {"net.catena_x.btp.libraries.oem.backend.database.rawdata"})
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+class InfoTableTest {
+    @Autowired private InfoTable infoTable;
+
+    @BeforeEach
+    void setupTest() throws OemDatabaseException {
+        infoTable.deleteAllNewTransaction();
+    }
+
+    @Test
+    void injectedComponentsAreNotNull(){
+        Assertions.assertNotNull(infoTable);
+    }
+
+    @Test
+    void checkCurrentDatabaseTimestamp() throws OemDatabaseException, InterruptedException {
+        insertTestData();
+        long duration_ms = queryDatabaseTimestampsDuration();
+        assertTrue(duration_ms >= 100 && duration_ms <= 5000);
+    }
+
+    @Test
+    void insertAndReadInfoItem() throws Exception {
+        checkDataversionNotPresent();
+        infoTable.setInfoItemNewTransaction(InfoItem.InfoKey.dataversion, "TestVersion");
+
+        InfoItem infoItemDAO = infoTable.getInfoItemNewTransaction(InfoItem.InfoKey.dataversion);
+
+        assertTrue(infoItemDAO.getKey() == InfoItem.InfoKey.dataversion
+                && infoItemDAO.getValue().equals("TestVersion"));
+        assertEquals("TestVersion", infoTable.getInfoValueNewTransaction(InfoItem.InfoKey.dataversion));
+    }
+
+    private void insertTestData() throws OemDatabaseException {
+        infoTable.setInfoItemNewTransaction(InfoItem.InfoKey.dataversion, "DV_0.0.99");
+        infoTable.setInfoItemNewTransaction(InfoItem.InfoKey.adaptionvalueinfo, "{}");
+        infoTable.setInfoItemNewTransaction(InfoItem.InfoKey.collectiveinfo, "{\"names\" : [ \"AV1\", \"AV2\", \"AV3\", \"AV4\" ]}");
+    }
+
+    private long queryDatabaseTimestampsDuration() throws OemDatabaseException, InterruptedException {
+        Instant currentTimestamp1 = infoTable.getCurrentDatabaseTimestampNewTransaction();
+        Thread.sleep(200);
+        Instant currentTimestamp2 = infoTable.getCurrentDatabaseTimestampNewTransaction();
+
+        return Duration.between(currentTimestamp1, currentTimestamp2).toMillis();
+    }
+
+    private void checkDataversionNotPresent() throws Exception {
+        InfoItem item = infoTable.getInfoItemNewTransaction(InfoItem.InfoKey.dataversion);
+        Assertions.assertNull(item);
+    }
+}

@@ -1,0 +1,187 @@
+package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.vehicle;
+
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.table.RawTableBase;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.vehicle.intern.VehicleTableIntern;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dto.Vehicle;
+import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelematicsData;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.registration.VehicleInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.validation.constraints.NotNull;
+import java.time.Instant;
+import java.util.List;
+
+@Component
+public class VehicleTable extends RawTableBase {
+    @Autowired private VehicleTableIntern intern;
+
+    public void registerVehicleNewTransaction(@NotNull final VehicleInfo newVehicleInfo) throws OemDatabaseException {
+        intern.registerVehicleNewTransaction(newVehicleInfo);
+    }
+
+    public void registerVehicleExternTransaction(@NotNull final VehicleInfo newVehicleInfo) throws OemDatabaseException {
+        intern.registerVehicleExternTransaction(newVehicleInfo);
+    }
+
+    public void deleteAllNewTransaction() throws OemDatabaseException {
+        intern.deleteAllNewTransaction();
+    }
+
+    public void deleteAllExternTransaction() throws OemDatabaseException {
+        intern.deleteAllExternTransaction();
+    }
+
+    public void appendTelematicsDataByIdNewTransaction(@NotNull final String id,
+                                                       @NotNull final InputTelematicsData newTelematicsData)
+            throws OemDatabaseException {
+        intern.appendTelematicsDataByIdNewTransaction(id, newTelematicsData);
+    }
+
+    public void appendTelematicsDataByIdExternTransaction(@NotNull final String id,
+                                                          @NotNull final InputTelematicsData newTelematicsData)
+            throws OemDatabaseException {
+        intern.appendTelematicsDataByIdExternTransaction(id, newTelematicsData);
+    }
+
+    public void appendTelematicsDataByVanNewTransaction(@NotNull final String van,
+                                                        @NotNull final InputTelematicsData newTelematicsData)
+            throws OemDatabaseException {
+        intern.appendTelematicsDataByVanNewTransaction(van, newTelematicsData);
+    }
+
+    public void appendTelematicsDataByVanExternTransaction(@NotNull final String van,
+                                                           @NotNull final InputTelematicsData newTelematicsData)
+            throws OemDatabaseException {
+        intern.appendTelematicsDataByVanExternTransaction(van, newTelematicsData);
+    }
+
+    public void deleteByIdNewTransaction(@NotNull final String id) throws OemDatabaseException {
+        intern.deleteByIdNewTransaction(id);
+    }
+
+    public void deleteByIdExternTransaction(@NotNull final String id) throws OemDatabaseException {
+        intern.deleteByIdExternTransaction(id);
+    }
+
+    public void deleteByVanNewTransaction(@NotNull final String van) throws OemDatabaseException {
+        intern.deleteByVanNewTransaction(van);
+    }
+
+    public void deleteByVanExternTransaction(@NotNull final String van) throws OemDatabaseException {
+        intern.deleteByVanExternTransaction(van);
+    }
+
+    public Vehicle getByIdNewTransaction(@NotNull final String vehicleId) throws OemDatabaseException {
+        return intern.getByIdNewTransaction(vehicleId);
+    }
+
+    public Vehicle getByIdExternTransaction(@NotNull final String vehicleId) throws OemDatabaseException {
+        return intern.getByIdExternTransaction(vehicleId);
+    }
+
+    public Vehicle getByIdWithTelematicsDataNewTransaction(@NotNull final String vehicleId)
+            throws OemDatabaseException {
+        return intern.getByIdWithTelematicsDataNewTransaction(vehicleId);
+    }
+
+    public Vehicle getByIdWithTelematicsDataExternTransaction(@NotNull final String vehicleId)
+            throws OemDatabaseException {
+        return intern.getByIdWithTelematicsDataExternTransaction(vehicleId);
+    }
+
+    public Vehicle findByVanNewTransaction(@NotNull final String van) throws OemDatabaseException {
+        return intern.findByVanNewTransaction(van);
+    }
+
+    public Vehicle findByVanExternTransaction(@NotNull final String van) throws OemDatabaseException {
+        return intern.findByVanExternTransaction(van);
+    }
+
+    public Vehicle getByVanWithTelematicsDataNewTransaction(@NotNull final String van) throws OemDatabaseException {
+        return intern.getByVanWithTelematicsDataNewTransaction(van);
+    }
+
+    public Vehicle getByVanWithTelematicsDataExternTransaction(@NotNull final String van) throws OemDatabaseException {
+        return intern.getByVanWithTelematicsDataExternTransaction(van);
+    }
+
+    public List<Vehicle> getAllNewTransaction() throws OemDatabaseException {
+        return intern.getAllNewTransaction();
+    }
+
+    public List<Vehicle> getAllExternTransaction() throws OemDatabaseException {
+        return intern.getAllExternTransaction();
+    }
+
+    public List<Vehicle> getAllWithTelematicsDataNewTransaction() throws OemDatabaseException {
+        return intern.getAllWithTelematicsDataNewTransaction();
+    }
+
+    public List<Vehicle> getAllWithTelematicsDataExternTransaction() throws OemDatabaseException {
+        return intern.getAllWithTelematicsDataExternTransaction();
+    }
+
+    public List<Vehicle> getUpdatedSinceNewTransaction(@NotNull final Instant updatedSince)
+            throws OemDatabaseException {
+        return intern.getUpdatedSinceNewTransaction(updatedSince);
+    }
+
+    public List<Vehicle> getUpdatedSinceExternTransaction(@NotNull final Instant updatedSince)
+            throws OemDatabaseException {
+        return intern.getUpdatedSinceExternTransaction(updatedSince);
+    }
+
+    public List<Vehicle> getUpdatedSinceWithTelematicsDataNewTransaction(@NotNull final Instant updatedSince)
+            throws OemDatabaseException {
+        return intern.getUpdatedSinceWithTelematicsDataNewTransaction(updatedSince);
+    }
+
+    public List<Vehicle> getUpdatedSinceWithTelematicsDataExternTransaction(@NotNull final Instant updatedSince)
+            throws OemDatabaseException {
+        return intern.getUpdatedSinceWithTelematicsDataExternTransaction(updatedSince);
+    }
+
+    public List<Vehicle> getProducedBetweenNewTransaction(@NotNull final Instant producedSince,
+                                                          @NotNull final Instant producedUntil)
+            throws OemDatabaseException {
+        return intern.getProducedBetweenNewTransaction(producedSince, producedUntil);
+    }
+
+    public List<Vehicle> getProducedBetweenExternTransaction(@NotNull final Instant producedSince,
+                                                             @NotNull final Instant producedUntil)
+            throws OemDatabaseException {
+        return intern.getProducedBetweenExternTransaction(producedSince, producedUntil);
+    }
+
+    public List<Vehicle> getProducedBetweenWithTelematicsDataNewTransaction(
+            @NotNull final Instant producedSince, @NotNull final Instant producedUntil) throws OemDatabaseException {
+        return intern.getProducedBetweenWithTelematicsDataNewTransaction(producedSince, producedUntil);
+    }
+
+    public List<Vehicle> getProducedBetweenWithTelematicsDataExternTransaction(
+            @NotNull final Instant producedSince, @NotNull final Instant producedUntil) throws OemDatabaseException {
+        return intern.getProducedBetweenWithTelematicsDataExternTransaction(producedSince, producedUntil);
+    }
+
+    public List<Vehicle> getSyncCounterSinceNewTransaction(@NotNull final long syncCounter)
+            throws OemDatabaseException {
+        return intern.getSyncCounterSinceNewTransaction(syncCounter);
+    }
+
+    public List<Vehicle> getSyncCounterSinceExternTransaction(@NotNull final long syncCounter)
+            throws OemDatabaseException {
+        return intern.getSyncCounterSinceExternTransaction(syncCounter);
+    }
+
+    public List<Vehicle> getSyncCounterSinceWithTelematicsDataNewTransaction(@NotNull final long syncCounter)
+            throws OemDatabaseException {
+        return intern.getSyncCounterSinceWithTelematicsDataNewTransaction(syncCounter);
+    }
+
+    public List<Vehicle> getSyncCounterSinceWithTelematicsDataExternTransaction(@NotNull final long syncCounter)
+            throws OemDatabaseException {
+        return intern.getSyncCounterSinceWithTelematicsDataExternTransaction(syncCounter);
+    }
+}

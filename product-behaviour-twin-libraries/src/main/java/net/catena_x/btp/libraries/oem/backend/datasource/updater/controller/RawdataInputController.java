@@ -1,10 +1,12 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.updater.controller;
 
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.InfoTable;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.VehicleTable;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.model.InfoItem;
-import net.catena_x.btp.libraries.oem.backend.database.util.OemDatabaseException;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.infoitem.InfoTable;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.infoitem.model.InfoItemDAO;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.vehicle.VehicleTable;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dto.InfoItem;
+import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.registration.VehicleInfo;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,22 +25,25 @@ public class RawdataInputController {
     private VehicleTable vehicleTable;
 
     @PostMapping("/api/rawdata/info/set")
-    public ResponseEntity<byte[]> infoSet(@RequestBody InfoItem item) {
+    public ResponseEntity<byte[]> infoSet(@RequestBody @NotNull final InfoItemDAO item) {
+        /*
         try {
-            infoTable.setInfoItem(item.getKey(), item.getValue());
+            //infoTable.setInfoItem(item.getKey(), item.getValue());
             return ok("");
         }
         catch(OemDatabaseException exception) {
-            return failed(exception.toString());
+            return failed(exception.toString(), exception);
         }
+        */
+        return failed("NOT_IMPLEMENTED");
     }
 
     @GetMapping("/api/rawdata/info/get/{key}")
-    public ResponseEntity<byte[]> infoGet(@PathVariable InfoItem.InfoKey key) {
+    public ResponseEntity<byte[]> infoGet(@PathVariable @NotNull final InfoItem.InfoKey key) {
         try {
-            String value = infoTable.getInfoValue(key);
-            
-            HttpHeaders headers = new HttpHeaders();
+            final String value = infoTable.getInfoValueNewTransaction(key);
+
+            final HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", "text/plain");
             headers.add("Content-Disposition", "inline");
 
@@ -54,9 +59,9 @@ public class RawdataInputController {
     @PostMapping("/api/rawdata/info/init")
     public ResponseEntity<byte[]> infoInit() throws OemDatabaseException {
         try {
-            infoTable.setInfoItem(InfoItem.InfoKey.dataversion, "DV_0.0.99");
-            infoTable.setInfoItem(InfoItem.InfoKey.adaptionvalueinfo, "{}");
-            infoTable.setInfoItem(InfoItem.InfoKey.collectiveinfo, "{\"names\" : [ \"AV1\", \"AV2\", \"AV3\", \"AV4\" ]}");
+            infoTable.setInfoItemNewTransaction(InfoItem.InfoKey.dataversion, "DV_0.0.99");
+            infoTable.setInfoItemNewTransaction(InfoItem.InfoKey.adaptionvalueinfo, "{}");
+            infoTable.setInfoItemNewTransaction(InfoItem.InfoKey.collectiveinfo, "{\"names\" : [ \"AV1\", \"AV2\", \"AV3\", \"AV4\" ]}");
             return ok("");
         }
         catch(OemDatabaseException exception) {
@@ -65,9 +70,10 @@ public class RawdataInputController {
     }
 
     @PostMapping("/api/rawdata/vehicle/register")
-    public ResponseEntity<byte[]> registerVehicle(@RequestBody VehicleInfo vehicle) throws OemDatabaseException {
+    public ResponseEntity<byte[]> registerVehicle(@RequestBody @NotNull final VehicleInfo vehicle)
+            throws OemDatabaseException {
         try {
-            vehicleTable.registerVehicle(vehicle);
+            vehicleTable.registerVehicleNewTransaction(vehicle);
             return ok("");
         }
         catch(OemDatabaseException exception) {

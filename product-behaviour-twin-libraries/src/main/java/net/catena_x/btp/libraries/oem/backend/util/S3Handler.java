@@ -17,7 +17,7 @@ import java.io.IOException;
 // WARNING: This is completely untested and heavily WIP!
 
 public class S3Handler {
-    private AmazonS3 client = AmazonS3Client.builder().build();
+    private final AmazonS3 client = AmazonS3Client.builder().build();
 
     private static class Holder {
         private static final S3Handler singletonInstance = new S3Handler();
