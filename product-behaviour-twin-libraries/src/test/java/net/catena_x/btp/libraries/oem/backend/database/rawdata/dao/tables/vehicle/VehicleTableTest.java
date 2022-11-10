@@ -1,13 +1,14 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.vehicle;
 
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.infoitem.InfoTable;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.sync.SyncTable;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.telematicsdata.TelematicsDataTable;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dto.Vehicle;
+import net.catena_x.btp.libraries.oem.backend.model.dto.infoitem.InfoTable;
+import net.catena_x.btp.libraries.oem.backend.model.dto.sync.SyncTable;
+import net.catena_x.btp.libraries.oem.backend.model.dto.telematicsdata.TelematicsDataTable;
+import net.catena_x.btp.libraries.oem.backend.model.dto.vehicle.Vehicle;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelematicsData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.VehicleState;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.registration.VehicleInfo;
+import net.catena_x.btp.libraries.oem.backend.model.dto.vehicle.VehicleTable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ContextConfiguration(classes = {InfoTable.class})
 @TestPropertySource(locations = {"classpath:test-rawdatadb.properties"})
 @ComponentScan(basePackages = {"net.catena_x.btp.libraries.oem.backend.datasource.updater",
-        "net.catena_x.btp.libraries.oem.backend.database.rawdata"})
+        "net.catena_x.btp.libraries.oem.backend.database.rawdata",
+        "net.catena_x.btp.libraries.oem.backend.model"})
 @EntityScan(basePackages = {"net.catena_x.btp.libraries.oem.backend.database.rawdata"})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class VehicleTableTest {

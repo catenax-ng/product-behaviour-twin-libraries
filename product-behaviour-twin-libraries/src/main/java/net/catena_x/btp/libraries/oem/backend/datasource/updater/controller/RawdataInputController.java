@@ -1,11 +1,11 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.updater.controller;
 
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.infoitem.InfoTable;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.infoitem.model.InfoItemDAO;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.vehicle.VehicleTable;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dto.InfoItem;
+import net.catena_x.btp.libraries.oem.backend.model.dto.infoitem.InfoTable;
+import net.catena_x.btp.libraries.oem.backend.model.dto.vehicle.VehicleTable;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputInfo;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.registration.VehicleInfo;
+import net.catena_x.btp.libraries.oem.backend.model.enums.InfoKey;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +25,7 @@ public class RawdataInputController {
     private VehicleTable vehicleTable;
 
     @PostMapping("/api/rawdata/info/set")
-    public ResponseEntity<byte[]> infoSet(@RequestBody @NotNull final InfoItemDAO item) {
+    public ResponseEntity<byte[]> infoSet(@RequestBody @NotNull final InputInfo item) {
         /*
         try {
             //infoTable.setInfoItem(item.getKey(), item.getValue());
@@ -39,7 +39,7 @@ public class RawdataInputController {
     }
 
     @GetMapping("/api/rawdata/info/get/{key}")
-    public ResponseEntity<byte[]> infoGet(@PathVariable @NotNull final InfoItem.InfoKey key) {
+    public ResponseEntity<byte[]> infoGet(@PathVariable @NotNull final InfoKey key) {
         try {
             final String value = infoTable.getInfoValueNewTransaction(key);
 
@@ -59,9 +59,9 @@ public class RawdataInputController {
     @PostMapping("/api/rawdata/info/init")
     public ResponseEntity<byte[]> infoInit() throws OemDatabaseException {
         try {
-            infoTable.setInfoItemNewTransaction(InfoItem.InfoKey.dataversion, "DV_0.0.99");
-            infoTable.setInfoItemNewTransaction(InfoItem.InfoKey.adaptionvalueinfo, "{}");
-            infoTable.setInfoItemNewTransaction(InfoItem.InfoKey.collectiveinfo, "{\"names\" : [ \"AV1\", \"AV2\", \"AV3\", \"AV4\" ]}");
+            infoTable.setInfoItemNewTransaction(InfoKey.dataversion, "DV_0.0.99");
+            infoTable.setInfoItemNewTransaction(InfoKey.adaptionvalueinfo, "{}");
+            infoTable.setInfoItemNewTransaction(InfoKey.collectiveinfo, "{\"names\" : [ \"AV1\", \"AV2\", \"AV3\", \"AV4\" ]}");
             return ok("");
         }
         catch(OemDatabaseException exception) {

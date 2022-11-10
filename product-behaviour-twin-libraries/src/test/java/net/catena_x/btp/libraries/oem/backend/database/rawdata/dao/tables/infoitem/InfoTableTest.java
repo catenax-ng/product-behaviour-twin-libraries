@@ -1,7 +1,9 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.infoitem;
 
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dto.InfoItem;
+import net.catena_x.btp.libraries.oem.backend.model.dto.infoitem.InfoItem;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
+import net.catena_x.btp.libraries.oem.backend.model.dto.infoitem.InfoTable;
+import net.catena_x.btp.libraries.oem.backend.model.enums.InfoKey;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ContextConfiguration(classes = {InfoTable.class})
 @TestPropertySource(locations = {"classpath:test-rawdatadb.properties"})
 @ComponentScan(basePackages = {"net.catena_x.btp.libraries.oem.backend.datasource.updater",
-        "net.catena_x.btp.libraries.oem.backend.database.rawdata"})
+        "net.catena_x.btp.libraries.oem.backend.database.rawdata",
+        "net.catena_x.btp.libraries.oem.backend.model"})
 @EntityScan(basePackages = {"net.catena_x.btp.libraries.oem.backend.database.rawdata"})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class InfoTableTest {
@@ -51,19 +54,19 @@ class InfoTableTest {
     @Test
     void insertAndReadInfoItem() throws Exception {
         checkDataversionNotPresent();
-        infoTable.setInfoItemNewTransaction(InfoItem.InfoKey.dataversion, "TestVersion");
+        infoTable.setInfoItemNewTransaction(InfoKey.dataversion, "TestVersion");
 
-        InfoItem infoItemDAO = infoTable.getInfoItemNewTransaction(InfoItem.InfoKey.dataversion);
+        InfoItem infoItemDAO = infoTable.getInfoItemNewTransaction(InfoKey.dataversion);
 
-        assertTrue(infoItemDAO.getKey() == InfoItem.InfoKey.dataversion
+        assertTrue(infoItemDAO.getKey() == InfoKey.dataversion
                 && infoItemDAO.getValue().equals("TestVersion"));
-        assertEquals("TestVersion", infoTable.getInfoValueNewTransaction(InfoItem.InfoKey.dataversion));
+        assertEquals("TestVersion", infoTable.getInfoValueNewTransaction(InfoKey.dataversion));
     }
 
     private void insertTestData() throws OemDatabaseException {
-        infoTable.setInfoItemNewTransaction(InfoItem.InfoKey.dataversion, "DV_0.0.99");
-        infoTable.setInfoItemNewTransaction(InfoItem.InfoKey.adaptionvalueinfo, "{}");
-        infoTable.setInfoItemNewTransaction(InfoItem.InfoKey.collectiveinfo, "{\"names\" : [ \"AV1\", \"AV2\", \"AV3\", \"AV4\" ]}");
+        infoTable.setInfoItemNewTransaction(InfoKey.dataversion, "DV_0.0.99");
+        infoTable.setInfoItemNewTransaction(InfoKey.adaptionvalueinfo, "{}");
+        infoTable.setInfoItemNewTransaction(InfoKey.collectiveinfo, "{\"names\" : [ \"AV1\", \"AV2\", \"AV3\", \"AV4\" ]}");
     }
 
     private long queryDatabaseTimestampsDuration() throws OemDatabaseException, InterruptedException {
@@ -75,7 +78,7 @@ class InfoTableTest {
     }
 
     private void checkDataversionNotPresent() throws Exception {
-        InfoItem item = infoTable.getInfoItemNewTransaction(InfoItem.InfoKey.dataversion);
+        InfoItem item = infoTable.getInfoItemNewTransaction(InfoKey.dataversion);
         Assertions.assertNull(item);
     }
 }

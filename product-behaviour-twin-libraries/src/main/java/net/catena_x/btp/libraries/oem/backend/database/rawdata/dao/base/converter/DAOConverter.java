@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class DAOConverter<T_DAO, T_DTO> {
     protected abstract T_DTO toDTOSourceExists(T_DAO source);
@@ -31,12 +32,7 @@ public abstract class DAOConverter<T_DAO, T_DTO> {
             return null;
         }
 
-        final List<T_DTO> convertedList = new ArrayList<>(source.size());
-        for (final T_DAO item : source) {
-            convertedList.add(toDTO(item));
-        }
-
-        return convertedList;
+        return source.stream().map(item -> toDTO(item)).collect(Collectors.toList());
     }
 
     public List<T_DAO> toDAO(@Nullable final Collection<T_DTO> source) {
@@ -44,11 +40,6 @@ public abstract class DAOConverter<T_DAO, T_DTO> {
             return null;
         }
 
-        final List<T_DAO> convertedList = new ArrayList<>(source.size());
-        for (final T_DTO item : source) {
-            convertedList.add(toDAO(item));
-        }
-
-        return convertedList;
+        return source.stream().map(item -> toDAO(item)).collect(Collectors.toList());
     }
 }

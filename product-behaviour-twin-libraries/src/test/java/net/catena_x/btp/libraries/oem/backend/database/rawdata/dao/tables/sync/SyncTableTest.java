@@ -1,6 +1,7 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.sync;
 
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dto.Sync;
+import net.catena_x.btp.libraries.oem.backend.model.dto.sync.Sync;
+import net.catena_x.btp.libraries.oem.backend.model.dto.sync.SyncTable;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -18,7 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @ContextConfiguration(classes = {SyncTable.class})
 @TestPropertySource(locations = {"classpath:test-rawdatadb.properties"})
 @ComponentScan(basePackages = {"net.catena_x.btp.libraries.oem.backend.datasource.updater",
-        "net.catena_x.btp.libraries.oem.backend.database.rawdata"})
+        "net.catena_x.btp.libraries.oem.backend.database.rawdata",
+        "net.catena_x.btp.libraries.oem.backend.model"})
 @EntityScan(basePackages = {"net.catena_x.btp.libraries.oem.backend.database.rawdata"})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class SyncTableTest {
