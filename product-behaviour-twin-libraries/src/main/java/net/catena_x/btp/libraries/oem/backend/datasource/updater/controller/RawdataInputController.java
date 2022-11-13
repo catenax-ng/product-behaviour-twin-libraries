@@ -59,9 +59,9 @@ public class RawdataInputController {
     @PostMapping("/api/rawdata/info/init")
     public ResponseEntity<byte[]> infoInit() throws OemDatabaseException {
         try {
-            infoTable.setInfoItemNewTransaction(InfoKey.dataversion, "DV_0.0.99");
-            infoTable.setInfoItemNewTransaction(InfoKey.adaptionvalueinfo, "{}");
-            infoTable.setInfoItemNewTransaction(InfoKey.collectiveinfo, "{\"names\" : [ \"AV1\", \"AV2\", \"AV3\", \"AV4\" ]}");
+            infoTable.setInfoItemNewTransaction(InfoKey.DATAVERSION, "DV_0.0.99");
+            infoTable.setInfoItemNewTransaction(InfoKey.ADAPTIONVALUEINFO, "{}");
+            infoTable.setInfoItemNewTransaction(InfoKey.COLLECTIVEINFO, "{\"names\" : [ \"AV1\", \"AV2\", \"AV3\", \"AV4\" ]}");
             return ok("");
         }
         catch(OemDatabaseException exception) {

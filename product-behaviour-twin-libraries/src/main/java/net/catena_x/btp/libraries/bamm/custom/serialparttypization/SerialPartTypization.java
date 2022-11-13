@@ -22,4 +22,18 @@ public class SerialPartTypization implements BammBase {
     @Override public String getBammId() {
         return BAMM_ID;
     }
+
+    public String getLocelIdentifier(String key) {
+        if(localIdentifiers == null) {
+            return null;
+        }
+
+        for (SPTLocalIdentifier localIdentifier : localIdentifiers) {
+            if(localIdentifier.getKey().equals(key)) {
+                return localIdentifier.getValue();
+            }
+        }
+
+        return null;
+    }
 }

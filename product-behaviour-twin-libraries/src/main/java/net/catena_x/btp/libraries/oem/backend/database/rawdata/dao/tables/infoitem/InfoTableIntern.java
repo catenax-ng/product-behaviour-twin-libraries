@@ -88,7 +88,7 @@ public class InfoTableIntern extends RawTableBase {
 
     @TransactionSerializableUseExisting
     public Instant getCurrentDatabaseTimestampExternTransaction() throws OemDatabaseException {
-        return getInfoItemExternTransaction(InfoKey.dataversion).getQueryTimestamp();
+        return getInfoItemExternTransaction(InfoKey.DATAVERSION).getQueryTimestamp();
     }
 
     @TransactionSerializableCreateNew

@@ -54,19 +54,19 @@ class InfoTableTest {
     @Test
     void insertAndReadInfoItem() throws Exception {
         checkDataversionNotPresent();
-        infoTable.setInfoItemNewTransaction(InfoKey.dataversion, "TestVersion");
+        infoTable.setInfoItemNewTransaction(InfoKey.DATAVERSION, "TestVersion");
 
-        InfoItem infoItemDAO = infoTable.getInfoItemNewTransaction(InfoKey.dataversion);
+        InfoItem infoItemDAO = infoTable.getInfoItemNewTransaction(InfoKey.DATAVERSION);
 
-        assertTrue(infoItemDAO.getKey() == InfoKey.dataversion
+        assertTrue(infoItemDAO.getKey() == InfoKey.DATAVERSION
                 && infoItemDAO.getValue().equals("TestVersion"));
-        assertEquals("TestVersion", infoTable.getInfoValueNewTransaction(InfoKey.dataversion));
+        assertEquals("TestVersion", infoTable.getInfoValueNewTransaction(InfoKey.DATAVERSION));
     }
 
     private void insertTestData() throws OemDatabaseException {
-        infoTable.setInfoItemNewTransaction(InfoKey.dataversion, "DV_0.0.99");
-        infoTable.setInfoItemNewTransaction(InfoKey.adaptionvalueinfo, "{}");
-        infoTable.setInfoItemNewTransaction(InfoKey.collectiveinfo, "{\"names\" : [ \"AV1\", \"AV2\", \"AV3\", \"AV4\" ]}");
+        infoTable.setInfoItemNewTransaction(InfoKey.DATAVERSION, "DV_0.0.99");
+        infoTable.setInfoItemNewTransaction(InfoKey.ADAPTIONVALUEINFO, "{}");
+        infoTable.setInfoItemNewTransaction(InfoKey.COLLECTIVEINFO, "{\"names\" : [ \"AV1\", \"AV2\", \"AV3\", \"AV4\" ]}");
     }
 
     private long queryDatabaseTimestampsDuration() throws OemDatabaseException, InterruptedException {
@@ -78,7 +78,7 @@ class InfoTableTest {
     }
 
     private void checkDataversionNotPresent() throws Exception {
-        InfoItem item = infoTable.getInfoItemNewTransaction(InfoKey.dataversion);
+        InfoItem item = infoTable.getInfoItemNewTransaction(InfoKey.DATAVERSION);
         Assertions.assertNull(item);
     }
 }
