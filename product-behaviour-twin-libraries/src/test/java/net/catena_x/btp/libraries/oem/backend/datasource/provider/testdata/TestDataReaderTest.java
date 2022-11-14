@@ -3,7 +3,6 @@ package net.catena_x.btp.libraries.oem.backend.datasource.provider.testdata;
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.registration.VehicleInfo;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.testdata.util.CatenaXIdToDigitalTwinType;
-import net.catena_x.btp.libraries.oem.backend.datasource.provider.testdata.util.DigitalTwinType;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.testdata.util.VehilceDataLoader;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.UncheckedDataProviderException;

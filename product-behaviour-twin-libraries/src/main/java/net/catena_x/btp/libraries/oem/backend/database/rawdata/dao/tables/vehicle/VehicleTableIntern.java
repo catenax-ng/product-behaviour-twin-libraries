@@ -38,7 +38,7 @@ public class VehicleTableIntern extends RawTableBase {
             throws OemDatabaseException {
         try {
             /* Init with sync counter = 0 to avoid recalculation of empty vehicles. */
-            rawVehicleRepository.register(newVehicleInfo.vehilceId(), newVehicleInfo.van(),
+            rawVehicleRepository.register(newVehicleInfo.vehicleId(), newVehicleInfo.van(),
                     newVehicleInfo.gearboxId(), newVehicleInfo.productionDate(), 0);
         }
         catch(Exception exception) {
