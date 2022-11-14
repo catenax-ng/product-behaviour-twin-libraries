@@ -56,4 +56,7 @@ public class S3Handler {
         ObjectMapper om = new ObjectMapper();
         return om.readValue(streamFileFromS3(bucketName, key), resultType);
     }
+
+    public void uploadFileToS3(String resultJson, String bucketName, String key) {
+    }
 }
