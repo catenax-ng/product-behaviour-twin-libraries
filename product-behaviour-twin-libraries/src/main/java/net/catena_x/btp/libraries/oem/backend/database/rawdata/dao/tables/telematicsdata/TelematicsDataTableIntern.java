@@ -39,7 +39,7 @@ public class TelematicsDataTableIntern extends RawTableBase {
 
             telematicsDataRepository.insert(
                     newDAO.getId(), newDAO.getVehicleId(), newDAO.getCreationTimestamp(),
-                    newDAO.getMileage(), newDAO.getOperatingSeconds(), newDAO.getLoadCollectives(),
+                    newDAO.getMileage(), newDAO.getOperatingSeconds(), newDAO.getLoadSpectra(),
                     newDAO.getAdaptionValues(), sync.getSyncCounter());
 
             return newId;

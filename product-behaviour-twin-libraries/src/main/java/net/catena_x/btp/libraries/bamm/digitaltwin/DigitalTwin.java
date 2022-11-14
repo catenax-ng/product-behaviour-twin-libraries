@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import net.catena_x.btp.libraries.bamm.custom.assemblypartrelationship.AssemblyPartRelationship;
-import net.catena_x.btp.libraries.bamm.custom.classifiedloadcollective.ClassifiedLoadCollective;
+import net.catena_x.btp.libraries.bamm.custom.classifiedloadcollective.ClassifiedLoadSpectrum;
 import net.catena_x.btp.libraries.bamm.custom.damage.Damage;
 import net.catena_x.btp.libraries.bamm.custom.remainingusefullife.RemainingUsefulLife;
 import net.catena_x.btp.libraries.bamm.custom.serialparttypization.SerialPartTypization;
@@ -28,6 +28,6 @@ public class DigitalTwin {
     @JsonProperty(Damage.BAMM_ID)
     private List<Damage> damages;
 
-    @JsonProperty(ClassifiedLoadCollective.BAMM_ID)
-    private List<ClassifiedLoadCollective> classifiedLoadCollectives;
+    @JsonProperty(ClassifiedLoadSpectrum.BAMM_ID)
+    private List<ClassifiedLoadSpectrum> classifiedLoadSpectra;
 }

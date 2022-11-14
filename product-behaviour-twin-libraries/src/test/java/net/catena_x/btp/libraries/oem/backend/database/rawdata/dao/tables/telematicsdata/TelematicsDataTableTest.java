@@ -73,7 +73,7 @@ class TelematicsDataTableTest {
 
     private InputTelematicsData generateTelematricsTestData(String vehicleId) {
         return new InputTelematicsData( helperGenerateState(vehicleId),
-                helperGenerateLoadCollectives(), helperGenerateAdaptionValues() );
+                helperGenerateLoadSpectra(), helperGenerateAdaptionValues() );
     }
 
     private VehicleState helperGenerateState(String vehicleId) {
@@ -81,7 +81,7 @@ class TelematicsDataTableTest {
                 12345.6f, 12345678 );
     }
 
-    private List<String> helperGenerateLoadCollectives() {
+    private List<String> helperGenerateLoadSpectra() {
         List<String> list = new ArrayList<>();
         list.add("{ \"TEST_COLLECTIVE_JSON\": \"TEST\" }");
         return list;

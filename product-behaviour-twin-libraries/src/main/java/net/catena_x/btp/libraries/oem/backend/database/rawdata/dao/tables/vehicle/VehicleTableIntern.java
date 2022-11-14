@@ -66,23 +66,24 @@ public class VehicleTableIntern extends RawTableBase {
     }
 
     @TransactionSerializableUseExisting
-    public void appendTelematicsDataByIdExternTransaction(@NotNull final String id,
+    public void appendTelematicsDataByIdExternTransaction(@NotNull final String vehicleId,
                                                           @NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
-        appendTelematicsData(getByIdWithTelematicsDataNewTransaction(id), newTelematicsData);
+        appendTelematicsData(getByIdWithTelematicsDataExternTransaction(vehicleId), newTelematicsData);
     }
 
     @TransactionSerializableCreateNew
-    public void appendTelematicsDataByIdNewTransaction(@NotNull final String id,
+    public void appendTelematicsDataByIdNewTransaction(@NotNull final String vehicleId,
                                                        @NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
-        appendTelematicsDataByIdExternTransaction(id, newTelematicsData);
+        appendTelematicsDataByIdExternTransaction(vehicleId, newTelematicsData);
     }
+
     @TransactionSerializableUseExisting
     public void appendTelematicsDataByVanExternTransaction(@NotNull final String van,
                                                            @NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
-        appendTelematicsData(getByVanWithTelematicsDataNewTransaction(van), newTelematicsData);
+        appendTelematicsData(getByVanWithTelematicsDataExternTransaction(van), newTelematicsData);
     }
 
     @TransactionSerializableCreateNew

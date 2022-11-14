@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BammLoaddataSource {
-    private String informationOriginLoadCollective;
-    private String informationLoadCollective;
+    private String informationOriginLoadSpectrum;
+    private String informationLoadSpectrum;
 }

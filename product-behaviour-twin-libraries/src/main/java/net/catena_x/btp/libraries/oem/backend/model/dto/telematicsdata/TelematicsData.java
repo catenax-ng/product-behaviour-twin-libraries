@@ -20,6 +20,6 @@ public class TelematicsData {
     private Instant creationTimestamp;
     private float mileage;
     private long operatingSeconds;
-    private List<String> loadCollectives;
+    private List<String> loadSpectra;
     private List<double[]> adaptionValues;
 }

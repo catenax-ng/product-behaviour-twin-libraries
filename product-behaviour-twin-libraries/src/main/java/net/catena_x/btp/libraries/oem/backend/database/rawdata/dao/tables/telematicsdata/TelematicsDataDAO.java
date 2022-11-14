@@ -74,7 +74,7 @@ public class TelematicsDataDAO {
     private long operatingSeconds;
 
     @Column(name="load_collectives", nullable=false)
-    private String loadCollectives;
+    private String loadSpectra;
 
     @Column(name="adaption_values", nullable=false)
     private String adaptionValues;

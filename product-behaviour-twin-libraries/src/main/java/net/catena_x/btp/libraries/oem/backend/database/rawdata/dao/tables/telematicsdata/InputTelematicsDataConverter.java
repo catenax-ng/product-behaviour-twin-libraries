@@ -11,21 +11,21 @@ import javax.validation.constraints.NotNull;
 
 @Component
 public class InputTelematicsDataConverter extends DAOConverter<TelematicsDataDAO, InputTelematicsData> {
-    @Autowired InputLoadCollectivesConverter loadCollectivesConverter;
+    @Autowired InputLoadSpectraConverter loadSpectraConverter;
     @Autowired InputAdaptionValuesConverter adaptionValuesConverter;
 
     protected InputTelematicsData toDTOSourceExists(@NotNull final TelematicsDataDAO source) {
         return new InputTelematicsData(
                 new VehicleState(source.getVehicleId(), source.getCreationTimestamp(),
                         source.getMileage(), source.getOperatingSeconds()),
-                loadCollectivesConverter.toDTO(source.getLoadCollectives()),
+                loadSpectraConverter.toDTO(source.getLoadSpectra()),
                 adaptionValuesConverter.toDTO(source.getAdaptionValues()));
     }
 
     protected TelematicsDataDAO toDAOSourceExists(@NotNull final InputTelematicsData source) {
         return new TelematicsDataDAO(null, null, 0, source.state().vehicleId(),
                 source.state().creationTimestamp(), source.state().mileage(), source.state().operatingSeconds(),
-                loadCollectivesConverter.toDAO(source.loadCollectives()),
+                loadSpectraConverter.toDAO(source.loadCollectives()),
                 adaptionValuesConverter.toDAO(source.adaptionValues()));
     }
 

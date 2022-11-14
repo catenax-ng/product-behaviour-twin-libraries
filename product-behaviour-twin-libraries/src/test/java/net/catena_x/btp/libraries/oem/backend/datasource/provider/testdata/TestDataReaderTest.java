@@ -44,7 +44,7 @@ class TestDataReaderTest {
     @Test
     void testLoadFromFile() throws IOException, DataProviderException {
         testDataReader.loadFromFile(
-                Path.of("C:\\pc\\CatenaX\\Catena-X_Vehicle_Health_App\\DigitalTwins_CX_RuL_Testdata_v0.0.2.json"));
+                Path.of("C:\\pc\\CatenaX\\Catena-X_Vehicle_Health_App\\DigitalTwins_CX_RuL_Testdata_v0.0.2_Spectra.json"));
 
         final HashMap<String, DigitalTwin> vehicles = testDataReader.getDigitalTwinsVehicles();
 

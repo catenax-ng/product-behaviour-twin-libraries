@@ -9,8 +9,8 @@ import net.catena_x.btp.libraries.bamm.custom.classifiedloadcollective.items.CLC
 
 @Getter
 @Setter
-public class ClassifiedLoadCollective implements BammBase {
-    public final static String BAMM_ID = "urn:bamm:io.openmanufacturing.digitaltwin:1.0.0#ClassifiedLoadCollective";
+public class ClassifiedLoadSpectrum implements BammBase {
+    public final static String BAMM_ID = "urn:bamm:io.openmanufacturing.digitaltwin:1.0.0#ClassifiedLoadSpectrum";
 
     private String targetComponentID;
     private CLCMetaData metadata;
