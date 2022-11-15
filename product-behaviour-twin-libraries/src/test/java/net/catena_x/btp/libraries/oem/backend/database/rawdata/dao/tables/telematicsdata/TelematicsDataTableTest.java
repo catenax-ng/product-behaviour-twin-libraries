@@ -1,11 +1,11 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.telematicsdata;
 
-import net.catena_x.btp.libraries.oem.backend.model.dto.infoitem.InfoTable;
-import net.catena_x.btp.libraries.oem.backend.model.dto.sync.SyncTable;
-import net.catena_x.btp.libraries.oem.backend.model.dto.telematicsdata.TelematicsData;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelematicsData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.VehicleState;
+import net.catena_x.btp.libraries.oem.backend.model.dto.infoitem.InfoTable;
+import net.catena_x.btp.libraries.oem.backend.model.dto.sync.SyncTable;
+import net.catena_x.btp.libraries.oem.backend.model.dto.telematicsdata.TelematicsData;
 import net.catena_x.btp.libraries.oem.backend.model.dto.telematicsdata.TelematicsDataTable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

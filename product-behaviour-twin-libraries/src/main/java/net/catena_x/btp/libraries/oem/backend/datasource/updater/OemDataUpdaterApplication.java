@@ -12,8 +12,9 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @EnableAutoConfiguration
 @ComponentScan(basePackages = {"net.catena_x.btp.libraries.oem.backend.datasource.updater",
-		                       "net.catena_x.btp.libraries.oem.backend.database.rawdata"})
-@EntityScan(basePackages = {"net.catena_x.btp.libraries.oem.backend.database.rawdata.model"})
+		                       "net.catena_x.btp.libraries.oem.backend.model",
+								"net.catena_x.btp.libraries.oem.backend.database.rawdata"})
+@EntityScan(basePackages = {"net.catena_x.btp.libraries.oem.backend.database.rawdata"})
 @OpenAPIDefinition(info = @Info(title = "Data updater service", version = "0.0.99"))
 public class OemDataUpdaterApplication {
 	public static void main(@NotNull final String[] args) {

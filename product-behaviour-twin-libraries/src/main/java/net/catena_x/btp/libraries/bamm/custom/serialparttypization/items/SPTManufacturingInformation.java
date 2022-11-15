@@ -8,7 +8,6 @@ import java.time.Instant;
 @Getter
 @Setter
 public class SPTManufacturingInformation {
-    //FA: private Instant date; //Wrong timestamp format in input file!
-    private String date;
+    private Instant date;
     private String country;
 }
