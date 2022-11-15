@@ -80,16 +80,16 @@ class VehicleTableTest {
     void checkTelematicsRelation() throws OemDatabaseException {
         register3TestVehicles();
 
-        vehicleTable.appendTelematicsDataByIdNewTransaction("veh1", generateTelematricsTestData("veh1"));
+        vehicleTable.appendTelematicsDataNewTransaction(generateTelematricsTestData("veh1"));
         Assertions.assertEquals(telematicsDataTable.getAllNewTransaction().size(), 1);
 
-        vehicleTable.appendTelematicsDataByVanNewTransaction("van1", generateTelematricsTestData("veh1"));
+        vehicleTable.appendTelematicsDataNewTransaction(generateTelematricsTestData("veh1"));
         Assertions.assertEquals(telematicsDataTable.getSyncCounterSinceNewTransaction(0).size(), 2);
 
         Assertions.assertEquals(vehicleTable.getSyncCounterSinceWithTelematicsDataNewTransaction(2).size(), 1);
         Assertions.assertEquals(vehicleTable.getSyncCounterSinceNewTransaction(5).size(), 0);
 
-        vehicleTable.appendTelematicsDataByIdNewTransaction("veh3", generateTelematricsTestData("veh3"));
+        vehicleTable.appendTelematicsDataNewTransaction(generateTelematricsTestData("veh3"));
         Assertions.assertEquals(vehicleTable.getSyncCounterSinceWithTelematicsDataNewTransaction(6).size(), 1);
 
         final List<Vehicle> vehicles = vehicleTable.getSyncCounterSinceWithTelematicsDataNewTransaction(1);

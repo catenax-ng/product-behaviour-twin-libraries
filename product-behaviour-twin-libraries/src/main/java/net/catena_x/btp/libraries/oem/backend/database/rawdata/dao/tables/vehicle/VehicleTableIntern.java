@@ -66,31 +66,16 @@ public class VehicleTableIntern extends RawTableBase {
     }
 
     @TransactionSerializableUseExisting
-    public void appendTelematicsDataByIdExternTransaction(@NotNull final String vehicleId,
-                                                          @NotNull final InputTelematicsData newTelematicsData)
+    public void appendTelematicsDataExternTransaction(@NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
-        appendTelematicsData(getByIdWithTelematicsDataExternTransaction(vehicleId), newTelematicsData);
+        appendTelematicsData(getByIdWithTelematicsDataExternTransaction(newTelematicsData.state().vehicleId()),
+                newTelematicsData);
     }
 
     @TransactionSerializableCreateNew
-    public void appendTelematicsDataByIdNewTransaction(@NotNull final String vehicleId,
-                                                       @NotNull final InputTelematicsData newTelematicsData)
+    public void appendTelematicsDataNewTransaction(@NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
-        appendTelematicsDataByIdExternTransaction(vehicleId, newTelematicsData);
-    }
-
-    @TransactionSerializableUseExisting
-    public void appendTelematicsDataByVanExternTransaction(@NotNull final String van,
-                                                           @NotNull final InputTelematicsData newTelematicsData)
-            throws OemDatabaseException {
-        appendTelematicsData(getByVanWithTelematicsDataExternTransaction(van), newTelematicsData);
-    }
-
-    @TransactionSerializableCreateNew
-    public void appendTelematicsDataByVanNewTransaction(@NotNull final String van,
-                                                        @NotNull final InputTelematicsData newTelematicsData)
-            throws OemDatabaseException {
-        appendTelematicsDataByVanExternTransaction(van, newTelematicsData);
+        appendTelematicsDataExternTransaction(newTelematicsData);
     }
 
     private void appendTelematicsData(@NotNull final VehicleWithTelematicsDataDAO vehicle,

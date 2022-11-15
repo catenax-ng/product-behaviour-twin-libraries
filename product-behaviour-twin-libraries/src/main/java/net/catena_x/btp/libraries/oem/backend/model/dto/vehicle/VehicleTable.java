@@ -33,28 +33,14 @@ public class VehicleTable extends RawTableBase {
         intern.deleteAllExternTransaction();
     }
 
-    public void appendTelematicsDataByIdNewTransaction(@NotNull final String vehicleId,
-                                                       @NotNull final InputTelematicsData newTelematicsData)
+    public void appendTelematicsDataNewTransaction(@NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
-        intern.appendTelematicsDataByIdNewTransaction(vehicleId, newTelematicsData);
+        intern.appendTelematicsDataNewTransaction(newTelematicsData);
     }
 
-    public void appendTelematicsDataByIdExternTransaction(@NotNull final String vehicleId,
-                                                          @NotNull final InputTelematicsData newTelematicsData)
+    public void appendTelematicsDataExternTransaction(@NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
-        intern.appendTelematicsDataByIdExternTransaction(vehicleId, newTelematicsData);
-    }
-
-    public void appendTelematicsDataByVanNewTransaction(@NotNull final String van,
-                                                        @NotNull final InputTelematicsData newTelematicsData)
-            throws OemDatabaseException {
-        intern.appendTelematicsDataByVanNewTransaction(van, newTelematicsData);
-    }
-
-    public void appendTelematicsDataByVanExternTransaction(@NotNull final String van,
-                                                           @NotNull final InputTelematicsData newTelematicsData)
-            throws OemDatabaseException {
-        intern.appendTelematicsDataByVanExternTransaction(van, newTelematicsData);
+        intern.appendTelematicsDataExternTransaction(newTelematicsData);
     }
 
     public void deleteByIdNewTransaction(@NotNull final String id) throws OemDatabaseException {

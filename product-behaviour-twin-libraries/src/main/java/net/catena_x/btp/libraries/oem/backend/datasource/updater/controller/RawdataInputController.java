@@ -2,11 +2,15 @@ package net.catena_x.btp.libraries.oem.backend.datasource.updater.controller;
 
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputInfo;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelematicsData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.registration.VehicleInfo;
 import net.catena_x.btp.libraries.oem.backend.model.dto.infoitem.InfoTable;
+import net.catena_x.btp.libraries.oem.backend.model.dto.sync.SyncTable;
+import net.catena_x.btp.libraries.oem.backend.model.dto.telematicsdata.TelematicsDataTable;
 import net.catena_x.btp.libraries.oem.backend.model.dto.vehicle.VehicleTable;
 import net.catena_x.btp.libraries.oem.backend.model.enums.InfoKey;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,28 +18,33 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @EnableTransactionManagement
 public class RawdataInputController {
-    @Autowired
-    private InfoTable infoTable;
-
-    @Autowired
-    private VehicleTable vehicleTable;
+    @Autowired private InfoTable infoTable;
+    @Autowired private VehicleTable vehicleTable;
+    @Autowired private TelematicsDataTable telematicsDataTable;
+    @Autowired private SyncTable syncTable;
 
     @PostMapping("/api/rawdata/info/set")
     public ResponseEntity<byte[]> infoSet(@RequestBody @NotNull final InputInfo item) {
-        /*
+
+        InfoKey key;
+
         try {
-            //infoTable.setInfoItem(item.getKey(), item.getValue());
-            return ok("");
+            key = InfoKey.valueOf(item.key());
+        }
+        catch(Exception exception) {
+            return failed(exception.toString());
+        }
+
+        try {
+            infoTable.setInfoItemNewTransaction(key, item.value());
+            return ok(item.key() + " set to \"" + item.value() + "\"");
         }
         catch(OemDatabaseException exception) {
-            return failed(exception.toString(), exception);
+            return failed(exception.toString());
         }
-        */
-        return failed("NOT_IMPLEMENTED");
     }
 
     @GetMapping("/api/rawdata/info/get/{key}")
@@ -47,22 +56,35 @@ public class RawdataInputController {
             headers.add("Content-Type", "text/plain");
             headers.add("Content-Disposition", "inline");
 
-            return new ResponseEntity<>( value.getBytes(), headers, HttpStatus.OK);
+            return okBody(headers, value);
         }
         catch(OemDatabaseException exception) {
-            return new ResponseEntity<>( String.format( "<html><head><title>HI Backend - Test-EndPoint</title></head><body style=\"font-family:Segoe UI Light,Segoe UI,Calibri,Arial,Helvetia\"><h1>HI-BackEnd</h1><h2>Test-Endpoint</h2><p style=\"color:rgb(192,12,0);font-family:Segoe UI,Segoe UI,Calibri,Arial,Helvetia;font-style:bold\">Failed: %s</p></body></html>",
-                    exception).getBytes(),
-                    new HttpHeaders(), HttpStatus.OK);
+            return failed(exception.toString());
         }
     }
 
     @PostMapping("/api/rawdata/info/init")
-    public ResponseEntity<byte[]> infoInit() throws OemDatabaseException {
+    public ResponseEntity<byte[]> infoInit() {
         try {
             infoTable.setInfoItemNewTransaction(InfoKey.DATAVERSION, "DV_0.0.99");
             infoTable.setInfoItemNewTransaction(InfoKey.ADAPTIONVALUEINFO, "{}");
-            infoTable.setInfoItemNewTransaction(InfoKey.COLLECTIVEINFO, "{\"names\" : [ \"AV1\", \"AV2\", \"AV3\", \"AV4\" ]}");
+            infoTable.setInfoItemNewTransaction(InfoKey.LOADSPECTRUMINFO,
+                    "{\"names\" : [ \"AV1\", \"AV2\", \"AV3\", \"AV4\" ]}");
             return ok("");
+        }
+        catch(OemDatabaseException exception) {
+            return failed(exception.toString());
+        }
+    }
+
+    @PostMapping("/api/rawdata/reset")
+    public ResponseEntity<byte[]> reset() throws OemDatabaseException {
+        try {
+            infoInit();
+            vehicleTable.deleteAllNewTransaction();
+            telematicsDataTable.deleteAllNewTransaction();
+            syncTable.reInitDefaultNewTransaction();
+            return ok("Rawdata database cleared and reinitialized.");
         }
         catch(OemDatabaseException exception) {
             return failed(exception.toString());
@@ -70,24 +92,39 @@ public class RawdataInputController {
     }
 
     @PostMapping("/api/rawdata/vehicle/register")
-    public ResponseEntity<byte[]> registerVehicle(@RequestBody @NotNull final VehicleInfo vehicle)
-            throws OemDatabaseException {
+    public ResponseEntity<byte[]> registerVehicle(@RequestBody @NotNull final VehicleInfo vehicle) {
         try {
             vehicleTable.registerVehicleNewTransaction(vehicle);
-            return ok("");
+            return ok("Vehicle registered.");
         }
         catch(OemDatabaseException exception) {
             return failed(exception.toString());
         }
     }
 
-    private ResponseEntity<byte[]> ok(String info) {
+    @PostMapping("/api/rawdata/telematicsdata/add")
+    public ResponseEntity<byte[]> addTelemeticsData(@RequestBody @NotNull final InputTelematicsData telematicsData){
+        try {
+            vehicleTable.appendTelematicsDataNewTransaction(telematicsData);
+            return ok("Telematics data added.");
+        }
+        catch(OemDatabaseException exception) {
+            return failed(exception.toString());
+        }
+    }
+
+    private ResponseEntity<byte[]> ok(@NotNull final String info) {
         return new ResponseEntity<>( String.format( "{\n  \"result\" : \"ok\",\n  \"info\" : \"%s\"\n}",
                 info).getBytes(),
                 new HttpHeaders(), HttpStatus.OK);
     }
 
-    private ResponseEntity<byte[]> failed(String error) {
+    private ResponseEntity<byte[]> okBody(@Nullable final HttpHeaders headers, @NotNull final String value) {
+        return new ResponseEntity<>( value.getBytes(),
+                (headers != null)? headers : new HttpHeaders(), HttpStatus.OK);
+    }
+
+    private ResponseEntity<byte[]> failed(@NotNull final String error) {
         return new ResponseEntity<>( String.format( "{\n  \"result\" : \"error\",\n  \"errorText\" : \"%s\"\n}",
                 error).getBytes(),
                 new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
