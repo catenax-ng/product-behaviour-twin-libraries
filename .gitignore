@@ -1,3 +1,7 @@
 /oem_btp.iml
 /.idea
 /target
+/product-behaviour-twin-libraries/src/main/resources/test-dataprovider.properties
+/product-behaviour-twin-libraries/src/main/resources/dataprovider-bindings.properties
+/product-behaviour-twin-libraries/src/main/resources/dataupdater-bindings.properties
+/product-behaviour-twin-libraries/src/main/resources/rawdatadb-bindings.properties
