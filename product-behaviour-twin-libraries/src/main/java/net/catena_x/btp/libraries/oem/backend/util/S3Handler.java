@@ -1,38 +1,61 @@
 package net.catena_x.btp.libraries.oem.backend.util;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.GetObjectRequest;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.minio.GetObjectArgs;
+import io.minio.MinioClient;
+import io.minio.PutObjectArgs;
+import io.minio.errors.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-
-// This class tries to be a thread-safe singleton with lazy initialization.
-// lazy initialization from https://stackoverflow.com/questions/16106260/thread-safe-singleton-class
-// thread safety information from https://stackoverflow.com/questions/70687454/how-i-can-implement-aws-s3-client-in-a-thread-safe-manner
-
-// this is based on java aws sdk 1.x, as 2.x is not yet fully complete
-
-// WARNING: This is completely untested and heavily WIP!
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 @Component
 @Scope("singleton")
 public class S3Handler {
-    private final AmazonS3 client = AmazonS3Client.builder().build();
+    private MinioClient client;
+    private String bucket;
 
-    private S3Handler() {
-        // TODO assert that region and credentials are set
-        //  see https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/setup-credentials.html
-        //  assert that construction can not fail, else there will be NoClassDefFound Errors,
-        //  see https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom
+
+    private S3Handler(
+            @Value("cloud.endpoint") URL endpoint,
+            @Value("cloud.accessKey") String accessKey,
+            @Value("cloud.secretKey") String secretKey,
+            @Value("cloud.region") String region,
+            @Value("cloud.bucket") String bucket
+    ) {
+        client = MinioClient.builder()
+                .endpoint(endpoint)
+                .credentials(accessKey, secretKey)
+                .region(region)
+                .build();
+        this.bucket = bucket;
     }
 
-    // TODO bucket should probably be fixed in config
-    public S3ObjectInputStream streamFileFromS3(String bucketName, String key) {
-        return client.getObject(new GetObjectRequest(bucketName, key)).getObjectContent();
+    /**
+     * this should be used inside of a try...with-block
+     * @param key
+     * @return
+     * @throws IOException
+     * @throws MinioException
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     */
+    public InputStream streamFileFromCloud(String key) throws IOException, MinioException,
+            NoSuchAlgorithmException, InvalidKeyException {
+        return client.getObject(
+                GetObjectArgs.builder()
+                        .bucket(bucket)
+                        .object(key)
+                        .build()
+        );
     }
 
     /**
@@ -45,11 +68,21 @@ public class S3Handler {
      * @return
      * @throws IOException
      */
-    public <T> T parseJsonFromS3(String bucketName, String key, Class<T> resultType) throws IOException {
+    public <T> T parseJsonFromS3(String bucketName, String key, Class<T> resultType) throws IOException, MinioException,
+            NoSuchAlgorithmException, InvalidKeyException {
         ObjectMapper om = new ObjectMapper();
-        return om.readValue(streamFileFromS3(bucketName, key), resultType);
+        return om.readValue(streamFileFromCloud(key), resultType);
     }
 
-    public void uploadFileToS3(String resultJson, String bucketName, String key) {
+    public void uploadFileToS3(String resultJson, String key) throws IOException, MinioException,
+            NoSuchAlgorithmException, InvalidKeyException {
+        // client.putObject(bucketName, key, resultJson);
+        var stream = new ByteArrayInputStream(resultJson.getBytes(StandardCharsets.UTF_8));
+        client.putObject(PutObjectArgs.builder()
+                        .bucket(bucket)
+                        .object(key)
+                        .stream(stream, stream.available(), -1)
+                        .contentType("application/json")
+                        .build());
     }
 }
