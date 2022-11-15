@@ -1,0 +1,3 @@
+rawdatadb.url=jdbc:postgresql://localhost:${RAWDATA_DB_PORT}/rawdata
+rawdatadb.username=${RAWDATA_DB_USER}
+rawdatadb.password=${RAWDATA_DB_PASS}

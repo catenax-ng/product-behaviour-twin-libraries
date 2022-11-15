@@ -3,8 +3,8 @@ package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.vehic
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.table.RawTableBase;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.sync.SyncDAO;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.sync.SyncTableIntern;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.telematicsdata.TelematicsDataTableIntern;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.telematicsdata.TelematicsDataDAO;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.telematicsdata.TelematicsDataTableIntern;
 import net.catena_x.btp.libraries.oem.backend.database.util.annotations.TransactionDefaultCreateNew;
 import net.catena_x.btp.libraries.oem.backend.database.util.annotations.TransactionDefaultUseExisting;
 import net.catena_x.btp.libraries.oem.backend.database.util.annotations.TransactionSerializableCreateNew;

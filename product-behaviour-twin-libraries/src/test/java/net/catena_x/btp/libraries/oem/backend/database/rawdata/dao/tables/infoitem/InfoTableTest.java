@@ -1,7 +1,7 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.infoitem;
 
-import net.catena_x.btp.libraries.oem.backend.model.dto.infoitem.InfoItem;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
+import net.catena_x.btp.libraries.oem.backend.model.dto.infoitem.InfoItem;
 import net.catena_x.btp.libraries.oem.backend.model.dto.infoitem.InfoTable;
 import net.catena_x.btp.libraries.oem.backend.model.enums.InfoKey;
 import org.junit.jupiter.api.Assertions;

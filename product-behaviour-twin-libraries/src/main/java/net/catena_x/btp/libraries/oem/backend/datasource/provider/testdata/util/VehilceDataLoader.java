@@ -79,7 +79,7 @@ public class VehilceDataLoader extends DataLoader {
         }
 
         try {
-            return Instant.parse(manufacturingInformation.getDate());
+            return manufacturingInformation.getDate();
         } catch (Exception exception) {
             throw new DataProviderException("Error while parsing date of production!", exception);
         }

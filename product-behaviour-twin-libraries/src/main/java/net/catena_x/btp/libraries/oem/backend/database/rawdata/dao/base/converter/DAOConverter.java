@@ -2,7 +2,6 @@ package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.convert
 
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;

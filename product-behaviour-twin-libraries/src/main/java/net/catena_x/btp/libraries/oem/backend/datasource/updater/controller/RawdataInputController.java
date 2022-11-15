@@ -1,10 +1,10 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.updater.controller;
 
-import net.catena_x.btp.libraries.oem.backend.model.dto.infoitem.InfoTable;
-import net.catena_x.btp.libraries.oem.backend.model.dto.vehicle.VehicleTable;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputInfo;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.registration.VehicleInfo;
+import net.catena_x.btp.libraries.oem.backend.model.dto.infoitem.InfoTable;
+import net.catena_x.btp.libraries.oem.backend.model.dto.vehicle.VehicleTable;
 import net.catena_x.btp.libraries.oem.backend.model.enums.InfoKey;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,0 +1,2 @@
+server.port=25551
+services.dataupdater.endpoint.baseurl=http:/localhost:25552/api/rawdata
