@@ -11,18 +11,14 @@ import java.time.Instant;
 @Entity
 @Table(name = "telematics_data")
 @NamedNativeQuery(name = "TelematicsDataDAO.insert",
-        query = "INSERT INTO telematics_data (id, vehicle_id, creation_timestamp, mileage, operating_seconds, " +
-                "load_collectives, adaption_values,sync_counter) " +
-                "VALUES (:id, :vehicle_id, :creation_timestamp, :mileage, :operating_seconds, " +
-                ":load_collectives, :adaption_values, :sync_counter)")
+        query = "INSERT INTO telematics_data (id, vehicle_id, load_spectra, adaption_values, sync_counter) " +
+                "VALUES (:id, :vehicle_id, :load_spectra, :adaption_values, :sync_counter)")
 @NamedNativeQuery(name = "TelematicsDataDAO.deleteAll",
         query = "DELETE FROM telematics_data")
 @NamedNativeQuery(name = "TelematicsDataDAO.deleteById",
         query = "DELETE FROM telematics_data WHERE id=:id")
 @NamedNativeQuery(name = "TelematicsDataDAO.deleteByVehicleId",
         query = "DELETE FROM telematics_data WHERE vehicleId=:vehicle_id")
-@NamedNativeQuery(name = "TelematicsDataDAO.deleteCreatedUntil",
-        query = "DELETE FROM telematics_data WHERE creation_timestamp<=:created_until")
 @NamedNativeQuery(name = "TelematicsDataDAO.deleteStoredUntil",
         query = "DELETE FROM telematics_data WHERE storage_timestamp<=:stored_until")
 @NamedNativeQuery(name = "TelematicsDataDAO.deleteSyncCounterUntil",
@@ -64,18 +60,9 @@ public class TelematicsDataDAO {
     @Column(name="vehicle_id", length=50, nullable=false)
     private String vehicleId;
 
-    @Column(name = "creation_timestamp", nullable=false)
-    private Instant creationTimestamp;
-
-    @Column(name="mileage", nullable=false)
-    private float mileage;
-
-    @Column(name="operating_seconds", nullable=false)
-    private long operatingSeconds;
-
-    @Column(name="load_collectives", nullable=false)
+    @Column(name="load_spectra", length=65000, nullable=false)
     private String loadSpectra;
 
-    @Column(name="adaption_values", nullable=false)
+    @Column(name="adaption_values", length=65000, nullable=false)
     private String adaptionValues;
 }

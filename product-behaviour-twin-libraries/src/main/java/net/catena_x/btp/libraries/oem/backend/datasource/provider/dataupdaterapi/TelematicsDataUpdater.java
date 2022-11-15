@@ -1,10 +1,11 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.provider.dataupdaterapi;
 
+import net.catena_x.btp.libraries.bamm.custom.adaptionvalues.AdaptionValues;
+import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.ClassifiedLoadSpectrum;
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.api.DataUpdaterStatus;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelematicsData;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.VehicleState;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.testdata.model.TestDataCategorized;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.testdata.util.CatenaXIdToDigitalTwinType;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.testdata.util.VehilceDataLoader;
@@ -61,8 +62,8 @@ public class TelematicsDataUpdater {
 
 
         //FA: MockUp:
-        final List<String> loadSpectra = new ArrayList<>();
-        final List<double[]> adaptionValues = new ArrayList<>();
+        final List<ClassifiedLoadSpectrum> loadSpectra = new ArrayList<>();
+        final List<AdaptionValues> adaptionValues = new ArrayList<>();
         final Instant creationTimestamp = null;
         final float mileage = 0.0f;
         final long operatingSeconds = 0;
@@ -70,9 +71,7 @@ public class TelematicsDataUpdater {
 
 
         callTelematicsDataUpdateService(new InputTelematicsData(
-                new VehicleState(vehicle.getCatenaXId(),
-                        creationTimestamp, mileage, operatingSeconds),
-                loadSpectra, adaptionValues));
+                vehicle.getCatenaXId(), loadSpectra, adaptionValues));
     }
 
     private void callTelematicsDataUpdateService(@NotNull final InputTelematicsData telematicsData)

@@ -47,7 +47,7 @@ class TestDataCategorizedTest {
         testData = testDataReader.loadFromFile(
                 Path.of(testDataFile));
 
-        Assertions.assertEquals(testData.getDigitalTwins().size(), 1000);
+        Assertions.assertEquals(1000, testData.getDigitalTwins().size());
 
         testDataCategorized.initFromTestData(testData);
     }
@@ -67,21 +67,21 @@ class TestDataCategorizedTest {
     @Test
     void catenaXIdToType() throws DataProviderException {
         testDataCategorized.getDigitalTwinsVehicles().forEach((id, twin) -> {
-            Assertions.assertEquals(testDataCategorized.catenaXIdToType(id), DigitalTwinType.VEHICLE);
+            Assertions.assertEquals(DigitalTwinType.VEHICLE, testDataCategorized.catenaXIdToType(id));
         });
 
         testDataCategorized.getDigitalTwinsGearboxes().forEach((id, twin) -> {
-            Assertions.assertEquals(testDataCategorized.catenaXIdToType(id), DigitalTwinType.GEARBOX);
+            Assertions.assertEquals(DigitalTwinType.GEARBOX, testDataCategorized.catenaXIdToType(id));
         });
     }
 
     @Test
     void getDigitalTwinsVehicles() throws DataProviderException {
-        Assertions.assertEquals(testDataCategorized.getDigitalTwinsVehicles().size(), 500);
+        Assertions.assertEquals(500, testDataCategorized.getDigitalTwinsVehicles().size());
     }
 
     @Test
     void getDigitalTwinsGearboxes() throws DataProviderException {
-        Assertions.assertEquals(testDataCategorized.getDigitalTwinsVehicles().size(), 500);
+        Assertions.assertEquals(500, testDataCategorized.getDigitalTwinsVehicles().size());
     }
 }

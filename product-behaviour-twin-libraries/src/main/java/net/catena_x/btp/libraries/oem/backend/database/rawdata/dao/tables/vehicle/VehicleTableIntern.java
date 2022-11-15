@@ -1,8 +1,12 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.vehicle;
 
+import net.catena_x.btp.libraries.bamm.custom.adaptionvalues.AdaptionValues;
+import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.ClassifiedLoadSpectrum;
+import net.catena_x.btp.libraries.bamm.util.StatusFromBammFunction;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.table.RawTableBase;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.sync.SyncDAO;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.sync.SyncTableIntern;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.telematicsdata.InputTelematicsDataConverter;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.telematicsdata.TelematicsDataDAO;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.telematicsdata.TelematicsDataTableIntern;
 import net.catena_x.btp.libraries.oem.backend.database.util.annotations.TransactionDefaultCreateNew;
@@ -32,6 +36,7 @@ public class VehicleTableIntern extends RawTableBase {
     @Autowired private RawVehicleRepository rawVehicleRepository;
     @Autowired private TelematicsDataTableIntern telematicsDataTable;
     @Autowired private SyncTableIntern syncTable;
+    @Autowired private InputTelematicsDataConverter inputTelematicsDataConverter;
 
     @TransactionDefaultUseExisting
     public void registerVehicleExternTransaction(@NotNull final VehicleInfo newVehicleInfo)
@@ -68,7 +73,7 @@ public class VehicleTableIntern extends RawTableBase {
     @TransactionSerializableUseExisting
     public void appendTelematicsDataExternTransaction(@NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
-        appendTelematicsData(getByIdWithTelematicsDataExternTransaction(newTelematicsData.state().vehicleId()),
+        appendTelematicsData(getByIdWithTelematicsDataExternTransaction(newTelematicsData.vehicleId()),
                 newTelematicsData);
     }
 
@@ -81,9 +86,12 @@ public class VehicleTableIntern extends RawTableBase {
     private void appendTelematicsData(@NotNull final VehicleWithTelematicsDataDAO vehicle,
                                       @NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
-        if( telematicsDataIsNewer(newTelematicsData, vehicle.telematicsData()) ) {
+
+        InputTelematicsData telematicsDatatoAdd = telematicsDataIfNewer(newTelematicsData, vehicle.telematicsData());
+
+        if(telematicsDatatoAdd != null) {
             final String newTelematicsId = telematicsDataTable.uploadTelematicsDataGetIdExternTransaction(
-                    newTelematicsData);
+                    telematicsDatatoAdd);
 
             try {
                 final SyncDAO sync = syncTable.setCurrentExternTransaction(SyncTableIntern.DEFAULT_ID);
@@ -95,13 +103,69 @@ public class VehicleTableIntern extends RawTableBase {
         }
     }
 
-    private boolean telematicsDataIsNewer(@NotNull final InputTelematicsData newTelematicsData,
-                                          @Nullable final TelematicsDataDAO telematicsData) {
+    private InputTelematicsData telematicsDataIfNewer(@NotNull final InputTelematicsData newTelematicsData,
+                                                      @Nullable final TelematicsDataDAO telematicsData)
+            throws OemDatabaseException {
+
         if(telematicsData == null) {
-            return true;
+            return newTelematicsData;
         }
 
-        return newTelematicsData.state().creationTimestamp().isAfter(telematicsData.getCreationTimestamp());
+        InputTelematicsData existingTelematicsData = inputTelematicsDataConverter.toDTO(telematicsData);
+
+        assertCompatible(existingTelematicsData, newTelematicsData);
+
+        boolean newer = replaceNewer(existingTelematicsData.loadSpectra(), newTelematicsData.loadSpectra(),
+                (item) -> { return ((ClassifiedLoadSpectrum)item).getMetadata().getStatus().getDate(); });
+
+        newer = newer || replaceNewer(existingTelematicsData.adaptionValues(), newTelematicsData.adaptionValues(),
+                (item) -> { return  ((AdaptionValues)item).getStatus().getDate(); });
+
+            return newer? newTelematicsData : null;
+        }
+
+    private <T> boolean replaceNewer(@NotNull final List<T> existingData, @NotNull final List<T> newData,
+                                     @NotNull final StatusFromBammFunction getStatus) {
+        boolean newer = false;
+
+        int size = existingData.size();
+        for (int i = 0; i < size; i++) {
+            T existingItem = existingData.get(i);
+            T newItem = newData.get(i);
+
+            if(getStatus.getTimestamp(newItem).isAfter(getStatus.getTimestamp(existingItem))) {
+                newer = true;
+            }
+            else if(getStatus.getTimestamp(newItem).isBefore(getStatus.getTimestamp(existingItem))) {
+                newData.set(i, existingItem);
+            }
+        }
+
+        return newer;
+    }
+
+    private void assertCompatible(@NotNull final InputTelematicsData telematicsData1,
+                                  @NotNull final InputTelematicsData telematicsData2) throws OemDatabaseException {
+
+        if((telematicsData1.loadSpectra() == null) != (telematicsData2.loadSpectra() == null)) {
+            throw new OemDatabaseException("Loadspectra incompatible!");
+        }
+
+        if(telematicsData1.loadSpectra() != null) {
+            if (telematicsData1.loadSpectra().size() != telematicsData2.loadSpectra().size()) {
+                throw new OemDatabaseException("Loadspectra incompatible!");
+            }
+        }
+
+        if((telematicsData1.adaptionValues() == null) != (telematicsData2.adaptionValues() == null)) {
+            throw new OemDatabaseException("Adaption values incompatible!");
+        }
+
+        if(telematicsData1.adaptionValues() != null) {
+            if (telematicsData1.adaptionValues().size() != telematicsData2.adaptionValues().size()) {
+                throw new OemDatabaseException("Adaption values incompatible!");
+            }
+        }
     }
 
     @TransactionDefaultUseExisting

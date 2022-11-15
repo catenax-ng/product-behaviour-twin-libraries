@@ -15,7 +15,6 @@ public class TelematicsDataConverter extends DAOConverter<TelematicsDataDAO, Tel
     protected TelematicsData toDTOSourceExists(@NotNull final TelematicsDataDAO source) {
         return new TelematicsData(source.getId(), source.getStorageTimestamp(),
                 source.getSyncCounter(), source.getVehicleId(),
-                source.getCreationTimestamp(), source.getMileage(),source.getOperatingSeconds(),
                 loadSpectraConverter.toDTO(source.getLoadSpectra()),
                 adaptionValuesConverter.toDTO(source.getAdaptionValues()));
     }
@@ -23,7 +22,6 @@ public class TelematicsDataConverter extends DAOConverter<TelematicsDataDAO, Tel
     protected TelematicsDataDAO toDAOSourceExists(@NotNull final TelematicsData source) {
         return new TelematicsDataDAO(source.getId(), source.getStorageTimestamp(),
                 source.getSyncCounter(), source.getVehicleId(),
-                source.getCreationTimestamp(), source.getMileage(),source.getOperatingSeconds(),
                 loadSpectraConverter.toDAO(source.getLoadSpectra()),
                 adaptionValuesConverter.toDAO(source.getAdaptionValues()));
     }

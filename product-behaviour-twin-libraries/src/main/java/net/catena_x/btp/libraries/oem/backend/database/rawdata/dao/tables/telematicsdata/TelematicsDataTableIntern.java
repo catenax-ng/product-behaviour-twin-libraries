@@ -38,8 +38,7 @@ public class TelematicsDataTableIntern extends RawTableBase {
             final TelematicsDataDAO newDAO = inputTelematicsDataConverter.toDAOWithId(newId, newTelematicsData);
 
             telematicsDataRepository.insert(
-                    newDAO.getId(), newDAO.getVehicleId(), newDAO.getCreationTimestamp(),
-                    newDAO.getMileage(), newDAO.getOperatingSeconds(), newDAO.getLoadSpectra(),
+                    newDAO.getId(), newDAO.getVehicleId(), newDAO.getLoadSpectra(),
                     newDAO.getAdaptionValues(), sync.getSyncCounter());
 
             return newId;

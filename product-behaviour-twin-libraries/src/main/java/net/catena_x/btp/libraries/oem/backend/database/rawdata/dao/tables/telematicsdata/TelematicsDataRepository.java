@@ -11,16 +11,12 @@ import java.util.List;
 public interface TelematicsDataRepository extends Repository<TelematicsDataDAO, String> {
     @Modifying void insert(@Param("id") @NotNull final String id,
                            @Param("vehicle_id") @NotNull final String vehicleId,
-                           @Param("creation_timestamp") @NotNull final Instant creationTimestamp,
-                           @Param("mileage") @NotNull final float mileage,
-                           @Param("operating_seconds") @NotNull final long operatingSeconds,
-                           @Param("load_collectives") @NotNull final String loadCollectives,
+                           @Param("load_spectra") @NotNull final String loadSpectra,
                            @Param("adaption_values") @NotNull final String adaptionValues,
                            @Param("sync_counter") @NotNull final long syncCounter);
     @Modifying void deleteAll();
     @Modifying void deleteById(@Param("id") @NotNull final String id);
     @Modifying void deleteByVehicleId(@Param("vehicle_id") @NotNull final String vehicleId);
-    @Modifying void deleteCreatedUntil(@Param("created_until") @NotNull final Instant createdUntil);
     @Modifying void deleteStoredUntil(@Param("stored_until") @NotNull final Instant storedUntil);
     @Modifying void deleteSyncCounterUntil(@Param("sync_counter") @NotNull final long syncCounter);
     List<TelematicsDataDAO> queryAll();

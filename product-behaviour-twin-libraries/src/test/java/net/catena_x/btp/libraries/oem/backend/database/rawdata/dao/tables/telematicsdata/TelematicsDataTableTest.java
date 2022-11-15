@@ -1,8 +1,11 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.telematicsdata;
 
+import net.catena_x.btp.libraries.bamm.common.BammStatus;
+import net.catena_x.btp.libraries.bamm.custom.adaptionvalues.AdaptionValues;
+import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.ClassifiedLoadSpectrum;
+import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.items.CLSMetaData;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelematicsData;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.VehicleState;
 import net.catena_x.btp.libraries.oem.backend.model.dto.infoitem.InfoTable;
 import net.catena_x.btp.libraries.oem.backend.model.dto.sync.SyncTable;
 import net.catena_x.btp.libraries.oem.backend.model.dto.telematicsdata.TelematicsData;
@@ -61,35 +64,60 @@ class TelematicsDataTableTest {
         telematicsDataTable.uploadTelematicsDataGetIdNewTransaction(generateTelematricsTestData("veh1"));
 
         List<TelematicsData> data = telematicsDataTable.getAllNewTransaction();
-        Assertions.assertEquals(data.size(), 3);
+        Assertions.assertEquals(3, data.size());
 
         List<TelematicsData> veh2Data = telematicsDataTable.getByVehicleIdNewTransaction("veh2");
-        Assertions.assertEquals(veh2Data.size(), 1);
+        Assertions.assertEquals(1, veh2Data.size());
 
         List<TelematicsData> updatedSinceVeh2Data = telematicsDataTable.getUpdatedSinceNewTransaction(
                 veh2Data.get(0).getStorageTimestamp());
-        Assertions.assertEquals(updatedSinceVeh2Data.size(), 2);
+        Assertions.assertEquals(2, updatedSinceVeh2Data.size());
     }
 
     private InputTelematicsData generateTelematricsTestData(String vehicleId) {
-        return new InputTelematicsData( helperGenerateState(vehicleId),
-                helperGenerateLoadSpectra(), helperGenerateAdaptionValues() );
+        return new InputTelematicsData(vehicleId,
+                helperGenerateLoadSpectra(), helperGenerateAdaptionValues());
     }
 
-    private VehicleState helperGenerateState(String vehicleId) {
-        return new VehicleState(vehicleId, Instant.now(),
-                12345.6f, 12345678 );
-    }
+    private List<ClassifiedLoadSpectrum> helperGenerateLoadSpectra() {
+        List<ClassifiedLoadSpectrum> list = new ArrayList<>();
 
-    private List<String> helperGenerateLoadSpectra() {
-        List<String> list = new ArrayList<>();
-        list.add("{ \"TEST_COLLECTIVE_JSON\": \"TEST\" }");
+        BammStatus bammStatus = new BammStatus();
+        bammStatus.setRouteDescription("Default route");
+        bammStatus.setOperatingTime("210");
+        bammStatus.setMileage(1233L);
+        bammStatus.setDate(Instant.now());
+
+        CLSMetaData metaData = new CLSMetaData();
+        metaData.setComponentDescription("GearSet");
+        metaData.setStatus(bammStatus);
+
+        ClassifiedLoadSpectrum loadSpectrum = new ClassifiedLoadSpectrum();
+        loadSpectrum.setTargetComponentID("urn:2345");
+        loadSpectrum.setMetadata(metaData);
+
+        list.add(loadSpectrum);
+
+        metaData.setComponentDescription("GearOil");
+        list.add(loadSpectrum);
+
         return list;
     }
 
-    private List<double[]> helperGenerateAdaptionValues() {
-        List<double[]> list = new ArrayList<>();
-        list.add(new double[]{0.4, 0.7, 1.8});
+    private List<AdaptionValues> helperGenerateAdaptionValues() {
+        BammStatus bammStatus = new BammStatus();
+        bammStatus.setRouteDescription("Default route");
+        bammStatus.setOperatingTime("211");
+        bammStatus.setMileage(1233L);
+        bammStatus.setDate(Instant.now());
+
+        AdaptionValues adaptionValues = new AdaptionValues();
+        adaptionValues.setValues(new double[]{ 0.3, 12.6, 3.0, 1.1 });
+        adaptionValues.setStatus(bammStatus);
+
+        List<AdaptionValues> list = new ArrayList<>();
+        list.add(adaptionValues);
+
         return list;
     }
 }

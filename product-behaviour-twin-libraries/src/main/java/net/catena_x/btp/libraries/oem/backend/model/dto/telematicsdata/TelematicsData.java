@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.catena_x.btp.libraries.bamm.custom.adaptionvalues.AdaptionValues;
+import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.ClassifiedLoadSpectrum;
 
 import java.time.Instant;
 import java.util.List;
@@ -17,9 +19,6 @@ public class TelematicsData {
     private Instant storageTimestamp;
     private long syncCounter;
     private String vehicleId;
-    private Instant creationTimestamp;
-    private float mileage;
-    private long operatingSeconds;
-    private List<String> loadSpectra;
-    private List<double[]> adaptionValues;
+    private List<ClassifiedLoadSpectrum> loadSpectra;
+    private List<AdaptionValues> adaptionValues;
 }
