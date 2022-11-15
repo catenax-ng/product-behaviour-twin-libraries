@@ -25,7 +25,7 @@ public class InputTelematicsDataConverter extends DAOConverter<TelematicsDataDAO
     protected TelematicsDataDAO toDAOSourceExists(@NotNull final InputTelematicsData source) {
         return new TelematicsDataDAO(null, null, 0, source.state().vehicleId(),
                 source.state().creationTimestamp(), source.state().mileage(), source.state().operatingSeconds(),
-                loadSpectraConverter.toDAO(source.loadCollectives()),
+                loadSpectraConverter.toDAO(source.loadSpectra()),
                 adaptionValuesConverter.toDAO(source.adaptionValues()));
     }
 

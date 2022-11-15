@@ -3,7 +3,8 @@ package net.catena_x.btp.libraries.oem.backend.datasource.provider.dataupdaterap
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.api.DataUpdaterStatus;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.registration.VehicleInfo;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelematicsData;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.VehicleState;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.testdata.model.TestDataCategorized;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.testdata.util.CatenaXIdToDigitalTwinType;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.testdata.util.VehilceDataLoader;
@@ -18,22 +19,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @Component
-public class VehicleRegistration {
+public class TelematicsDataUpdater {
     private final RestTemplate restTemplate = new RestTemplate();
 
     @Autowired DataUpdaterApi dataUpdaterApi;
     @Autowired VehilceDataLoader vehilceDataLoader;
     @Autowired TestDataCategorized testDataCategorized;
 
-    public void registerFromTestData(@NotNull TestData testData) throws DataProviderException {
+    public void updateFromTestData(@NotNull TestData testData) throws DataProviderException {
         testDataCategorized.initFromTestData(testData);
-        registerFromTestDataCetegorized(testDataCategorized);
+        updateFromTestDataCetegorized(testDataCategorized);
     }
 
-    public void registerFromTestDataCetegorized(@NotNull TestDataCategorized testDataCategorized)
+    public void updateFromTestDataCetegorized(@NotNull TestDataCategorized testDataCategorized)
             throws DataProviderException {
         final HashMap<String, DigitalTwin> vehicles = testDataCategorized.getDigitalTwinsVehicles();
 
@@ -43,32 +47,43 @@ public class VehicleRegistration {
 
         vehicles.entrySet().stream().forEachOrdered((vehicleEntry) -> {
             try {
-                registerVehicle(vehicleEntry.getValue(), idToType);
+                updateTelematicsData(vehicleEntry.getValue(), idToType);
             } catch (DataProviderException exception) {
                 throw new UncheckedDataProviderException(exception);
             }
         });
     }
 
-    private void registerVehicle(@NotNull final DigitalTwin vehicle, @NotNull final CatenaXIdToDigitalTwinType idToType)
+    private void updateTelematicsData(@NotNull final DigitalTwin vehicle,
+                                      @NotNull final CatenaXIdToDigitalTwinType idToType)
             throws DataProviderException {
 
-        callVehicleRegistrationService(new VehicleInfo(
-                vehilceDataLoader.getCatenaXId(vehicle),
-                vehilceDataLoader.getVan(vehicle),
-                vehilceDataLoader.getGearboxID(vehicle, idToType),
-                vehilceDataLoader.getProductionDate(vehicle)));
+
+
+        //FA: MockUp:
+        final List<String> loadSpectra = new ArrayList<>();
+        final List<double[]> adaptionValues = new ArrayList<>();
+        final Instant creationTimestamp = null;
+        final float mileage = 0.0f;
+        final long operatingSeconds = 0;
+
+
+
+        callTelematicsDataUpdateService(new InputTelematicsData(
+                new VehicleState(vehicle.getCatenaXId(),
+                        creationTimestamp, mileage, operatingSeconds),
+                loadSpectra, adaptionValues));
     }
 
-    private void callVehicleRegistrationService(@NotNull final VehicleInfo vehicleInfo)
+    private void callTelematicsDataUpdateService(@NotNull final InputTelematicsData telematicsData)
             throws DataProviderException {
 
-        final HttpUrl requestUrl = HttpUrl.parse(dataUpdaterApi.getRawdataApiBaseUrl() + "/vehicle/register");
+        final HttpUrl requestUrl = HttpUrl.parse(dataUpdaterApi.getRawdataApiBaseUrl() + "/telematicsdata/add");
         final HttpHeaders headers = dataUpdaterApi.generateDefaultHeaders();
 
         dataUpdaterApi.addAuthorizationHeaders(headers);
 
-        final HttpEntity<VehicleInfo> request = new HttpEntity<>(vehicleInfo, headers);
+        final HttpEntity<InputTelematicsData> request = new HttpEntity<>(telematicsData, headers);
 
         final ResponseEntity<DataUpdaterStatus> response = restTemplate.postForEntity(
                 requestUrl.toString(), request, DataUpdaterStatus.class);

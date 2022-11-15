@@ -4,6 +4,6 @@ import java.util.List;
 
 public record InputTelematicsData(
         VehicleState state,
-        List<String> loadCollectives,
+        List<String> loadSpectra,
         List<double[]> adaptionValues
 ){}

@@ -3,18 +3,25 @@ package net.catena_x.btp.libraries.oem.backend.datasource.provider.dataupdaterap
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 
 import java.util.Base64;
 import java.util.Collections;
 
-public class DataUpdaterApiBase {
+@Component
+public class DataUpdaterApi {
+    @Value("${services.dataupdater.endpoint.baseurl}") private String dataupdaterBaseUrl;
+    @Value("${services.dataupdater.endpoint.username}") private String dataupdaterUserName;
+    @Value("${services.dataupdater.endpoint.password}") private String dataupdaterPassword;
+
 
     protected String getRawdataApiBaseUrl() {
-        return "http://localhost:20002//api/rawdata";
+        return dataupdaterBaseUrl;
     }
 
     protected HttpHeaders generateDefaultHeaders() {
@@ -53,10 +60,10 @@ public class DataUpdaterApiBase {
     }
 
     private String getDataUpdaterUsername() {
-        return "user";
+        return dataupdaterUserName;
     }
 
     private String getDataUpdaterPassword() {
-        return "pass";
+        return dataupdaterPassword;
     }
 }
