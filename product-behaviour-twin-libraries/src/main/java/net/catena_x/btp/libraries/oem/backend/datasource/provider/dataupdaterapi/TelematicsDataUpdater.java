@@ -1,7 +1,5 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.provider.dataupdaterapi;
 
-import net.catena_x.btp.libraries.bamm.custom.adaptionvalues.AdaptionValues;
-import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.ClassifiedLoadSpectrum;
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.api.DataUpdaterStatus;
@@ -20,17 +18,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 @Component
 public class TelematicsDataUpdater {
     private final RestTemplate restTemplate = new RestTemplate();
 
     @Autowired DataUpdaterApi dataUpdaterApi;
-    @Autowired VehilceDataLoader vehilceDataLoader;
     @Autowired TestDataCategorized testDataCategorized;
 
     public void updateFromTestData(@NotNull TestData testData) throws DataProviderException {
@@ -42,9 +36,7 @@ public class TelematicsDataUpdater {
             throws DataProviderException {
         final HashMap<String, DigitalTwin> vehicles = testDataCategorized.getDigitalTwinsVehicles();
 
-        final CatenaXIdToDigitalTwinType idToType = (String catenaXId)-> {
-            return testDataCategorized.catenaXIdToType(catenaXId);
-        };
+        final CatenaXIdToDigitalTwinType idToType = (String catenaXId)-> testDataCategorized.catenaXIdToType(catenaXId);
 
         vehicles.entrySet().stream().forEachOrdered((vehicleEntry) -> {
             try {
@@ -59,25 +51,28 @@ public class TelematicsDataUpdater {
                                       @NotNull final CatenaXIdToDigitalTwinType idToType)
             throws DataProviderException {
 
-
-
-        //FA: MockUp:
-        final List<ClassifiedLoadSpectrum> loadSpectra = new ArrayList<>();
-        final List<AdaptionValues> adaptionValues = new ArrayList<>();
-        final Instant creationTimestamp = null;
-        final float mileage = 0.0f;
-        final long operatingSeconds = 0;
-
-
+        assertTelematicsDataPresent(vehicle);
 
         callTelematicsDataUpdateService(new InputTelematicsData(
-                vehicle.getCatenaXId(), loadSpectra, adaptionValues));
+                vehicle.getCatenaXId(), vehicle.getClassifiedLoadSpectra(),
+                vehicle.getAdaptionValues()));
+    }
+
+    private void assertTelematicsDataPresent(@NotNull final DigitalTwin vehicle) throws DataProviderException {
+        if((vehicle.getClassifiedLoadSpectra() == null) || (vehicle.getAdaptionValues() == null)) {
+            throw new DataProviderException("Missing telematics data in vehicle twin!");
+        }
+
+        if(vehicle.getClassifiedLoadSpectra().isEmpty() || vehicle.getAdaptionValues().isEmpty()) {
+            throw new DataProviderException("Missing telematics data in vehicle twin!");
+        }
     }
 
     private void callTelematicsDataUpdateService(@NotNull final InputTelematicsData telematicsData)
             throws DataProviderException {
 
-        final HttpUrl requestUrl = HttpUrl.parse(dataUpdaterApi.getRawdataApiBaseUrl() + "/telematicsdata/add");
+        final HttpUrl requestUrl = HttpUrl.parse(
+                dataUpdaterApi.getRawdataApiBaseUrl() + "/telematicsdata/add");
         final HttpHeaders headers = dataUpdaterApi.generateDefaultHeaders();
 
         dataUpdaterApi.addAuthorizationHeaders(headers);
