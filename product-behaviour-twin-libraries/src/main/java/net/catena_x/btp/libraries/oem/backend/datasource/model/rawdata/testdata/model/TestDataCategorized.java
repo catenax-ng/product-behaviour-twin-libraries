@@ -3,6 +3,8 @@ package net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata
 import lombok.Getter;
 import net.catena_x.btp.libraries.bamm.common.BammStatus;
 import net.catena_x.btp.libraries.bamm.custom.adaptionvalues.AdaptionValues;
+import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.ClassifiedLoadSpectrum;
+import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.items.CLSClass;
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.DigitalTwinCategorizer;
@@ -60,6 +62,9 @@ public class TestDataCategorized {
                     //FA: Append missing adaption values (missing in testdata file).
                     appendRandomAdaptionValues(digitalTwin);
 
+                    //FA: Reduce data size of load spectra to fit in database varchar type.
+                    reduceLoadSpectra(digitalTwin);
+
                     digitalTwinsVehicles.put(digitalTwin.getCatenaXId(), digitalTwin);
                     break;
                 }
@@ -82,7 +87,7 @@ public class TestDataCategorized {
         digitalTwinsGearboxes = new HashMap<>(intiSize);
     }
 
-    private void appendRandomAdaptionValues(DigitalTwin digitalTwin) {
+    private void appendRandomAdaptionValues(@Nullable final DigitalTwin digitalTwin) {
         AdaptionValues adaptionValues = new AdaptionValues();
 
         BammStatus status = null;
@@ -109,6 +114,35 @@ public class TestDataCategorized {
         adaptionValueList.add(adaptionValues);
 
         digitalTwin.setAdaptionValues(adaptionValueList);
+    }
+
+    private void reduceLoadSpectra(@Nullable final DigitalTwin digitalTwin) {
+        System.out.println("!!!Reducing load spectrum size, not for productive use!!!");
+
+        final List<ClassifiedLoadSpectrum> loadSpectra = digitalTwin.getClassifiedLoadSpectra();
+
+        if(loadSpectra == null) {
+            return;
+        }
+
+        for (ClassifiedLoadSpectrum loadSpectrum : loadSpectra) {
+            reduceSize(loadSpectrum);
+        }
+    }
+
+    private void reduceSize(@NotNull ClassifiedLoadSpectrum loadSpectrum) {
+        final int count = loadSpectrum.getBody().getCounts().getCountsList().length;
+
+        if(count <= 100) {
+            return;
+        }
+
+        loadSpectrum.getBody().getCounts().setCountsList(
+                Arrays.copyOfRange(loadSpectrum.getBody().getCounts().getCountsList(), 0, 100));
+
+        for (CLSClass clsClass : loadSpectrum.getBody().getClasses()) {
+            clsClass.setClassList(Arrays.copyOfRange(clsClass.getClassList(), 0, 100));
+        }
     }
 
     protected <T> boolean isNullOrEmpty(@Nullable final Collection<T> collection) {
