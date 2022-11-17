@@ -1,4 +1,4 @@
-package net.catena_x.btp.libraries.oem.backend.datasource.provider.testdata;
+package net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;

@@ -2,11 +2,10 @@ package net.catena_x.btp.libraries.oem.backend.datasource.provider.dataupdaterap
 
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.api.DataUpdaterStatus;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.api.ApiResult;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelematicsData;
-import net.catena_x.btp.libraries.oem.backend.datasource.provider.testdata.model.TestDataCategorized;
-import net.catena_x.btp.libraries.oem.backend.datasource.provider.testdata.util.CatenaXIdToDigitalTwinType;
-import net.catena_x.btp.libraries.oem.backend.datasource.provider.testdata.util.VehilceDataLoader;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.model.TestDataCategorized;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.CatenaXIdToDigitalTwinType;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.UncheckedDataProviderException;
 import okhttp3.HttpUrl;
@@ -79,8 +78,8 @@ public class TelematicsDataUpdater {
 
         final HttpEntity<InputTelematicsData> request = new HttpEntity<>(telematicsData, headers);
 
-        final ResponseEntity<DataUpdaterStatus> response = restTemplate.postForEntity(
-                requestUrl.toString(), request, DataUpdaterStatus.class);
+        final ResponseEntity<ApiResult> response = restTemplate.postForEntity(
+                requestUrl.toString(), request, ApiResult.class);
 
         dataUpdaterApi.checkResponse(response);
     }

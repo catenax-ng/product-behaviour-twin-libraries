@@ -1,8 +1,9 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.provider.testdata.model;
 
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
-import net.catena_x.btp.libraries.oem.backend.datasource.provider.testdata.TestDataReader;
-import net.catena_x.btp.libraries.oem.backend.datasource.provider.testdata.util.DigitalTwinType;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.TestDataReader;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.model.TestDataCategorized;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.DigitalTwinType;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -35,7 +36,8 @@ import java.nio.file.Path;
 @TestPropertySource(locations = {"classpath:test-dataprovider.properties"})
 class TestDataCategorizedTest {
     @Autowired TestDataReader testDataReader;
-    @Autowired TestDataCategorized testDataCategorized;
+    @Autowired
+    TestDataCategorized testDataCategorized;
 
     @Value("${services.dataprovider.test.testdata.file}")
     private String testDataFile;

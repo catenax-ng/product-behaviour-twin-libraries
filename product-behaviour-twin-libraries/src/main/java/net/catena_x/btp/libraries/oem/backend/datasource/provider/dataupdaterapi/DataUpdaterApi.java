@@ -1,5 +1,6 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.provider.dataupdaterapi;
 
+import net.catena_x.btp.libraries.oem.backend.datasource.model.api.ApiResult;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +19,7 @@ public class DataUpdaterApi {
     @Value("${services.dataupdater.endpoint.baseurl}") private String dataupdaterBaseUrl;
     @Value("${services.dataupdater.endpoint.username}") private String dataupdaterUserName;
     @Value("${services.dataupdater.endpoint.password}") private String dataupdaterPassword;
-
+    @Value("${services.dataupdater.endpoint.authenticationActivated}") private boolean authenticationActivated;
 
     protected String getRawdataApiBaseUrl() {
         return dataupdaterBaseUrl;
@@ -32,19 +33,29 @@ public class DataUpdaterApi {
         return headers;
     }
 
-    protected <T> void checkResponse(@Nullable final ResponseEntity<T> response)
+    protected <T> void checkResponse(@Nullable final ResponseEntity<ApiResult> response)
             throws DataProviderException {
 
         if(response == null) {
             throw new DataProviderException("Internal error using data updater api!");
         }
-        else if( response.getStatusCode() != HttpStatus.OK) {
-            throw new DataProviderException("Http status not ok while using data updater api!");
+        else if(response.getStatusCode() != HttpStatus.OK) {
+            String message = null;
+            if(response.getBody() != null) {
+                if(response.getBody().message() != null) {
+                    message = response.getBody().message();
+                }
+            }
+
+            throw new DataProviderException("Http status not ok while using data updater api: "
+                                                + ((message!=null) ? message : "Unknown error!"));
         }
     }
 
     protected void addAuthorizationHeaders(@NotNull final HttpHeaders headers) {
-        headers.add("Authorization", getDataUpdaterAuthString());
+        if (isAuthenticationActivated()) {
+            headers.add("Authorization", getDataUpdaterAuthString());
+        }
     }
 
     private String getDataUpdaterAuthString() {
@@ -65,5 +76,9 @@ public class DataUpdaterApi {
 
     private String getDataUpdaterPassword() {
         return dataupdaterPassword;
+    }
+
+    private boolean isAuthenticationActivated() {
+        return authenticationActivated;
     }
 }
