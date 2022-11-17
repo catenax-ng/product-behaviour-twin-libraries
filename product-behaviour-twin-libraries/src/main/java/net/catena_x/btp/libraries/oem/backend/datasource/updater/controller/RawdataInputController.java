@@ -66,10 +66,7 @@ public class RawdataInputController {
     @GetMapping("/info/init")
     public ResponseEntity<ApiResult> infoInit() {
         try {
-            infoTable.setInfoItemNewTransaction(InfoKey.DATAVERSION, "DV_0.0.99");
-            infoTable.setInfoItemNewTransaction(InfoKey.ADAPTIONVALUEINFO, "{}");
-            infoTable.setInfoItemNewTransaction(InfoKey.LOADSPECTRUMINFO,
-                    "{\"names\" : [ \"AV1\", \"AV2\", \"AV3\", \"AV4\" ]}");
+            infoInitIntern();
             return apiHelper.okWithValue("");
         }
         catch(OemDatabaseException exception) {
@@ -77,13 +74,24 @@ public class RawdataInputController {
         }
     }
 
+    private void infoInitIntern() throws OemDatabaseException {
+        infoTable.setInfoItemNewTransaction(InfoKey.DATAVERSION, "DV_0.0.99");
+        infoTable.setInfoItemNewTransaction(InfoKey.ADAPTIONVALUEINFO, "{}");
+        infoTable.setInfoItemNewTransaction(InfoKey.LOADSPECTRUMINFO,
+                "{\"names\" : [ \"AV1\", \"AV2\", \"AV3\", \"AV4\" ]}");
+    }
+
     @GetMapping("/reset")
     public ResponseEntity<ApiResult> reset() throws OemDatabaseException {
         try {
-            infoInit();
+            infoTable.deleteAllNewTransaction();
+
+            infoInitIntern();
+
             vehicleTable.deleteAllNewTransaction();
             telematicsDataTable.deleteAllNewTransaction();
             syncTable.reInitDefaultNewTransaction();
+
             return apiHelper.ok("Rawdata database cleared and reinitialized.");
         }
         catch(OemDatabaseException exception) {
