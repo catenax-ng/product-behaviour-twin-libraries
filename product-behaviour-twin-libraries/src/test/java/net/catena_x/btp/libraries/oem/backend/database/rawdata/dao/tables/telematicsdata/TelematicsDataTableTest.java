@@ -4,6 +4,7 @@ import net.catena_x.btp.libraries.bamm.common.BammStatus;
 import net.catena_x.btp.libraries.bamm.custom.adaptionvalues.AdaptionValues;
 import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.ClassifiedLoadSpectrum;
 import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.items.CLSMetaData;
+import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.items.LoadSpectrumType;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelematicsData;
 import net.catena_x.btp.libraries.oem.backend.model.dto.infoitem.InfoTable;
@@ -89,7 +90,7 @@ class TelematicsDataTableTest {
         bammStatus.setDate(Instant.now());
 
         CLSMetaData metaData = new CLSMetaData();
-        metaData.setComponentDescription("GearSet");
+        metaData.setComponentDescription(LoadSpectrumType.GEAR_SET);
         metaData.setStatus(bammStatus);
 
         ClassifiedLoadSpectrum loadSpectrum = new ClassifiedLoadSpectrum();
@@ -98,7 +99,7 @@ class TelematicsDataTableTest {
 
         list.add(loadSpectrum);
 
-        metaData.setComponentDescription("GearOil");
+        metaData.setComponentDescription(LoadSpectrumType.GEAR_OIL);
         list.add(loadSpectrum);
 
         return list;

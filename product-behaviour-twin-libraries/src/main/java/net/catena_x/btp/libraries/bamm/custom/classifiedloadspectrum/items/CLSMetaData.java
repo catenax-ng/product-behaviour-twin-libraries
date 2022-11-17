@@ -8,7 +8,7 @@ import net.catena_x.btp.libraries.bamm.common.BammStatus;
 @Setter
 public class CLSMetaData {
     private String projectDescription;
-    private String componentDescription;
+    private LoadSpectrumType componentDescription;
     private String routeDescription;
     private BammStatus status;
 }
