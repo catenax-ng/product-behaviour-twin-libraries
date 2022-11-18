@@ -1,7 +1,7 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util;
 
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
-import org.jetbrains.annotations.NotNull;
+import javax.validation.constraints.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;

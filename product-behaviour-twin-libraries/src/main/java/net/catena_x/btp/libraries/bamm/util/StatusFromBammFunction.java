@@ -1,6 +1,6 @@
 package net.catena_x.btp.libraries.bamm.util;
 
-import org.jetbrains.annotations.NotNull;
+import javax.validation.constraints.NotNull;
 
 import java.time.Instant;
 

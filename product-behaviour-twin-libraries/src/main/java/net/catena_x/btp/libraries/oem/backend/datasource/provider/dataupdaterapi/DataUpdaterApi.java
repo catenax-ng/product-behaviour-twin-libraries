@@ -2,7 +2,7 @@ package net.catena_x.btp.libraries.oem.backend.datasource.provider.dataupdaterap
 
 import net.catena_x.btp.libraries.oem.backend.datasource.model.api.ApiResult;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
-import org.jetbrains.annotations.NotNull;
+import javax.validation.constraints.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;

@@ -12,7 +12,7 @@ import net.catena_x.btp.libraries.oem.backend.model.dto.sync.SyncTable;
 import net.catena_x.btp.libraries.oem.backend.model.dto.telematicsdata.TelematicsDataTable;
 import net.catena_x.btp.libraries.oem.backend.model.dto.vehicle.VehicleTable;
 import net.catena_x.btp.libraries.oem.backend.model.enums.InfoKey;
-import org.jetbrains.annotations.NotNull;
+import javax.validation.constraints.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;

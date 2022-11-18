@@ -10,7 +10,7 @@ import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.UncheckedDataProviderException;
 import okhttp3.HttpUrl;
-import org.jetbrains.annotations.NotNull;
+import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

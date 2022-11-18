@@ -1,6 +1,6 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util;
 
-import org.jetbrains.annotations.NotNull;
+import javax.validation.constraints.NotNull;
 
 @FunctionalInterface
 public

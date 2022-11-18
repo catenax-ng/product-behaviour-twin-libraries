@@ -7,7 +7,7 @@ import net.catena_x.btp.libraries.bamm.testdata.TestData;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import net.catena_x.btp.libraries.util.TimeStampDeserializer;
 import net.catena_x.btp.libraries.util.TimeStampSerializer;
-import org.jetbrains.annotations.NotNull;
+import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.io.File;

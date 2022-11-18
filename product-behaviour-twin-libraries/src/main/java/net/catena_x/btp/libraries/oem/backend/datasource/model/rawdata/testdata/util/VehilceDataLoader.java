@@ -6,7 +6,7 @@ import net.catena_x.btp.libraries.bamm.custom.serialparttypization.SerialPartTyp
 import net.catena_x.btp.libraries.bamm.custom.serialparttypization.items.SPTManufacturingInformation;
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
-import org.jetbrains.annotations.NotNull;
+import javax.validation.constraints.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 

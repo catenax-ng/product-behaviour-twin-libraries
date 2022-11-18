@@ -2,7 +2,7 @@ package net.catena_x.btp.libraries.oem.backend.datasource.updater;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
-import org.jetbrains.annotations.NotNull;
+import javax.validation.constraints.NotNull;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;

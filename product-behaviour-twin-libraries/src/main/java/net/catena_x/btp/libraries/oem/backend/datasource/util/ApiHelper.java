@@ -2,7 +2,7 @@ package net.catena_x.btp.libraries.oem.backend.datasource.util;
 
 import net.catena_x.btp.libraries.oem.backend.datasource.model.api.ApiResult;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.api.ApiResultType;
-import org.jetbrains.annotations.NotNull;
+import javax.validation.constraints.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
