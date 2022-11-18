@@ -5,6 +5,7 @@ import net.catena_x.btp.libraries.bamm.common.BammStatus;
 import net.catena_x.btp.libraries.bamm.custom.adaptionvalues.AdaptionValues;
 import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.ClassifiedLoadSpectrum;
 import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.items.CLSClass;
+import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.items.LoadSpectrumType;
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.DigitalTwinCategorizer;
@@ -15,14 +16,14 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.List;
 
 @Component
 public class TestDataCategorized {
-    @Autowired
-    DigitalTwinCategorizer digitalTwinCategorizer;
+    @Autowired DigitalTwinCategorizer digitalTwinCategorizer;
 
     @Getter private HashMap<String, DigitalTwin> digitalTwinsVehicles = null;
     @Getter private HashMap<String, DigitalTwin> digitalTwinsGearboxes = null;
@@ -106,6 +107,10 @@ public class TestDataCategorized {
             status.setRouteDescription("Illegal status!");
         }
 
+        if(status.getDate() == null) {
+            status.setDate(Instant.now().minus(Duration.ofHours(3L)));
+        }
+
         adaptionValues.setStatus(status);
 
         adaptionValues.setValues(new double[]{0.5, 16554.6, 234.3,323.0});
@@ -132,6 +137,10 @@ public class TestDataCategorized {
 
     private void reduceSize(@NotNull ClassifiedLoadSpectrum loadSpectrum) {
         final int count = loadSpectrum.getBody().getCounts().getCountsList().length;
+
+        if(loadSpectrum.getMetadata().getComponentDescription() == LoadSpectrumType.GEAR_SET) {
+            loadSpectrum.getMetadata().setComponentDescription(LoadSpectrumType.CLUTCH);
+        }
 
         if(count <= 100) {
             return;

@@ -1,7 +1,9 @@
 package net.catena_x.btp.libraries.bamm.custom.serialparttypization;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.catena_x.btp.libraries.bamm.base.BammBase;
 import net.catena_x.btp.libraries.bamm.custom.serialparttypization.items.SPTLocalIdentifier;
@@ -13,6 +15,8 @@ import java.util.List;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class SerialPartTypization implements BammBase {
     public final static String BAMM_ID = "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization";
 

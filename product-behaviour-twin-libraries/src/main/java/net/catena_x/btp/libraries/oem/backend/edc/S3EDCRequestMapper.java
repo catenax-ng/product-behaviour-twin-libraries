@@ -1,4 +1,4 @@
-package net.catena_x.btp.libraries.oem.backend.util;
+package net.catena_x.btp.libraries.oem.backend.edc;
 
 public interface S3EDCRequestMapper {
     void storePendingRequest(String id, S3EDCRequestMetadata metadata);

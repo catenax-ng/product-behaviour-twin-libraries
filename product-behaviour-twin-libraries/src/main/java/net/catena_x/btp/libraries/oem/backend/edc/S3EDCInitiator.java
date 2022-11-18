@@ -1,4 +1,4 @@
-package net.catena_x.btp.libraries.oem.backend.util;
+package net.catena_x.btp.libraries.oem.backend.edc;
 
 import org.springframework.stereotype.Component;
 
