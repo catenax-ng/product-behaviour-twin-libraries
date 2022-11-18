@@ -1,4 +1,4 @@
-package net.catena_x.btp.libraries.oem.backend.edc;
+package net.catena_x.btp.libraries.edc.util;
 
 import net.catena_x.btp.libraries.notification.dao.NotificationDAO;
 import org.springframework.http.ResponseEntity;
