@@ -31,8 +31,9 @@ public class EdcApi {
         return builder.build();
     }
 
-    protected <T> ResponseEntity<T> getWithEdc(@NotNull final HttpUrl partnerUrl, @NotNull final String asset,
-                                               @NotNull Class<T> responseClass,
+    public <ResponseType> ResponseEntity<ResponseType> get(
+                                               @NotNull final HttpUrl partnerUrl, @NotNull final String asset,
+                                               @NotNull Class<ResponseType> responseClass,
                                                @Nullable final HttpHeaders headers)
             throws EdcException {
 
@@ -40,21 +41,24 @@ public class EdcApi {
 
         addAuthorizationHeaders(headers);
         HttpEntity<String> request = new HttpEntity<>(headers);
-        ResponseEntity<T> response = restTemplate.exchange(requestUrl.uri(), HttpMethod.GET, request, responseClass);
+        ResponseEntity<ResponseType> response = restTemplate.exchange(
+                requestUrl.uri(), HttpMethod.GET, request, responseClass);
 
         checkResponse(response);
 
         return response;
     }
 
-    protected <T, R> ResponseEntity<T> postWithEdc(@NotNull final HttpUrl partnerUrl, @NotNull final String asset,
-                                                   @NotNull Class<T> responseClass, R body,
-                                                   @Nullable HttpHeaders headers)
-            throws EdcException {
+    public <BodyType, ResponseType> ResponseEntity<ResponseType> post(
+            @NotNull final HttpUrl partnerUrl,
+            @NotNull final String asset,
+            @NotNull Class<ResponseType> responseClass,
+            BodyType body,
+            @Nullable HttpHeaders headers) throws EdcException {
 
         HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
         addAuthorizationHeaders(headers);
-        HttpEntity<R> request = new HttpEntity<>(body, headers);
+        HttpEntity<BodyType> request = new HttpEntity<>(body, headers);
         String url = requestUrl.toString();
 
         // this is a bad fix for API wrapper behaviour
@@ -64,7 +68,7 @@ public class EdcApi {
 
         url = URLDecoder.decode(url, Charset.defaultCharset());
 
-        ResponseEntity<T> response = restTemplate.postForEntity(url, request, responseClass);
+        ResponseEntity<ResponseType> response = restTemplate.postForEntity(url, request, responseClass);
 
         checkResponse(response);
 
@@ -95,7 +99,7 @@ public class EdcApi {
         return sb.toString();
     }
 
-    private <T> void checkResponse(@Nullable ResponseEntity<T> response)
+    private <ResponseType> void checkResponse(@Nullable ResponseEntity<ResponseType> response)
             throws EdcException {
         if(response == null) {
             throw new EdcException("Internal error using edc api!");
