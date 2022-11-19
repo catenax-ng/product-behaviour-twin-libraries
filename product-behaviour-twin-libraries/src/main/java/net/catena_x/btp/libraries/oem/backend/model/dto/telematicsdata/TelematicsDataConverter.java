@@ -9,8 +9,8 @@ import javax.validation.constraints.NotNull;
 
 @Component
 public class TelematicsDataConverter extends DAOConverter<TelematicsDataDAO, TelematicsData> {
-    @Autowired LoadSpectraConverter loadSpectraConverter;
-    @Autowired AdaptionValuesConverter adaptionValuesConverter;
+    @Autowired private LoadSpectraConverter loadSpectraConverter;
+    @Autowired private AdaptionValuesConverter adaptionValuesConverter;
 
     protected TelematicsData toDTOSourceExists(@NotNull final TelematicsDataDAO source) {
         return new TelematicsData(source.getId(), source.getStorageTimestamp(),

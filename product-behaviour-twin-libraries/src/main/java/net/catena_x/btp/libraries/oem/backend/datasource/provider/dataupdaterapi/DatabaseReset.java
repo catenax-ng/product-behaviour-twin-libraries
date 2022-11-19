@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 public class DatabaseReset {
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Autowired DataUpdaterApi dataUpdaterApi;
+    @Autowired private DataUpdaterApi dataUpdaterApi;
 
     public void reset() throws DataProviderException {
         final HttpUrl requestUrl = HttpUrl.parse(

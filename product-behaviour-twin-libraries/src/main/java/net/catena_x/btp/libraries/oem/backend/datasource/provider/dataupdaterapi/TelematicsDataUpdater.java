@@ -23,8 +23,8 @@ import java.util.HashMap;
 public class TelematicsDataUpdater {
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Autowired DataUpdaterApi dataUpdaterApi;
-    @Autowired TestDataCategorized testDataCategorized;
+    @Autowired private DataUpdaterApi dataUpdaterApi;
+    @Autowired private TestDataCategorized testDataCategorized;
 
     public void updateFromTestData(@NotNull TestData testData) throws DataProviderException {
         testDataCategorized.initFromTestData(testData);

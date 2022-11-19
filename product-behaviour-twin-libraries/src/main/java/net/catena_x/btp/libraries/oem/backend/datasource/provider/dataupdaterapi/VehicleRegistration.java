@@ -24,9 +24,9 @@ import java.util.HashMap;
 public class VehicleRegistration {
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Autowired DataUpdaterApi dataUpdaterApi;
-    @Autowired VehilceDataLoader vehilceDataLoader;
-    @Autowired TestDataCategorized testDataCategorized;
+    @Autowired private DataUpdaterApi dataUpdaterApi;
+    @Autowired private VehilceDataLoader vehilceDataLoader;
+    @Autowired private TestDataCategorized testDataCategorized;
 
     public void registerFromTestData(@NotNull TestData testData) throws DataProviderException {
         testDataCategorized.initFromTestData(testData);

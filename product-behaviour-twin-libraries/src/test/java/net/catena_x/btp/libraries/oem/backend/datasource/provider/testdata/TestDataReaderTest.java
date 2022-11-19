@@ -30,7 +30,7 @@ import java.nio.file.Path;
         "net.catena_x.btp.libraries.bamm.testdata"})
 @TestPropertySource(locations = {"classpath:test-dataprovider.properties"})
 class TestDataReaderTest {
-    @Autowired TestDataReader testDataReader;
+    @Autowired private TestDataReader testDataReader;
 
     @Value("${services.dataprovider.test.testdata.file}")
     private String testDataFile;

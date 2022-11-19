@@ -23,7 +23,7 @@ import java.util.List;
 
 @Component
 public class TestDataCategorized {
-    @Autowired DigitalTwinCategorizer digitalTwinCategorizer;
+    @Autowired private DigitalTwinCategorizer digitalTwinCategorizer;
 
     @Getter private HashMap<String, DigitalTwin> digitalTwinsVehicles = null;
     @Getter private HashMap<String, DigitalTwin> digitalTwinsGearboxes = null;

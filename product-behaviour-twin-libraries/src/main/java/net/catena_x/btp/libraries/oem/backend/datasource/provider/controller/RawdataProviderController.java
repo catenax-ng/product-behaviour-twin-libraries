@@ -21,11 +21,11 @@ import java.nio.file.Path;
 @RestController
 @RequestMapping("/api/rawdata")
 public class RawdataProviderController {
-    @Autowired VehilceDataLoader vehilceDataLoader;
-    @Autowired TestDataReader testDataReader;
-    @Autowired VehicleRegistration vehicleRegistration;
-    @Autowired TelematicsDataUpdater telematicsDataUpdater;
-    @Autowired DatabaseReset databaseReset;
+    @Autowired private VehilceDataLoader vehilceDataLoader;
+    @Autowired private TestDataReader testDataReader;
+    @Autowired private VehicleRegistration vehicleRegistration;
+    @Autowired private TelematicsDataUpdater telematicsDataUpdater;
+    @Autowired private DatabaseReset databaseReset;
     @Autowired private ApiHelper apiHelper;
     @Autowired private TestDataCategorized testData;
 

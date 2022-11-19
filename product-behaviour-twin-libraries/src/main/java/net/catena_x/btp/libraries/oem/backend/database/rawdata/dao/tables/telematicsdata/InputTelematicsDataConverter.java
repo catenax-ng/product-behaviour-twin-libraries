@@ -10,8 +10,8 @@ import javax.validation.constraints.NotNull;
 
 @Component
 public class InputTelematicsDataConverter extends DAOConverter<TelematicsDataDAO, InputTelematicsData> {
-    @Autowired InputLoadSpectraConverter loadSpectraConverter;
-    @Autowired InputAdaptionValuesConverter adaptionValuesConverter;
+    @Autowired private InputLoadSpectraConverter loadSpectraConverter;
+    @Autowired private InputAdaptionValuesConverter adaptionValuesConverter;
 
     protected InputTelematicsData toDTOSourceExists(@NotNull final TelematicsDataDAO source) {
         return new InputTelematicsData(

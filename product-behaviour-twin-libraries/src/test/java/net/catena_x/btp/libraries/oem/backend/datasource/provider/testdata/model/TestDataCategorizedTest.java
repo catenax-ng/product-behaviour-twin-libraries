@@ -35,9 +35,8 @@ import java.nio.file.Path;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestPropertySource(locations = {"classpath:test-dataprovider.properties"})
 class TestDataCategorizedTest {
-    @Autowired TestDataReader testDataReader;
-    @Autowired
-    TestDataCategorized testDataCategorized;
+    @Autowired private TestDataReader testDataReader;
+    @Autowired private TestDataCategorized testDataCategorized;
 
     @Value("${services.dataprovider.test.testdata.file}")
     private String testDataFile;

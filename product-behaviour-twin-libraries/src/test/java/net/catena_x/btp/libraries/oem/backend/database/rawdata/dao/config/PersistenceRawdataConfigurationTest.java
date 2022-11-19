@@ -22,9 +22,9 @@ import javax.sql.DataSource;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class PersistenceRawdataConfigurationTest {
 
-    @Autowired LocalContainerEntityManagerFactoryBean healthindicatorEntityManager;
-    @Autowired DataSource healthindicatorDataSource;
-    @Autowired PlatformTransactionManager healthindicatorTransactionManager;
+    @Autowired private LocalContainerEntityManagerFactoryBean healthindicatorEntityManager;
+    @Autowired private DataSource healthindicatorDataSource;
+    @Autowired private PlatformTransactionManager healthindicatorTransactionManager;
 
     @Test
     void injectedComponentsAreNotNull() {
