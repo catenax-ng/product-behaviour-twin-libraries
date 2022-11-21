@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
-import net.catena_x.btp.libraries.util.TimeStampDeserializer;
-import net.catena_x.btp.libraries.util.TimeStampSerializer;
+import net.catena_x.btp.libraries.util.json.TimeStampDeserializer;
+import net.catena_x.btp.libraries.util.json.TimeStampSerializer;
 import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Component;
 

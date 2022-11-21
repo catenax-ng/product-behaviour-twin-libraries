@@ -14,7 +14,8 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = {"net.catena_x.btp.libraries.oem.backend.datasource.updater",
 		"net.catena_x.btp.libraries.oem.backend.datasource.util",
 		"net.catena_x.btp.libraries.oem.backend.model",
-		"net.catena_x.btp.libraries.oem.backend.database.rawdata"})
+		"net.catena_x.btp.libraries.oem.backend.database.rawdata",
+		"net.catena_x.btp.libraries.util.security"})
 @EntityScan(basePackages = {"net.catena_x.btp.libraries.oem.backend.database.rawdata"})
 @OpenAPIDefinition(info = @Info(title = "Data updater service", version = "0.0.99"))
 public class OemDataUpdaterApplication {

@@ -4,3 +4,7 @@ services.dataprovider.testdata.file=Catena-X_Vehicle_Health_App\\DigitalTwins_CX
 services.dataupdater.endpoint.username=${DATAUPDATER_API_USER}
 services.dataupdater.endpoint.password=${DATAUPDATER_API_PASS}
 services.dataupdater.endpoint.authenticationActivated=true
+
+security.api.username=${DATAPROVIDER_API_USER}
+security.api.password=${DATAPROVIDER_API_PASS}
+security.api.role=USER

@@ -1,4 +1,4 @@
-package net.catena_x.btp.libraries.util;
+package net.catena_x.btp.libraries.util.json;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;

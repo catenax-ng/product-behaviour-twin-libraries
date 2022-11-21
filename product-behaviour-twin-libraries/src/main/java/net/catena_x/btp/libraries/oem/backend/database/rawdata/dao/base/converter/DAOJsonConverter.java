@@ -7,8 +7,8 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import net.catena_x.btp.libraries.util.TimeStampDeserializer;
-import net.catena_x.btp.libraries.util.TimeStampSerializer;
+import net.catena_x.btp.libraries.util.json.TimeStampDeserializer;
+import net.catena_x.btp.libraries.util.json.TimeStampSerializer;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
