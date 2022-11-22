@@ -2,31 +2,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>	
-	<parent>
+	<!--<parent>
       <groupId>net.catena-x</groupId>
       <artifactId>oem_btp</artifactId>
       <version>0.0.1-SNAPSHOT</version>
-	</parent>	
+	</parent>-->
 	<groupId>net.catena-x</groupId>
 	<artifactId>product-behaviour-twin-libraries</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name>OEM Behaviour Twin Libraries</name>
 	<description>Set of services and Libraries for OEM Behaviour Twin.</description>
 	<properties>
 		<java.version>17</java.version>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 	</properties>
-	
-	<dependencyManagement>
-	  <dependencies>
-        <dependency>
-          <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-bom</artifactId>
-            <version>1.12.327</version>
-            <type>pom</type>
-            <scope>import</scope>
-          </dependency>
-        </dependencies>
-    </dependencyManagement>
 	
 	<dependencies>
 		<dependency>
@@ -38,14 +29,17 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+			<version>2.7.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>2.7.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-rest</artifactId>
+			<version>2.7.5</version>
 		</dependency>
 
 		<dependency>
@@ -58,6 +52,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
+			<version>42.5.0</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -109,6 +104,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
+			<version>4.13.2</version>
         </dependency>
 
 		<dependency>
@@ -135,11 +131,13 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+			<version>2.7.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
+			<version>5.7.3</version>
 		</dependency>
 	</dependencies>
 
@@ -148,6 +146,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>2.7.5</version>
 				<configuration>
 					<mainClass>net.catena_x.btp.libraries.oem.backend.datasource.provider.OemHiFrontendApplication</mainClass>
 				</configuration>
@@ -156,14 +155,14 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>license-maven-plugin</artifactId>
 				<version>2.0.0</version>
-				<executions>
+				<!--<executions>
 					<execution>
 						<id>aggregate-download-licenses</id>
 						<goals>
 							<goal>aggregate-download-licenses</goal>
 						</goals>
 					</execution>
-				</executions>
+				</executions>-->
 			</plugin>
 		</plugins>
 	</build>
