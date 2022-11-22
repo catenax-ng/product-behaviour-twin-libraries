@@ -1,0 +1,28 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "helper.fullname" . }}-configmap
+  labels:
+    {{- include "helper.labels" . | nindent 4 }}
+config:
+  hibackendservice-bindings.properties: |-
+    server.port=25553
+    cloud.endpoint=https://play.min.io
+    cloud.accessKey=zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
+    cloud.secretKey=someSecret
+    cloud.region=eu-west-1
+    cloud.bucket=test
+    cloud.inputFile.bucketName=testbucket
+    cloud.inputFile.key=testfile
+    supplier.hiservice.endpoint=http://edc.zf.com/endpoint
+    supplier.bpn=BPN0000SUPPLIER
+    supplier.hiservice.inputAssetName=urn:example:id
+    edc.bpn=BPN0000OEM
+    edc.endpoint=https://dlr.dev.demo.catena-x.net
+    edc.apiwrapper.url=https://apiw-dlr.dev.demo.catena-x.net
+    edc.apiwrapper.username=edcuser
+    edc.apiwrapper.password=ohkieffgaifhaae342
+    security.api.username=user
+    security.api.password=pass
+    security.api.role=USER
