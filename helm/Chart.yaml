@@ -10,5 +10,5 @@ maintainers: []
 
 dependencies:
   - name: postgresql
-    version: "15.0"
+    version: "12.1.2"
     repository: https://charts.bitnami.com/bitnami
