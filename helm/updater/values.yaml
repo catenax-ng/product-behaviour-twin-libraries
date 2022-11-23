@@ -206,7 +206,6 @@ configuration:
     edc.apiwrapper.submodelPath=api/service
     edc.apiwrapper.submodel=submodel
     edc.apiwrapper.providerEdcUrlKey=provider-connector-url
-    server.port=25553
     cloud.endpoint=https://play.min.io
     cloud.region=eu-west-1
     cloud.bucket=test

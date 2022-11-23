@@ -30,12 +30,12 @@ oem-hi-app:
     secret: tls-secret
 
   server:
-    port: 25553
+    port: &hiPort 25553
 
   connection:
     endpoints:
       default:
-        port: 25553
+        port: *hiPort
         path: /
         ingress: True
 
@@ -63,18 +63,17 @@ oem-hi-app:
       edc.apiwrapper.submodelPath=api/service
       edc.apiwrapper.submodel=submodel
       edc.apiwrapper.providerEdcUrlKey=provider-connector-url
-      server.port=25553
       cloud.endpoint=https://play.min.io
       cloud.region=eu-west-1
       cloud.bucket=test
       cloud.inputFile.bucketName=testbucket
       cloud.inputFile.key=testfile
-      supplier.hiservice.endpoint=http://edc.zf.com/endpoint
-      supplier.bpn=BPN0000SUPPLIER
-      supplier.hiservice.inputAssetName=urn:example:id
-      edc.bpn=BPN0000OEM
-      edc.endpoint=https://oem.com/edc
-      edc.apiwrapper.url=http://myapiwrapper.url
+      supplier.hiservice.endpoint=https://edc-ocp0900009.apps.c7von4sy.westeurope.aroapp.io/BPNL00000003B2OM
+      supplier.bpn=BPNL00000003B2OM
+      supplier.hiservice.inputAssetName=urn:uuid:17937c84-000b-4520-9830-ba86934850e3
+      edc.bpn=BPNL000000002YWC
+      edc.endpoint=https://dlr.dev.demo.catena-x.net
+      edc.apiwrapper.url=https://apiw-dlr.dev.demo.catena-x.net
       security.api.role=USER
       rawdatadb.drivername=org.postgresql.Driver
       rawdatadb.show-sql=false
@@ -102,12 +101,12 @@ provider:
     secret: tls-secret
 
   server:
-    port: 25553
+    port: &providerPort 25551
 
   connection:
     endpoints:
       default:
-        port: 25553
+        port: *providerPort
         path: /
         ingress: True
 
@@ -131,44 +130,13 @@ provider:
   configuration:
     properties: |-
       spring.application.name=dataprovider
-      spring.jpa.open-in-view=false
-      edc.apiwrapper.submodelPath=api/service
-      edc.apiwrapper.submodel=submodel
-      edc.apiwrapper.providerEdcUrlKey=provider-connector-url
-      server.port=25553
-      cloud.endpoint=https://play.min.io
-      cloud.region=eu-west-1
-      cloud.bucket=test
-      cloud.inputFile.bucketName=testbucket
-      cloud.inputFile.key=testfile
-      supplier.hiservice.endpoint=http://edc.zf.com/endpoint
-      supplier.bpn=BPN0000SUPPLIER
-      supplier.hiservice.inputAssetName=urn:example:id
-      edc.bpn=BPN0000OEM
-      edc.endpoint=https://oem.com/edc
-      edc.apiwrapper.url=http://myapiwrapper.url
-      security.api.role=USER
-      rawdatadb.drivername=org.postgresql.Driver
-      rawdatadb.show-sql=false
-      rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
-      rawdatadb.hibernate.hbm2ddl.auto=update
-      rawdatadb.drivername=org.postgresql.Driver
-      rawdatadb.show-sql=false
-      rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
-      rawdatadb.hibernate.hbm2ddl.auto=update
-      spring.config.import=healthindicatordb-bindings.properties
-      rawdatadb.url=jdbc:postgresql://rawdatadb/rawdata
-      healthindicatordb.url=jdbc:postgresql://healthindicatordb/healthindicator
-      spring.config.import=
-      server.port=25551
       services.dataupdater.endpoint.baseurl=http://bmw-updater.dev.demo.catena-x.net/api/rawdata
       services.dataprovider.testdata.file=testdata.json
       services.dataupdater.endpoint.username=user
       services.dataupdater.endpoint.password=pass
       services.dataupdater.endpoint.authenticationActivated=true
-      security.api.username=user
-      security.api.password=pass
       security.api.role=USER
+      spring.config.import=
 
 updater:
   ingress:
@@ -184,12 +152,12 @@ updater:
     secret: tls-secret
 
   server:
-    port: 25553
+    port: &updaterPort 25552
 
   connection:
     endpoints:
       default:
-        port: 25553
+        port: *updaterPort
         path: /
         ingress: True
 
@@ -214,22 +182,6 @@ updater:
     properties: |-
       spring.application.name=dataupdater
       spring.jpa.open-in-view=false
-      spring.jpa.open-in-view=false
-      edc.apiwrapper.submodelPath=api/service
-      edc.apiwrapper.submodel=submodel
-      edc.apiwrapper.providerEdcUrlKey=provider-connector-url
-      server.port=25551
-      cloud.endpoint=https://play.min.io
-      cloud.region=eu-west-1
-      cloud.bucket=test
-      cloud.inputFile.bucketName=testbucket
-      cloud.inputFile.key=testfile
-      supplier.hiservice.endpoint=http://edc.zf.com/endpoint
-      supplier.bpn=BPN0000SUPPLIER
-      supplier.hiservice.inputAssetName=urn:example:id
-      edc.bpn=BPN0000OEM
-      edc.endpoint=https://oem.com/edc
-      edc.apiwrapper.url=http://myapiwrapper.url
       security.api.role=USER
       rawdatadb.drivername=org.postgresql.Driver
       rawdatadb.show-sql=false
@@ -240,10 +192,6 @@ updater:
       rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
       rawdatadb.hibernate.hbm2ddl.auto=update
       rawdatadb.url=jdbc:postgresql://rawdatadb/rawdata
-      healthindicatordb.url=jdbc:postgresql://healthindicatordb/healthindicator
-      services.dataupdater.endpoint.baseurl=http://bmw-updater.dev.demo.catena-x.net/api/rawdata
-      services.dataprovider.testdata.file=testdata.json
-      services.dataupdater.endpoint.authenticationActivated=true
       spring.config.import=
 
 

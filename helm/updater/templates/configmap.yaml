@@ -17,4 +17,5 @@ data:
     rawdatadb.password={{ .Values.credentials.rawdata.password }}
     healthindicatordb.username={{ .Values.credentials.healthindicator.username }}
     healthindicatordb.password={{ .Values.credentials.healthindicator.username }}
+    server.port={{ .Values.server.port }}
     {{- .Values.configuration.properties | nindent 4 }}
