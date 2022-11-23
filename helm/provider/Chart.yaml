@@ -1,0 +1,10 @@
+---
+apiVersion: v2
+name: provider
+description: oem-hi-app
+home: https://github.com/catenax-ng/product-behaviour-twin-libraries
+type: application
+appVersion: "0.0.1"
+version: 0.0.1
+maintainers: []
+
