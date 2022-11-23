@@ -45,7 +45,7 @@ spec:
     - host: {{ .Values.ingress.hostname }}
       http:
         paths:
-        {{- range  $name, $mapping := .Values.edc.endpoints }}
+        {{- range  $name, $mapping := .Values.connection.endpoints }}
         {{- if $mapping.ingress }}
         - path: {{ $mapping.path }}
           pathType: Prefix

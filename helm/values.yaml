@@ -156,3 +156,10 @@ affinity: {}
 ##
 server:
   port: 25553
+
+connection:
+  endpoints:
+    default:
+      port: 25553
+      path: /
+      ingress: True
