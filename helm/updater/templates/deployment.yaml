@@ -73,7 +73,7 @@ spec:
           volumeMounts:
             - name: configuration
               mountPath: /opt/app/application-dataupdater.properties
-              subPath: application-hibackendservice.properties
+              subPath: application-dataupdater.properties
       volumes:
         - name: configuration
           configMap:
