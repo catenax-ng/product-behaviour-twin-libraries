@@ -22,4 +22,4 @@ WORKDIR /opt/app
 # Copy the  jar from the maven stage to the /opt/app directory of the current stage.
 COPY --from=maven /usr/src/app/${JAR_FILE} /opt/app/app.jar
 
-ENTRYPOINT ["java","-jar", "app.jar", "-Dspring.profiles.active=hibackendservice"]
+ENTRYPOINT ["java","-jar", "app.jar", "-Dspring.profiles.active=hibackendservice", "--spring.config.location=application-hibackendservice.properties"]
