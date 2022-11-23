@@ -4,8 +4,6 @@
 FROM maven:3.8.4-openjdk-17 as maven
 LABEL MAINTAINER="beendikt.franke@dlr.de"
 
-EXPOSE 8080
-
 WORKDIR /usr/src/app
 COPY . /usr/src/app
 # Compile and package the application to an executable JAR
@@ -26,5 +24,4 @@ WORKDIR /opt/app
 # Copy the  jar from the maven stage to the /opt/app directory of the current stage.
 COPY --from=maven /usr/src/app/${JAR_FILE} /opt/app/app.jar
 
-ENTRYPOINT ["java","-jar", "app.jar", "-Dspring.profiles.active=hibackendservice",
-            "--spring.config.additional-location=file:/opt/app/config/"]
+ENTRYPOINT ["java","-jar", "app.jar", "-Dspring.profiles.active=hibackendservice"]
