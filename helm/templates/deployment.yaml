@@ -72,15 +72,15 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - name: configuration
-              mountPath: /opt/app/hibackendservice-bindings.properties
-              subPath: hibackendservice-bindings.properties
+              mountPath: application-hibackendservice.properties
+              subPath: application-hibackendservice.properties
       volumes:
         - name: configuration
           configMap:
             name: {{ include "helper.fullname" . }}-configmap
             items:
-              - key: hibackendservice-bindings.properties
-                path: hibackendservice-bindings.properties
+              - key: application-hibackendservice.properties
+                path: application-hibackendservice.properties
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

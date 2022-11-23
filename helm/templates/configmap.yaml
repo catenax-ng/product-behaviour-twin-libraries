@@ -6,7 +6,12 @@ metadata:
   labels:
     {{- include "helper.labels" . | nindent 4 }}
 data:
-  hibackendservice-bindings.properties: |-
+  application-hibackendservice.properties: |-
+    spring.application.name=hibackendservice
+    spring.jpa.open-in-view=false
+    edc.apiwrapper.submodelPath=api/service
+    edc.apiwrapper.submodel=submodel
+    edc.apiwrapper.providerEdcUrlKey=provider-connector-url
     server.port=25553
     cloud.endpoint=https://play.min.io
     cloud.accessKey=zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
@@ -19,10 +24,26 @@ data:
     supplier.bpn=BPN0000SUPPLIER
     supplier.hiservice.inputAssetName=urn:example:id
     edc.bpn=BPN0000OEM
-    edc.endpoint=https://dlr.dev.demo.catena-x.net
-    edc.apiwrapper.url=https://apiw-dlr.dev.demo.catena-x.net
-    edc.apiwrapper.username=edcuser
-    edc.apiwrapper.password=ohkieffgaifhaae342
+    edc.endpoint=https://oem.com/edc
+    edc.apiwrapper.url=http://myapiwrapper.url
+    edc.apiwrapper.username=user
+    edc.apiwrapper.password=pass
     security.api.username=user
     security.api.password=pass
     security.api.role=USER
+    rawdatadb.drivername=org.postgresql.Driver
+    rawdatadb.show-sql=false
+    rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+    rawdatadb.hibernate.hbm2ddl.auto=update
+    rawdatadb.drivername=org.postgresql.Driver
+    rawdatadb.show-sql=false
+    rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+    rawdatadb.hibernate.hbm2ddl.auto=update
+    spring.config.import=healthindicatordb-bindings.properties
+    rawdatadb.url=jdbc:postgresql://localhost:64321/rawdata
+    rawdatadb.username=rawdata_user
+    rawdatadb.password=rawdata_pass
+    healthindicatordb.url=jdbc:postgresql://localhost:64322/healthindicator
+    healthindicatordb.username=healthindicator_user
+    healthindicatordb.password=healthindicator_pass
+    spring.config.import=
