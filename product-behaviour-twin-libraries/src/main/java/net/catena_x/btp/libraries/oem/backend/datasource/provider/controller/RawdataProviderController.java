@@ -8,7 +8,7 @@ import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.model.TestDataCategorized;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.VehilceDataLoader;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
-import net.catena_x.btp.libraries.oem.backend.datasource.util.ApiHelper;
+import net.catena_x.btp.libraries.util.apihelper.ApiHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +31,6 @@ public class RawdataProviderController {
 
     @Value("${services.dataprovider.testdata.file}")
     private String testDataFile;
-
 
     @GetMapping("/reset")
     public ResponseEntity<ApiResult> reset() {
