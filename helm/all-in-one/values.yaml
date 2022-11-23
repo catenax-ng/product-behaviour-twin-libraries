@@ -160,6 +160,15 @@ provider:
       rawdatadb.url=jdbc:postgresql://rawdatadb/rawdata
       healthindicatordb.url=jdbc:postgresql://healthindicatordb/healthindicator
       spring.config.import=
+      server.port=25551
+      services.dataupdater.endpoint.baseurl=http://bmw-updater.dev.demo.catena-x.net/api/rawdata
+      services.dataprovider.testdata.file=testdata.json
+      services.dataupdater.endpoint.username=user
+      services.dataupdater.endpoint.password=pass
+      services.dataupdater.endpoint.authenticationActivated=true
+      security.api.username=user
+      security.api.password=pass
+      security.api.role=USER
 
 updater:
   ingress:
