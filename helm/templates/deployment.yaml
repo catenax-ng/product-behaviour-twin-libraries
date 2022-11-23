@@ -46,27 +46,24 @@ spec:
               value: /app/dataspaceconnector-configuration.properties
           ports:
             - name: default
-              containerPort: {{ .Values.edc.endpoints.default.port }}
-              protocol: TCP
-            - name: callback
-              containerPort: {{ .Values.edc.endpoints.callback.port }}
+              containerPort: {{ .Values.connection.endpoints.default.port }}
               protocol: TCP
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
-              path: {{ .Values.edc.endpoints.default.path }}/check/liveness
+              path: {{ .Values.connection.endpoints.default.path }}/check/liveness
               port: default
           {{- end }}
           {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
-              path: {{ .Values.edc.endpoints.default.path }}/check/readiness
+              path: {{ .Values.connection.endpoints.default.path }}/check/readiness
               port: default
           {{- end }}
           {{- if .Values.startupProbe.enabled }}
           startupProbe:
             httpGet:
-              path: {{ .Values.edc.endpoints.default.path }}/check/startup
+              path: {{ .Values.connection.endpoints.default.path }}/check/startup
               port: default
             failureThreshold: 12
             initialDelaySeconds: 10
@@ -75,15 +72,15 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - name: configuration
-              mountPath: /app/dataspaceconnector-configuration.properties
-              subPath: dataspaceconnector-configuration.properties
+              mountPath: /app/config/config/hibackendservice-bindings.properties
+              subPath: hibackendservice-bindings.properties
       volumes:
         - name: configuration
           configMap:
             name: {{ include "helper.fullname" . }}-configmap
             items:
-              - key: dataspaceconnector-configuration.properties
-                path: dataspaceconnector-configuration.properties
+              - key: hibackendservice-bindings.properties
+                path: hibackendservice-bindings.properties
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
