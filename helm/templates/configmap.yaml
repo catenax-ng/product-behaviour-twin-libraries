@@ -5,7 +5,7 @@ metadata:
   name: {{ include "helper.fullname" . }}-configmap
   labels:
     {{- include "helper.labels" . | nindent 4 }}
-config:
+data:
   hibackendservice-bindings.properties: |-
     server.port=25553
     cloud.endpoint=https://play.min.io
