@@ -16,7 +16,7 @@ credentials:
     username: &hiUser healthindicator_user
     password: &hiPass healthindicator_pass
 
-hiapp:
+oem-hi-app:
   ingress:
     enabled: true
     className: ""
@@ -84,7 +84,6 @@ hiapp:
       rawdatadb.show-sql=false
       rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
       rawdatadb.hibernate.hbm2ddl.auto=update
-      spring.config.import=healthindicatordb-bindings.properties
       rawdatadb.url=jdbc:postgresql://rawdatadb/rawdata
       healthindicatordb.url=jdbc:postgresql://healthindicatordb/healthindicator
       spring.config.import=
