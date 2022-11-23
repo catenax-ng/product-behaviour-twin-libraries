@@ -7,7 +7,8 @@ LABEL MAINTAINER="beendikt.franke@dlr.de"
 WORKDIR /usr/src/app
 COPY . /usr/src/app
 # Compile and package the application to an executable JAR
-RUN mvn clean package spring-boot:repackage -DskipTests -Dspring.profiles.active=hibackendservice
+RUN mvn -pl product-behaviour-twin-libraries clean install -DskipTests
+RUN mvn -pl product-oem-hi-app clean package spring-boot:repackage -DskipTests
 
 # For Java 11,
 FROM openjdk:17-oracle
