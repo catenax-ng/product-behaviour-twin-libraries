@@ -218,7 +218,7 @@ updater:
       edc.apiwrapper.submodelPath=api/service
       edc.apiwrapper.submodel=submodel
       edc.apiwrapper.providerEdcUrlKey=provider-connector-url
-      server.port=25553
+      server.port=25551
       cloud.endpoint=https://play.min.io
       cloud.region=eu-west-1
       cloud.bucket=test
@@ -242,6 +242,9 @@ updater:
       spring.config.import=healthindicatordb-bindings.properties
       rawdatadb.url=jdbc:postgresql://rawdatadb/rawdata
       healthindicatordb.url=jdbc:postgresql://healthindicatordb/healthindicator
+      services.dataupdater.endpoint.baseurl=http://bmw-updater.dev.demo.catena-x.net/api/rawdata
+      services.dataprovider.testdata.file=testdata.json
+      services.dataupdater.endpoint.authenticationActivated=true
       spring.config.import=
 
 
