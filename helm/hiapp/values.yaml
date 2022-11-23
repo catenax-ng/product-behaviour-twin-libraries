@@ -1,5 +1,22 @@
 ---
-# Default values for api-wrapper.
+postgresql:
+  fullnameOverride: "rawdatadb"
+  image:
+    pullPolicy: Always
+  auth:
+    database: &psqlDatabase "rawdata"
+    username: &psqlUsername "rawdata_user"
+    password: &psqlPassword "rawdata_pass"
+
+  persistence:
+    enabled: false
+
+  hostname:
+
+  # initdbUsername: *psqlUsername
+  # initdbPassword: *psqlPassword
+
+
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 

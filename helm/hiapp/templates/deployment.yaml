@@ -72,7 +72,7 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - name: configuration
-              mountPath: application-hibackendservice.properties
+              mountPath: /opt/app/application-hibackendservice.properties
               subPath: application-hibackendservice.properties
       volumes:
         - name: configuration

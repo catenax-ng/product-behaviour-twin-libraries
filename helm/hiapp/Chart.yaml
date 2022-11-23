@@ -7,8 +7,3 @@ type: application
 appVersion: "0.0.1"
 version: 0.0.1
 maintainers: []
-
-dependencies:
-  - name: postgresql
-    version: "12.1.2"
-    repository: https://charts.bitnami.com/bitnami
