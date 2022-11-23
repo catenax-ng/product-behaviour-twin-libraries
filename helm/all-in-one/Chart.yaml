@@ -12,13 +12,18 @@ dependencies:
   - name: postgresql
     version: "12.1.2"
     repository: https://charts.bitnami.com/bitnami
+    alias: rawdatadb
+  - name: postgresql
+    version: "12.1.2"
+    repository: https://charts.bitnami.com/bitnami
+    alias: healthindicatordb
   - name: oem-hi-app
     version: "0.0.1"
-    repository: ../hiapp
+    repository: file://../hiapp
   - name: provider
     version: "0.0.1"
-    repository: ../provider
+    repository: file://../provider
   - name: updater
     version: "0.0.1"
-    repository: ../updater
+    repository: file://../updater
 

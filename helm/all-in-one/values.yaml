@@ -1,503 +1,275 @@
 ---
-postgresql:
+credentials:
+  cloud:
+    accessKey: &cloudKey zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
+    secretKey: &cloudSecret someSecret
+  apiwrapper:
+    username: &apiwrapperUser user
+    password: &apiwrapperPass pass
+  api:
+    username: &apiUser user
+    password: &apiPass pass
+  rawdata:
+    username: &rawdataUser rawdata_user
+    password: &rawdataPass rawdata_pass
+  healthindicator:
+    username: &hiUser healthindicator_user
+    password: &hiPass healthindicator_pass
+
+oem-hi-app:
+  ingress:
+    enabled: true
+    className: ""
+    tls: true
+    certManager:
+      issuer: ""
+      clusterIssuer: ""
+
+    annotations: {}
+    hostname: "bmw-hiapp.dev.demo.catena-x.net"
+    secret: tls-secret
+
+  server:
+    port: 25553
+
+  connection:
+    endpoints:
+      default:
+        port: 25553
+        path: /
+        ingress: True
+
+  credentials:
+    cloud:
+      accessKey: *cloudKey
+      secretKey: *cloudSecret
+    apiwrapper:
+      username: *apiwrapperUser
+      password: *apiwrapperPass
+    api:
+      username: *apiUser
+      password: *apiPass
+    rawdata:
+      username: *rawdataUser
+      password: *rawdataPass
+    healthindicator:
+      username: *hiUser
+      password: *hiPass
+
+  configuration:
+    properties: |-
+      spring.application.name=hibackendservice
+      spring.jpa.open-in-view=false
+      edc.apiwrapper.submodelPath=api/service
+      edc.apiwrapper.submodel=submodel
+      edc.apiwrapper.providerEdcUrlKey=provider-connector-url
+      server.port=25553
+      cloud.endpoint=https://play.min.io
+      cloud.region=eu-west-1
+      cloud.bucket=test
+      cloud.inputFile.bucketName=testbucket
+      cloud.inputFile.key=testfile
+      supplier.hiservice.endpoint=http://edc.zf.com/endpoint
+      supplier.bpn=BPN0000SUPPLIER
+      supplier.hiservice.inputAssetName=urn:example:id
+      edc.bpn=BPN0000OEM
+      edc.endpoint=https://oem.com/edc
+      edc.apiwrapper.url=http://myapiwrapper.url
+      security.api.role=USER
+      rawdatadb.drivername=org.postgresql.Driver
+      rawdatadb.show-sql=false
+      rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+      rawdatadb.hibernate.hbm2ddl.auto=update
+      rawdatadb.drivername=org.postgresql.Driver
+      rawdatadb.show-sql=false
+      rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+      rawdatadb.hibernate.hbm2ddl.auto=update
+      rawdatadb.url=jdbc:postgresql://rawdatadb/rawdata
+      healthindicatordb.url=jdbc:postgresql://healthindicatordb/healthindicator
+      spring.config.import=
+
+provider:
+  ingress:
+    enabled: true
+    className: ""
+    tls: true
+    certManager:
+      issuer: ""
+      clusterIssuer: ""
+
+    annotations: {}
+    hostname: "bmw-provider.dev.demo.catena-x.net"
+    secret: tls-secret
+
+  server:
+    port: 25553
+
+  connection:
+    endpoints:
+      default:
+        port: 25553
+        path: /
+        ingress: True
+
+  credentials:
+    cloud:
+      accessKey: *cloudKey
+      secretKey: *cloudSecret
+    apiwrapper:
+      username: *apiwrapperUser
+      password: *apiwrapperPass
+    api:
+      username: *apiUser
+      password: *apiPass
+    rawdata:
+      username: *rawdataUser
+      password: *rawdataPass
+    healthindicator:
+      username: *hiUser
+      password: *hiPass
+
+  configuration:
+    properties: |-
+      spring.application.name=hibackendservice
+      spring.jpa.open-in-view=false
+      edc.apiwrapper.submodelPath=api/service
+      edc.apiwrapper.submodel=submodel
+      edc.apiwrapper.providerEdcUrlKey=provider-connector-url
+      server.port=25553
+      cloud.endpoint=https://play.min.io
+      cloud.region=eu-west-1
+      cloud.bucket=test
+      cloud.inputFile.bucketName=testbucket
+      cloud.inputFile.key=testfile
+      supplier.hiservice.endpoint=http://edc.zf.com/endpoint
+      supplier.bpn=BPN0000SUPPLIER
+      supplier.hiservice.inputAssetName=urn:example:id
+      edc.bpn=BPN0000OEM
+      edc.endpoint=https://oem.com/edc
+      edc.apiwrapper.url=http://myapiwrapper.url
+      security.api.role=USER
+      rawdatadb.drivername=org.postgresql.Driver
+      rawdatadb.show-sql=false
+      rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+      rawdatadb.hibernate.hbm2ddl.auto=update
+      rawdatadb.drivername=org.postgresql.Driver
+      rawdatadb.show-sql=false
+      rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+      rawdatadb.hibernate.hbm2ddl.auto=update
+      spring.config.import=healthindicatordb-bindings.properties
+      rawdatadb.url=jdbc:postgresql://rawdatadb/rawdata
+      healthindicatordb.url=jdbc:postgresql://healthindicatordb/healthindicator
+      spring.config.import=
+      server.port=25551
+      services.dataupdater.endpoint.baseurl=http://bmw-updater.dev.demo.catena-x.net/api/rawdata
+      services.dataprovider.testdata.file=testdata.json
+      services.dataupdater.endpoint.username=user
+      services.dataupdater.endpoint.password=pass
+      services.dataupdater.endpoint.authenticationActivated=true
+      security.api.username=user
+      security.api.password=pass
+      security.api.role=USER
+
+updater:
+  ingress:
+    enabled: true
+    className: ""
+    tls: true
+    certManager:
+      issuer: ""
+      clusterIssuer: ""
+
+    annotations: {}
+    hostname: "bmw-updater.dev.demo.catena-x.net"
+    secret: tls-secret
+
+  server:
+    port: 25553
+
+  connection:
+    endpoints:
+      default:
+        port: 25553
+        path: /
+        ingress: True
+
+  credentials:
+    cloud:
+      accessKey: *cloudKey
+      secretKey: *cloudSecret
+    apiwrapper:
+      username: *apiwrapperUser
+      password: *apiwrapperPass
+    api:
+      username: *apiUser
+      password: *apiPass
+    rawdata:
+      username: *rawdataUser
+      password: *rawdataPass
+    healthindicator:
+      username: *hiUser
+      password: *hiPass
+
+  configuration:
+    properties: |-
+      spring.application.name=hibackendservice
+      spring.jpa.open-in-view=false
+      edc.apiwrapper.submodelPath=api/service
+      edc.apiwrapper.submodel=submodel
+      edc.apiwrapper.providerEdcUrlKey=provider-connector-url
+      server.port=25553
+      cloud.endpoint=https://play.min.io
+      cloud.region=eu-west-1
+      cloud.bucket=test
+      cloud.inputFile.bucketName=testbucket
+      cloud.inputFile.key=testfile
+      supplier.hiservice.endpoint=http://edc.zf.com/endpoint
+      supplier.bpn=BPN0000SUPPLIER
+      supplier.hiservice.inputAssetName=urn:example:id
+      edc.bpn=BPN0000OEM
+      edc.endpoint=https://oem.com/edc
+      edc.apiwrapper.url=http://myapiwrapper.url
+      security.api.role=USER
+      rawdatadb.drivername=org.postgresql.Driver
+      rawdatadb.show-sql=false
+      rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+      rawdatadb.hibernate.hbm2ddl.auto=update
+      rawdatadb.drivername=org.postgresql.Driver
+      rawdatadb.show-sql=false
+      rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+      rawdatadb.hibernate.hbm2ddl.auto=update
+      spring.config.import=healthindicatordb-bindings.properties
+      rawdatadb.url=jdbc:postgresql://rawdatadb/rawdata
+      healthindicatordb.url=jdbc:postgresql://healthindicatordb/healthindicator
+      spring.config.import=
+
+
+rawdatadb:
   fullnameOverride: "rawdatadb"
   image:
     pullPolicy: Always
   auth:
     database: &psqlDatabase "rawdata"
-    username: &psqlUsername "rawdata_user"
-    password: &psqlPassword "rawdata_pass"
+    username: *rawdataUser
+    password: *rawdataPass
 
   persistence:
     enabled: false
 
-  hostname:
-
   # initdbUsername: *psqlUsername
   # initdbPassword: *psqlPassword
 
-
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-hiapp:
-  replicaCount: 1
-
+healthindicatordb:
+  fullnameOverride: "healthindicatordb"
   image:
-    ##
-    ## Which api-wrapper container image to use.
-    ##
-    repository: ghcr.io/catenax-ng/product-oem-hi-app
     pullPolicy: Always
-    ##
-    ## Overrides the image tag whose default is the chart appVersion.
-    ##
-    tag: "release"
+  auth:
+    database: &psqlDatabase "healthindicator"
+    username: *hiUser
+    password: *hiPass
 
-  ##
-  ## Image pull secret to create to obtain the container image
-  ## Note: 'imagePullSecret.dockerconfigjson' takes precedence if configured together with 'imagePullSecrets'
-  ##
-  imagePullSecret:
-    dockerconfigjson: ""
-
-  ##
-  ## Existing image pull secret to use to obtain the container image
-  ##
-  imagePullSecrets: []
-
-  nameOverride: ""
-  fullnameOverride: ""
-
-  serviceAccount:
-    ##
-    ## Specifies whether a service account should be created per release
-    ##
-    create: true
-    ##
-    ## Annotations to add to the service account
-    ##
-    annotations: {}
-    ##
-    ## The name of the service account to use.
-    ## If not set and create is true, a name is generated using the fullname template
-    ##
-    name: ""
-
-  podAnnotations: {}
-
-  podSecurityContext: {}
-  # fsGroup: 2000
-
-  securityContext: {}
-    # capabilities:
-    #   drop:
-    #   - ALL
-    # readOnlyRootFilesystem: true
-    # runAsNonRoot: true
-  # runAsUser: 1000
-
-  ##
-  ## Whether to enable kubernetes liveness-probes
-  ##
-  livenessProbe:
+  persistence:
     enabled: false
 
-  ##
-  ## Whether to enable kubernetes readiness-probes
-  ##
-  readinessProbe:
-    enabled: false
-
-  ##
-  ## Whether to enable kubernetes startup-probes
-  ##
-  startupProbe:
-    enabled: false
-
-  ##
-  ## Service to expose the running application on a set of Pods as a network service.
-  ##
-  service:
-    type: ClusterIP
-
-  ##
-  ## Ingress declaration to publicly expose the network service.
-  ##
-  ingress:
-    ##
-    ## Set to true to enable ingress record generation
-    ##
-    enabled: true
-    ##
-    ## Defines the ingress class to use https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class
-    ##
-    className: ""
-    ##
-    ## Enables TLS on the ingress resource
-    ##
-    tls: true
-
-    ##
-    ## Adds cert-manager annotations to the ingress
-    ##
-    certManager:
-      ##
-      ## If preset enables certificate generation via cert-manager namespace scoped issuer
-      ##
-      issuer: ""
-      ##
-      ## If preset enables certificate generation via cert-manager cluster-wide issuer
-      ##
-      clusterIssuer: ""
-
-    ##
-    ## Additional ingress annotations to add
-    ##
-    annotations: {}
-
-    ##
-    ## The hostname to be used to precisely map incoming traffic onto the underlying network service
-    ##
-    hostname: "bmw-hiapp.dev.demo.catena-x.net"
-    secret: tls-secret
-
-  resources: {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 100m
-  #   memory: 128Mi
-
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
-    # targetMemoryUtilizationPercentage: 80
-
-  nodeSelector: {}
-
-  tolerations: []
-
-  affinity: {}
-
-  server:
-    port: 25553
-
-  connection:
-    endpoints:
-      default:
-        port: 25553
-        path: /
-        ingress: True
-
-
-provider:
-  replicaCount: 1
-
-  image:
-    ##
-    ## Which api-wrapper container image to use.
-    ##
-    repository: ghcr.io/catenax-ng/product-oem-hi-app
-    pullPolicy: Always
-    ##
-    ## Overrides the image tag whose default is the chart appVersion.
-    ##
-    tag: "release"
-
-  ##
-  ## Image pull secret to create to obtain the container image
-  ## Note: 'imagePullSecret.dockerconfigjson' takes precedence if configured together with 'imagePullSecrets'
-  ##
-  imagePullSecret:
-    dockerconfigjson: ""
-
-  ##
-  ## Existing image pull secret to use to obtain the container image
-  ##
-  imagePullSecrets: []
-
-  nameOverride: ""
-  fullnameOverride: ""
-
-  serviceAccount:
-    ##
-    ## Specifies whether a service account should be created per release
-    ##
-    create: true
-    ##
-    ## Annotations to add to the service account
-    ##
-    annotations: {}
-    ##
-    ## The name of the service account to use.
-    ## If not set and create is true, a name is generated using the fullname template
-    ##
-    name: ""
-
-  podAnnotations: {}
-
-  podSecurityContext: {}
-  # fsGroup: 2000
-
-  securityContext: {}
-    # capabilities:
-    #   drop:
-    #   - ALL
-    # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-  ##
-  ## Whether to enable kubernetes liveness-probes
-  ##
-  livenessProbe:
-    enabled: false
-
-  ##
-  ## Whether to enable kubernetes readiness-probes
-  ##
-  readinessProbe:
-    enabled: false
-
-  ##
-  ## Whether to enable kubernetes startup-probes
-  ##
-  startupProbe:
-    enabled: false
-
-  ##
-  ## Service to expose the running application on a set of Pods as a network service.
-  ##
-  service:
-    type: ClusterIP
-
-  ##
-  ## Ingress declaration to publicly expose the network service.
-  ##
-  ingress:
-    ##
-    ## Set to true to enable ingress record generation
-    ##
-    enabled: true
-    ##
-    ## Defines the ingress class to use https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class
-    ##
-    className: ""
-    ##
-    ## Enables TLS on the ingress resource
-    ##
-    tls: true
-
-    ##
-    ## Adds cert-manager annotations to the ingress
-    ##
-    certManager:
-      ##
-      ## If preset enables certificate generation via cert-manager namespace scoped issuer
-      ##
-      issuer: ""
-      ##
-      ## If preset enables certificate generation via cert-manager cluster-wide issuer
-      ##
-      clusterIssuer: ""
-
-    ##
-    ## Additional ingress annotations to add
-    ##
-    annotations: {}
-
-    ##
-    ## The hostname to be used to precisely map incoming traffic onto the underlying network service
-    ##
-    hostname: "bmw-hiapp.dev.demo.catena-x.net"
-    secret: tls-secret
-
-  resources: {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
-    # targetMemoryUtilizationPercentage: 80
-
-  nodeSelector: {}
-
-  tolerations: []
-
-  affinity: {}
-
-  ##
-  ## EDC & API-Wrapper configuration.properties
-  ##
-  ## For the EDC configuration consult the eclipse-dataspaceconnector documentation for further details: https://github.com/eclipse-dataspaceconnector/DataSpaceConnector
-  ##
-  server:
-    port: 25553
-
-  connection:
-    endpoints:
-      default:
-        port: 25553
-        path: /
-        ingress: True
-
-
-updater:
-  replicaCount: 1
-
-  image:
-    ##
-    ## Which api-wrapper container image to use.
-    ##
-    repository: ghcr.io/catenax-ng/product-oem-hi-app
-    pullPolicy: Always
-    ##
-    ## Overrides the image tag whose default is the chart appVersion.
-    ##
-    tag: "release"
-
-  ##
-  ## Image pull secret to create to obtain the container image
-  ## Note: 'imagePullSecret.dockerconfigjson' takes precedence if configured together with 'imagePullSecrets'
-  ##
-  imagePullSecret:
-    dockerconfigjson: ""
-
-  ##
-  ## Existing image pull secret to use to obtain the container image
-  ##
-  imagePullSecrets: []
-
-  nameOverride: ""
-  fullnameOverride: ""
-
-  serviceAccount:
-    ##
-    ## Specifies whether a service account should be created per release
-    ##
-    create: true
-    ##
-    ## Annotations to add to the service account
-    ##
-    annotations: {}
-    ##
-    ## The name of the service account to use.
-    ## If not set and create is true, a name is generated using the fullname template
-    ##
-    name: ""
-
-  podAnnotations: {}
-
-  podSecurityContext: {}
-  # fsGroup: 2000
-
-  securityContext: {}
-    # capabilities:
-    #   drop:
-    #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-  ##
-  ## Whether to enable kubernetes liveness-probes
-  ##
-  livenessProbe:
-    enabled: false
-
-  ##
-  ## Whether to enable kubernetes readiness-probes
-  ##
-  readinessProbe:
-    enabled: false
-
-  ##
-  ## Whether to enable kubernetes startup-probes
-  ##
-  startupProbe:
-    enabled: false
-
-  ##
-  ## Service to expose the running application on a set of Pods as a network service.
-  ##
-  service:
-    type: ClusterIP
-
-  ##
-  ## Ingress declaration to publicly expose the network service.
-  ##
-  ingress:
-    ##
-    ## Set to true to enable ingress record generation
-    ##
-    enabled: true
-    ##
-    ## Defines the ingress class to use https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class
-    ##
-    className: ""
-    ##
-    ## Enables TLS on the ingress resource
-    ##
-    tls: true
-
-    ##
-    ## Adds cert-manager annotations to the ingress
-    ##
-    certManager:
-      ##
-      ## If preset enables certificate generation via cert-manager namespace scoped issuer
-      ##
-      issuer: ""
-      ##
-      ## If preset enables certificate generation via cert-manager cluster-wide issuer
-      ##
-      clusterIssuer: ""
-
-    ##
-    ## Additional ingress annotations to add
-    ##
-    annotations: {}
-
-    ##
-    ## The hostname to be used to precisely map incoming traffic onto the underlying network service
-    ##
-    hostname: "bmw-hiapp.dev.demo.catena-x.net"
-    secret: tls-secret
-
-  resources: {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
-    # targetMemoryUtilizationPercentage: 80
-
-  nodeSelector: {}
-
-  tolerations: []
-
-  affinity: {}
-
-  ##
-  ## EDC & API-Wrapper configuration.properties
-  ##
-  ## For the EDC configuration consult the eclipse-dataspaceconnector documentation for further details: https://github.com/eclipse-dataspaceconnector/DataSpaceConnector
-  ##
-  server:
-    port: 25553
-
-  connection:
-    endpoints:
-      default:
-        port: 25553
-        path: /
-        ingress: True
+  # initdbUsername: *psqlUsername
+  # initdbPassword: *psqlPassword
