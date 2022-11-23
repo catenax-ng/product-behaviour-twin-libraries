@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "helper.labels" . | nindent 4 }}
 data:
-  application-hibackendservice.properties: |-
+  application-dataupdater.properties: |-
     cloud.accessKey={{ .Values.credentials.cloud.accessKey }}
     cloud.secretKey={{ .Values.credentials.cloud.secretKey }}
     edc.apiwrapper.username={{ .Values.credentials.apiwrapper.username }}
