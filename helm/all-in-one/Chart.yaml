@@ -14,11 +14,11 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
   - name: oem-hi-app
     version: "0.0.1"
-    repository: ../hiapp
+    repository: file://../hiapp
   - name: provider
     version: "0.0.1"
-    repository: ../provider
+    repository: file://../provider
   - name: updater
     version: "0.0.1"
-    repository: ../updater
+    repository: file://../updater
 

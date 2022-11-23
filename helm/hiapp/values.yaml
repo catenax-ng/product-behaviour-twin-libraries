@@ -1,22 +1,4 @@
 ---
-postgresql:
-  fullnameOverride: "rawdatadb"
-  image:
-    pullPolicy: Always
-  auth:
-    database: &psqlDatabase "rawdata"
-    username: &psqlUsername "rawdata_user"
-    password: &psqlPassword "rawdata_pass"
-
-  persistence:
-    enabled: false
-
-  hostname:
-
-  # initdbUsername: *psqlUsername
-  # initdbPassword: *psqlPassword
-
-
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -180,3 +162,52 @@ connection:
       port: 25553
       path: /
       ingress: True
+
+credentials:
+  cloud:
+    accessKey: zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
+    secretKey: someSecret
+  apiwrapper:
+    username: user
+    password: pass
+  api:
+    username: user
+    password: pass
+  rawdata:
+    username: rawdata_user
+    password: rawdata_pass
+  healthindicator:
+    username: healthindicator_user
+    password: healthindicator_pass
+
+configuration.properties: |-
+  spring.application.name=hibackendservice
+  spring.jpa.open-in-view=false
+  edc.apiwrapper.submodelPath=api/service
+  edc.apiwrapper.submodel=submodel
+  edc.apiwrapper.providerEdcUrlKey=provider-connector-url
+  server.port=25553
+  cloud.endpoint=https://play.min.io
+  cloud.region=eu-west-1
+  cloud.bucket=test
+  cloud.inputFile.bucketName=testbucket
+  cloud.inputFile.key=testfile
+  supplier.hiservice.endpoint=http://edc.zf.com/endpoint
+  supplier.bpn=BPN0000SUPPLIER
+  supplier.hiservice.inputAssetName=urn:example:id
+  edc.bpn=BPN0000OEM
+  edc.endpoint=https://oem.com/edc
+  edc.apiwrapper.url=http://myapiwrapper.url
+  security.api.role=USER
+  rawdatadb.drivername=org.postgresql.Driver
+  rawdatadb.show-sql=false
+  rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+  rawdatadb.hibernate.hbm2ddl.auto=update
+  rawdatadb.drivername=org.postgresql.Driver
+  rawdatadb.show-sql=false
+  rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+  rawdatadb.hibernate.hbm2ddl.auto=update
+  spring.config.import=healthindicatordb-bindings.properties
+  rawdatadb.url=jdbc:postgresql://localhost:64321/rawdata
+  healthindicatordb.url=jdbc:postgresql://rawdatadb/healthindicator
+  spring.config.import=
