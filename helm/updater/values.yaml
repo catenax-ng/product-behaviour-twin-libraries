@@ -201,7 +201,7 @@ credentials:
 
 configuration:
   properties: |-
-    spring.application.name=hibackendservice
+    spring.application.name=dataupdater
     spring.jpa.open-in-view=false
     edc.apiwrapper.submodelPath=api/service
     edc.apiwrapper.submodel=submodel
