@@ -7,19 +7,28 @@
 # To get a newer version, you will need to update the SHA.
 # You can also reference a tag or branch, but the action may change without warning.
 
-name: Create and publish a Docker image
-
+name: Build & publish images
 on:
   push:
     branches: ['release']
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: catenax-ng/product-oem-hi-app
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: ./Dockerfile_hibackend
+            image: ghcr.io/catenax-ng/product-oem-hi-app
+          - dockerfile: ./Dockerfile_provider
+            image: ghcr.io/catenax-ng/product-oem-dataprovider
+          - dockerfile: ./Dockerfile_updater
+            image: ghcr.io/catenax-ng/product-oem-datapupdater
     permissions:
       contents: read
       packages: write
@@ -31,41 +40,23 @@ jobs:
           submodules: true
 
       - name: Log in to the Container registry
-        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GH_PACKAGE_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ matrix.image }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ./Dockerfile_hibackend
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: ./Dockerfile_provider
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: ./Dockerfile_updater
+          file: ${{ matrix.dockerfile }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
