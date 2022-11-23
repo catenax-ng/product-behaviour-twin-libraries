@@ -1,19 +1,4 @@
 ---
-postgresql:
-  fullnameOverride: "rawdatadb"
-  image:
-    pullPolicy: Always
-  auth:
-    database: &psqlDatabase "rawdata"
-    username: &psqlUsername "rawdata_user"
-    password: &psqlPassword "rawdata_pass"
-
-  persistence:
-    enabled: false
-
-  # initdbUsername: *psqlUsername
-  # initdbPassword: *psqlPassword
-
 credentials:
   cloud:
     accessKey: &cloudKey zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
@@ -100,8 +85,8 @@ hiapp:
       rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
       rawdatadb.hibernate.hbm2ddl.auto=update
       spring.config.import=healthindicatordb-bindings.properties
-      rawdatadb.url=jdbc:postgresql://localhost:64321/rawdata
-      healthindicatordb.url=jdbc:postgresql://rawdatadb/healthindicator
+      rawdatadb.url=jdbc:postgresql://rawdatadb/rawdata
+      healthindicatordb.url=jdbc:postgresql://healthindicatordb/healthindicator
       spring.config.import=
 
 provider:
@@ -173,8 +158,8 @@ provider:
       rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
       rawdatadb.hibernate.hbm2ddl.auto=update
       spring.config.import=healthindicatordb-bindings.properties
-      rawdatadb.url=jdbc:postgresql://localhost:64321/rawdata
-      healthindicatordb.url=jdbc:postgresql://rawdatadb/healthindicator
+      rawdatadb.url=jdbc:postgresql://rawdatadb/rawdata
+      healthindicatordb.url=jdbc:postgresql://healthindicatordb/healthindicator
       spring.config.import=
 
 updater:
@@ -246,6 +231,37 @@ updater:
       rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
       rawdatadb.hibernate.hbm2ddl.auto=update
       spring.config.import=healthindicatordb-bindings.properties
-      rawdatadb.url=jdbc:postgresql://localhost:64321/rawdata
-      healthindicatordb.url=jdbc:postgresql://rawdatadb/healthindicator
+      rawdatadb.url=jdbc:postgresql://rawdatadb/rawdata
+      healthindicatordb.url=jdbc:postgresql://healthindicatordb/healthindicator
       spring.config.import=
+
+
+rawdatadb:
+  fullnameOverride: "rawdatadb"
+  image:
+    pullPolicy: Always
+  auth:
+    database: &psqlDatabase "rawdata"
+    username: *rawdataUser
+    password: *rawdataPass
+
+  persistence:
+    enabled: false
+
+  # initdbUsername: *psqlUsername
+  # initdbPassword: *psqlPassword
+
+healthindicatordb:
+  fullnameOverride: "healthindicatordb"
+  image:
+    pullPolicy: Always
+  auth:
+    database: &psqlDatabase "healthindicator"
+    username: *hiUser
+    password: *hiPass
+
+  persistence:
+    enabled: false
+
+  # initdbUsername: *psqlUsername
+  # initdbPassword: *psqlPassword
