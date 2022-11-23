@@ -239,7 +239,6 @@ updater:
       rawdatadb.show-sql=false
       rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
       rawdatadb.hibernate.hbm2ddl.auto=update
-      spring.config.import=healthindicatordb-bindings.properties
       rawdatadb.url=jdbc:postgresql://rawdatadb/rawdata
       healthindicatordb.url=jdbc:postgresql://healthindicatordb/healthindicator
       services.dataupdater.endpoint.baseurl=http://bmw-updater.dev.demo.catena-x.net/api/rawdata
