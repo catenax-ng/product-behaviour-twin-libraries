@@ -8,7 +8,7 @@ import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.model.TestDataCategorized;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.VehilceDataLoader;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
-import net.catena_x.btp.libraries.oem.backend.datasource.util.ApiHelper;
+import net.catena_x.btp.libraries.util.apihelper.ApiHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +32,14 @@ public class RawdataProviderController {
     @Value("${services.dataprovider.testdata.file}")
     private String testDataFile;
 
+    @Value("${services.dataprovider.testdata.clutchSpectrumGreen:#{null}}")
+    private String clutchSpectrumGreen;
+
+    @Value("${services.dataprovider.testdata.clutchSpectrumYellow:#{null}}")
+    private String clutchSpectrumYellow;
+
+    @Value("${services.dataprovider.testdata.clutchSpectrumRed:#{null}}")
+    private String clutchSpectrumRed;
 
     @GetMapping("/reset")
     public ResponseEntity<ApiResult> reset() {
@@ -68,7 +76,8 @@ public class RawdataProviderController {
 
     private synchronized TestDataCategorized getTestData() throws DataProviderException {
         if(!testData.isInitialized()) {
-            testData.initFromTestData(testDataReader.loadFromFile(Path.of(testDataFile)));
+            testData.initFromTestData(testDataReader.loadFromFiles(Path.of(testDataFile),
+                    Path.of(clutchSpectrumGreen), Path.of(clutchSpectrumYellow), Path.of(clutchSpectrumRed)));
         }
 
         return testData;

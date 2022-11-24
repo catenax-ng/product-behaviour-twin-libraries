@@ -187,7 +187,6 @@ configuration:
     edc.apiwrapper.submodelPath=api/service
     edc.apiwrapper.submodel=submodel
     edc.apiwrapper.providerEdcUrlKey=provider-connector-url
-    server.port=25553
     cloud.endpoint=https://play.min.io
     cloud.region=eu-west-1
     cloud.bucket=test
@@ -210,5 +209,6 @@ configuration:
     rawdatadb.hibernate.hbm2ddl.auto=update
     rawdatadb.url=jdbc:postgresql://localhost:64321/rawdata
     healthindicatordb.url=jdbc:postgresql://rawdatadb/healthindicator
+    security.api.endpoints.hidatareceiver.notifyresult.noauth=true
     spring.config.import=
     
