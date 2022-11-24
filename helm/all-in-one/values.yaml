@@ -1,20 +1,20 @@
 ---
 credentials:
   cloud:
-    accessKey: &cloudKey <path:behaviour-twin-pilot/health-indicator/credentials/cloud#accessKey>
-    secretKey: &cloudSecret <path:behaviour-twin-pilot/health-indicator/credentials/cloud#secretKey>
+    accessKey: &cloudKey <path:behaviour-twin-pilot/data/health-indicator/credentials/cloud#accessKey>
+    secretKey: &cloudSecret <path:behaviour-twin-pilot/data/health-indicator/credentials/cloud#secretKey>
   apiwrapper:
-    username: &apiwrapperUser <path:behaviour-twin-pilot/health-indicator/credentials/apiwrapper#username>
-    password: &apiwrapperPass <path:behaviour-twin-pilot/health-indicator/credentials/apiwrapper#password>
+    username: &apiwrapperUser <path:behaviour-twin-pilot/data/health-indicator/credentials/apiwrapper#username>
+    password: &apiwrapperPass <path:behaviour-twin-pilot/data/health-indicator/credentials/apiwrapper#password>
   api:
-    username: &apiUser <path:behaviour-twin-pilot/health-indicator/credentials/api#username>
-    password: &apiPass <path:behaviour-twin-pilot/health-indicator/credentials/api#password>
+    username: &apiUser <path:behaviour-twin-pilot/data/health-indicator/credentials/api#username>
+    password: &apiPass <path:behaviour-twin-pilot/data/health-indicator/credentials/api#password>
   rawdata:
-    username: &rawdataUser <path:behaviour-twin-pilot/health-indicator/credentials/rawdata#username>
-    password: &rawdataPass <path:behaviour-twin-pilot/health-indicator/credentials/rawdata#password>
+    username: &rawdataUser <path:behaviour-twin-pilot/data/health-indicator/credentials/rawdata#username>
+    password: &rawdataPass <path:behaviour-twin-pilot/data/health-indicator/credentials/rawdata#password>
   healthindicator:
-    username: &hiUser <path:behaviour-twin-pilot/health-indicator/credentials/healthindicator#username>
-    password: &hiPass <path:behaviour-twin-pilot/health-indicator/credentials/healthindicator#password>
+    username: &hiUser <path:behaviour-twin-pilot/data/health-indicator/credentials/healthindicator#username>
+    password: &hiPass <path:behaviour-twin-pilot/data/health-indicator/credentials/healthindicator#password>
 
 oem-hi-app:
   ingress:
