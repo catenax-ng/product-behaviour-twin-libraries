@@ -32,6 +32,15 @@ public class RawdataProviderController {
     @Value("${services.dataprovider.testdata.file}")
     private String testDataFile;
 
+    @Value("${services.dataprovider.testdata.clutchSpectrumGreen:#{null}}")
+    private String clutchSpectrumGreen;
+
+    @Value("${services.dataprovider.testdata.clutchSpectrumYellow:#{null}}")
+    private String clutchSpectrumYellow;
+
+    @Value("${services.dataprovider.testdata.clutchSpectrumRed:#{null}}")
+    private String clutchSpectrumRed;
+
     @GetMapping("/reset")
     public ResponseEntity<ApiResult> reset() {
         try {
@@ -67,7 +76,8 @@ public class RawdataProviderController {
 
     private synchronized TestDataCategorized getTestData() throws DataProviderException {
         if(!testData.isInitialized()) {
-            testData.initFromTestData(testDataReader.loadFromFile(Path.of(testDataFile)));
+            testData.initFromTestData(testDataReader.loadFromFiles(Path.of(testDataFile),
+                    Path.of(clutchSpectrumGreen), Path.of(clutchSpectrumYellow), Path.of(clutchSpectrumRed)));
         }
 
         return testData;

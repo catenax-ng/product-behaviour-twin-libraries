@@ -1,5 +1,6 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.model;
 
+import lombok.Data;
 import lombok.Getter;
 import net.catena_x.btp.libraries.bamm.common.BammStatus;
 import net.catena_x.btp.libraries.bamm.custom.adaptionvalues.AdaptionValues;
@@ -8,8 +9,10 @@ import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.items.CLSCl
 import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.items.LoadSpectrumType;
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.CatenaXIdToDigitalTwinType;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.DigitalTwinCategorizer;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.DigitalTwinType;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.VehilceDataLoader;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import javax.validation.constraints.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,6 +27,7 @@ import java.util.List;
 @Component
 public class TestDataCategorized {
     @Autowired private DigitalTwinCategorizer digitalTwinCategorizer;
+    @Autowired private VehilceDataLoader vehilceDataLoader;
 
     @Getter private HashMap<String, DigitalTwin> digitalTwinsVehicles = null;
     @Getter private HashMap<String, DigitalTwin> digitalTwinsGearboxes = null;
@@ -37,6 +41,8 @@ public class TestDataCategorized {
     public void initFromTestData(@NotNull final TestData testData) throws DataProviderException {
         initMaps(testData.getDigitalTwins().size());
         fillMaps(testData);
+
+        postProcessLoadCollectiveTargetComponentIds();
 
         initialized = true;
     }
@@ -57,11 +63,16 @@ public class TestDataCategorized {
     }
 
     private void fillMaps(@NotNull final TestData testData) throws DataProviderException {
-        for (DigitalTwin digitalTwin : testData.getDigitalTwins() ) {
+        int loadSpectrumVariant = 0;
+        for (final DigitalTwin digitalTwin : testData.getDigitalTwins() ) {
             switch (digitalTwinCategorizer.categorize(digitalTwin)) {
                 case VEHICLE: {
                     //FA: Append missing adaption values (missing in testdata file).
                     appendRandomAdaptionValues(digitalTwin);
+
+                    //FA Append missing clutch load spectrum.
+                    appendMissingClutchLoadSpectrum(digitalTwin, testData, loadSpectrumVariant);
+                    loadSpectrumVariant = (loadSpectrumVariant + 1) % 3;
 
                     //FA: Reduce data size of load spectra to fit in database varchar type.
                     reduceLoadSpectra(digitalTwin);
@@ -121,6 +132,54 @@ public class TestDataCategorized {
         digitalTwin.setAdaptionValues(adaptionValueList);
     }
 
+    private void appendMissingClutchLoadSpectrum(@NotNull final DigitalTwin digitalTwin,
+                                                 @NotNull final TestData testData, int loadSpectrumVariant)
+                throws DataProviderException {
+
+        ensureLoadspectraList(digitalTwin);
+
+        if (!loadSpectraContains(digitalTwin.getClassifiedLoadSpectra(), LoadSpectrumType.CLUTCH)) {
+            System.out.println("!!!Adding load spectrum of type clutch, not for productive use!!!");
+
+            digitalTwin.getClassifiedLoadSpectra().add(
+                    switch (loadSpectrumVariant) {
+                            case 1 -> testData.getClutchLoadSpectrumYellow();
+                            case 2 -> testData.getClutchLoadSpectrumRed();
+                            default -> testData.getClutchLoadSpectrumGreen();
+                        });
+        }
+    }
+
+    private static void ensureLoadspectraList(DigitalTwin digitalTwin) {
+        if(digitalTwin.getClassifiedLoadSpectra() == null) {
+            digitalTwin.setClassifiedLoadSpectra(new ArrayList<>());
+        }
+    }
+
+    private boolean loadSpectraContains(@NotNull final List<ClassifiedLoadSpectrum> loadSpectra,
+                                        @NotNull final LoadSpectrumType loadSpectrumType) throws DataProviderException {
+
+        for (final ClassifiedLoadSpectrum loadSpectrum : loadSpectra) {
+            asserComponentDescription(loadSpectrum);
+            if(loadSpectrum.getMetadata().getComponentDescription() == loadSpectrumType) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void asserComponentDescription(@NotNull final ClassifiedLoadSpectrum loadSpectrum)
+            throws DataProviderException {
+        if(loadSpectrum.getMetadata() == null) {
+            throw new DataProviderException("Metadata not present!");
+        }
+
+        if(loadSpectrum.getMetadata().getComponentDescription() == null) {
+            throw new DataProviderException("Component description not present!");
+        }
+    }
+
     private void reduceLoadSpectra(@Nullable final DigitalTwin digitalTwin) {
         System.out.println("!!!Reducing load spectrum size, not for productive use!!!");
 
@@ -130,17 +189,13 @@ public class TestDataCategorized {
             return;
         }
 
-        for (ClassifiedLoadSpectrum loadSpectrum : loadSpectra) {
+        for (final ClassifiedLoadSpectrum loadSpectrum : loadSpectra) {
             reduceSize(loadSpectrum);
         }
     }
 
     private void reduceSize(@NotNull ClassifiedLoadSpectrum loadSpectrum) {
         final int count = loadSpectrum.getBody().getCounts().getCountsList().length;
-
-        if(loadSpectrum.getMetadata().getComponentDescription() == LoadSpectrumType.GEAR_SET) {
-            loadSpectrum.getMetadata().setComponentDescription(LoadSpectrumType.CLUTCH);
-        }
 
         if(count <= 100) {
             return;
@@ -152,6 +207,36 @@ public class TestDataCategorized {
         for (CLSClass clsClass : loadSpectrum.getBody().getClasses()) {
             clsClass.setClassList(Arrays.copyOfRange(clsClass.getClassList(), 0, 100));
         }
+    }
+
+    private void postProcessLoadCollectiveTargetComponentIds() {
+        digitalTwinsVehicles.forEach((vehicleId, vehicleTwin)->{
+            ensureLoadspectraList(vehicleTwin);
+
+            final CatenaXIdToDigitalTwinType idToType =
+                    (@NotNull final String catenaXId) -> this.catenaXIdToType(catenaXId);
+
+            String gearboxId = null;
+            try {
+                gearboxId = vehilceDataLoader.getGearboxID(vehicleTwin, idToType);
+            } catch (DataProviderException exception) {
+                //ignore
+                return;
+           }
+
+           for (final ClassifiedLoadSpectrum loadSpectrum : vehicleTwin.getClassifiedLoadSpectra()) {
+                try {
+                    asserComponentDescription(loadSpectrum);
+                } catch (DataProviderException exception) {
+                    //ignore
+                    continue;
+                }
+
+                if(loadSpectrum.getMetadata().getComponentDescription() == LoadSpectrumType.CLUTCH) {
+                    loadSpectrum.setTargetComponentID(gearboxId);
+                }
+            }
+        });
     }
 
     protected <T> boolean isNullOrEmpty(@Nullable final Collection<T> collection) {
