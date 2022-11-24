@@ -1,20 +1,20 @@
 ---
 credentials:
   cloud:
-    accessKey: &cloudKey zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
-    secretKey: &cloudSecret someSecret
+    accessKey: &cloudKey <path:behaviour-twin-pilot/health-indicator/credentials/cloud#accessKey>
+    secretKey: &cloudSecret <path:behaviour-twin-pilot/health-indicator/credentials/cloud#secretKey>
   apiwrapper:
-    username: &apiwrapperUser user
-    password: &apiwrapperPass pass
+    username: &apiwrapperUser <path:behaviour-twin-pilot/health-indicator/credentials/apiwrapper#username>
+    password: &apiwrapperPass <path:behaviour-twin-pilot/health-indicator/credentials/apiwrapper#password>
   api:
-    username: &apiUser user
-    password: &apiPass pass
+    username: &apiUser <path:behaviour-twin-pilot/health-indicator/credentials/api#username>
+    password: &apiPass <path:behaviour-twin-pilot/health-indicator/credentials/api#password>
   rawdata:
-    username: &rawdataUser rawdata_user
-    password: &rawdataPass rawdata_pass
+    username: &rawdataUser <path:behaviour-twin-pilot/health-indicator/credentials/rawdata#username>
+    password: &rawdataPass <path:behaviour-twin-pilot/health-indicator/credentials/rawdata#password>
   healthindicator:
-    username: &hiUser healthindicator_user
-    password: &hiPass healthindicator_pass
+    username: &hiUser <path:behaviour-twin-pilot/health-indicator/credentials/healthindicator#username>
+    password: &hiPass <path:behaviour-twin-pilot/health-indicator/credentials/healthindicator#password>
 
 oem-hi-app:
   ingress:
@@ -75,6 +75,7 @@ oem-hi-app:
       edc.endpoint=https://dlr.dev.demo.catena-x.net
       edc.apiwrapper.url=https://apiw-dlr.dev.demo.catena-x.net
       security.api.role=USER
+      security.api.endpoints.hidatareceiver.notifyresult.noauth=true
       rawdatadb.drivername=org.postgresql.Driver
       rawdatadb.show-sql=false
       rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
