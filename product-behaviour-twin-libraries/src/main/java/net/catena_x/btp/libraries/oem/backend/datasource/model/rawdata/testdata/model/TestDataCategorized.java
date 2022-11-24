@@ -1,6 +1,5 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.model;
 
-import lombok.Data;
 import lombok.Getter;
 import net.catena_x.btp.libraries.bamm.common.BammStatus;
 import net.catena_x.btp.libraries.bamm.custom.adaptionvalues.AdaptionValues;
@@ -36,6 +35,12 @@ public class TestDataCategorized {
 
     public boolean isInitialized() {
         return initialized;
+    }
+
+    public void reset() {
+        initialized = false;
+        digitalTwinsVehicles = null;
+        digitalTwinsGearboxes = null;
     }
 
     public void initFromTestData(@NotNull final TestData testData) throws DataProviderException {
