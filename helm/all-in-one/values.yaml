@@ -16,6 +16,7 @@ credentials:
     username: &hiUser <path:behaviour-twin-pilot/data/health-indicator/credentials/healthindicator#username>
     password: &hiPass <path:behaviour-twin-pilot/data/health-indicator/credentials/healthindicator#password>
 
+
 oem-hi-app:
   ingress:
     enabled: true
