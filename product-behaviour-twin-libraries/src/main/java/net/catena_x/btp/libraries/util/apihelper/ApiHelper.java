@@ -1,4 +1,4 @@
-package net.catena_x.btp.libraries.oem.backend.datasource.util;
+package net.catena_x.btp.libraries.util.apihelper;
 
 import net.catena_x.btp.libraries.oem.backend.datasource.model.api.ApiResult;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.api.ApiResultType;
