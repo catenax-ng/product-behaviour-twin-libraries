@@ -23,8 +23,6 @@ public class TestDataReader {
     private ObjectMapper objectMapper = null;
 
     public TestData loadFromFile(@NotNull final Path filename) throws DataProviderException {
-        intObjectManager();
-
         return loadFromFiles(filename, null, null, null);
     }
 
@@ -44,6 +42,16 @@ public class TestDataReader {
         }
     }
 
+    public TestData loadFromJson(@NotNull final String testDataJson) throws DataProviderException {
+        intObjectManager();
+
+        try {
+            return  objectMapper.readValue(testDataJson, TestData.class);
+        } catch (IOException exception) {
+            throw new DataProviderException("Error while reading testdata from json string!", exception);
+        }
+    }
+
     private ClassifiedLoadSpectrum loadClutcLoadSpectrumIfPresent(@Nullable final Path clutchSpectrum)
             throws IOException {
 
@@ -54,7 +62,7 @@ public class TestDataReader {
         return objectMapper.readValue(new File(clutchSpectrum.toString()), ClassifiedLoadSpectrum.class);
     }
 
-    private void intObjectManager() {
+    private synchronized void intObjectManager() {
         if(objectMapper != null) {
             return;
         }
