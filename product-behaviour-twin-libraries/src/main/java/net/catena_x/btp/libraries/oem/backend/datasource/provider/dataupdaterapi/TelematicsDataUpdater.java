@@ -72,7 +72,9 @@ public class TelematicsDataUpdater {
             throws DataProviderException {
 
         final HttpUrl requestUrl = HttpUrl.parse(
-                dataUpdaterApi.getRawdataApiBaseUrl() + "/telematicsdata/add");
+                dataUpdaterApi.getRawdataApiBaseUrl()).newBuilder().
+                addPathSegment("telematicsdata").addPathSegment("add").build();
+
         final HttpHeaders headers = dataUpdaterApi.generateDefaultHeaders();
 
         dataUpdaterApi.addAuthorizationHeaders(headers);

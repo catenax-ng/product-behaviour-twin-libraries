@@ -76,8 +76,7 @@ public class EdcApi {
     }
 
     private HttpUrl buildApiWrapperUrl(@NotNull final HttpUrl partnerUrl, @NotNull final String asset) {
-        final HttpUrl apiWrapperUrl = HttpUrl.parse(this.apiWrapperUrl);
-        return apiWrapperUrl.newBuilder()
+        return HttpUrl.parse(this.apiWrapperUrl).newBuilder()
                 .addPathSegments(submodelPath)
                 .addPathSegment(asset)
                 .addPathSegment(submodel)

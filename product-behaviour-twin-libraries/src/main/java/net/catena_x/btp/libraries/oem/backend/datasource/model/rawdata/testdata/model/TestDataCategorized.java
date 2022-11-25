@@ -11,9 +11,11 @@ import net.catena_x.btp.libraries.bamm.testdata.TestData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.CatenaXIdToDigitalTwinType;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.DigitalTwinCategorizer;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.DigitalTwinType;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.VehilceDataLoader;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.VehicleDataLoader;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import javax.validation.constraints.NotNull;
+
+import net.catena_x.btp.libraries.util.hleper.ContentChecker;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,7 +28,7 @@ import java.util.List;
 @Component
 public class TestDataCategorized {
     @Autowired private DigitalTwinCategorizer digitalTwinCategorizer;
-    @Autowired private VehilceDataLoader vehilceDataLoader;
+    @Autowired private VehicleDataLoader vehicleDataLoader;
 
     @Getter private HashMap<String, DigitalTwin> digitalTwinsVehicles = null;
     @Getter private HashMap<String, DigitalTwin> digitalTwinsGearboxes = null;
@@ -65,6 +67,35 @@ public class TestDataCategorized {
         }
 
         return DigitalTwinType.UNKNOWN;
+    }
+
+    public DigitalTwin getGearboxTwinFromVehicleTwin(@NotNull final DigitalTwin vehicleTwin) {
+        try {
+            final CatenaXIdToDigitalTwinType idToType =
+                    (@NotNull final String catenaXId) -> this.catenaXIdToType(catenaXId);
+
+            final String gearboxId = vehicleDataLoader.getGearboxID(vehicleTwin, idToType);
+            if (gearboxId == null) {
+                return null;
+            }
+
+            return this.getDigitalTwinsGearboxes().get(gearboxId);
+        } catch (DataProviderException exception) {
+            return null;
+        }
+    }
+
+    public DigitalTwin getGearboxTwinFromVehicleTwinMustExists(@NotNull final DigitalTwin vehicleTwin)
+            throws DataProviderException {
+
+        final DigitalTwin gearboxTwin = getGearboxTwinFromVehicleTwin(vehicleTwin);
+
+        if(gearboxTwin == null) {
+            throw new DataProviderException("No gearbox twin found for vehicle twin "
+                    + vehicleTwin.getCatenaXId() + "!");
+        }
+
+        return gearboxTwin;
     }
 
     private void fillMaps(@NotNull final TestData testData) throws DataProviderException {
@@ -109,7 +140,7 @@ public class TestDataCategorized {
 
         BammStatus status = null;
 
-        if(!isNullOrEmpty(digitalTwin.getClassifiedLoadSpectra())) {
+        if(!ContentChecker.isNullOrEmpty(digitalTwin.getClassifiedLoadSpectra())) {
             if(digitalTwin.getClassifiedLoadSpectra().get(0).getMetadata() != null) {
                 status = digitalTwin.getClassifiedLoadSpectra().get(0).getMetadata().getStatus();
             }
@@ -223,7 +254,7 @@ public class TestDataCategorized {
 
             String gearboxId = null;
             try {
-                gearboxId = vehilceDataLoader.getGearboxID(vehicleTwin, idToType);
+                gearboxId = vehicleDataLoader.getGearboxID(vehicleTwin, idToType);
             } catch (DataProviderException exception) {
                 //ignore
                 return;
@@ -242,12 +273,5 @@ public class TestDataCategorized {
                 }
             }
         });
-    }
-
-    protected <T> boolean isNullOrEmpty(@Nullable final Collection<T> collection) {
-        if(collection == null) {
-            return true;
-        }
-        return collection.isEmpty();
     }
 }

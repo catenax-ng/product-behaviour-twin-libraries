@@ -19,7 +19,8 @@ public class DatabaseReset {
 
     public void reset() throws DataProviderException {
         final HttpUrl requestUrl = HttpUrl.parse(
-                dataUpdaterApi.getRawdataApiBaseUrl() + "/reset");
+                dataUpdaterApi.getRawdataApiBaseUrl()).newBuilder().addPathSegment("reset").build();
+
         final HttpHeaders headers = dataUpdaterApi.generateDefaultHeaders();
 
         dataUpdaterApi.addAuthorizationHeaders(headers);
