@@ -29,7 +29,7 @@ import static org.hibernate.cfg.AvailableSettings.*;
 public class PersistenceRawdataConfiguration {
     public static final String TRANSACTION_MANAGER = "rawdataTransactionManager";
 
-    @Autowired private Environment env;
+    @Autowired private Environment environment;
 
     @Bean
     public LocalContainerEntityManagerFactoryBean rawdataEntityManager() {
@@ -42,9 +42,9 @@ public class PersistenceRawdataConfiguration {
         entityManager.setJpaVendorAdapter(vendorAdapter);
 
         final HashMap<String, Object> properties = new HashMap<>();
-        properties.put(DIALECT, env.getProperty("rawdatadb.hibernate.dialect"));
-        properties.put(SHOW_SQL, env.getProperty("rawdatadb.show-sql"));
-        properties.put(HBM2DDL_AUTO, env.getProperty("rawdatadb.hibernate.hbm2ddl.auto"));
+        properties.put(DIALECT, environment.getProperty("rawdatadb.hibernate.dialect"));
+        properties.put(SHOW_SQL, environment.getProperty("rawdatadb.show-sql"));
+        properties.put(HBM2DDL_AUTO, environment.getProperty("rawdatadb.hibernate.hbm2ddl.auto"));
 
         entityManager.setJpaPropertyMap(properties);
 
@@ -54,10 +54,10 @@ public class PersistenceRawdataConfiguration {
     @Bean
     public DataSource rawdataDataSource() {
         final DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(env.getProperty("rawdatadb.drivername"));
-        dataSource.setUrl(env.getProperty("rawdatadb.url"));
-        dataSource.setUsername(env.getProperty("rawdatadb.username"));
-        dataSource.setPassword(env.getProperty("rawdatadb.password"));
+        dataSource.setDriverClassName(environment.getProperty("rawdatadb.drivername"));
+        dataSource.setUrl(environment.getProperty("rawdatadb.url"));
+        dataSource.setUsername(environment.getProperty("rawdatadb.username"));
+        dataSource.setPassword(environment.getProperty("rawdatadb.password"));
 
         return dataSource;
     }

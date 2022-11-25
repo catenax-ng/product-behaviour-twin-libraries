@@ -1,4 +1,4 @@
-package net.catena_x.btp.libraries.oem.backend.database.util.annotations;
+package net.catena_x.btp.libraries.util.database.annotations;
 
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@Transactional(rollbackFor = Exception.class, isolation = Isolation.SERIALIZABLE,
-        propagation = Propagation.REQUIRES_NEW)
-public @interface TransactionSerializableCreateNew {
+@Transactional(rollbackFor = Exception.class, isolation = Isolation.DEFAULT,
+        propagation = Propagation.MANDATORY)
+public @interface TransactionDefaultUseExisting {
 }

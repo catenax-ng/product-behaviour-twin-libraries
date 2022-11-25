@@ -18,6 +18,8 @@ import java.time.Instant;
 @NamedNativeQuery(name = "VehicleDAO.updateNewestTelematicsIdByVehicleId",
         query = "UPDATE vehicles SET newest_telematics_id=:telematics_id, " +
                 "update_timestamp=CURRENT_TIMESTAMP, sync_counter=:sync_counter WHERE vehicle_id=:vehicle_id")
+@NamedNativeQuery(name = "VehicleDAO.deleteAll",
+        query = "DELETE FROM vehicles")
 @NamedNativeQuery(name = "VehicleDAO.deleteByVehilceId",
         query = "DELETE FROM vehicles WHERE vehicle_id=:vehicle_id")
 @NamedNativeQuery(name = "VehicleDAO.deleteByVan",

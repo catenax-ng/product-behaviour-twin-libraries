@@ -3,16 +3,16 @@ package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.vehic
 import net.catena_x.btp.libraries.bamm.custom.adaptionvalues.AdaptionValues;
 import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.ClassifiedLoadSpectrum;
 import net.catena_x.btp.libraries.bamm.util.StatusFromBammFunction;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.table.RawTableBase;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.RawTableBase;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.sync.SyncDAO;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.sync.SyncTableIntern;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.telematicsdata.InputTelematicsDataConverter;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.telematicsdata.TelematicsDataDAO;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.telematicsdata.TelematicsDataTableIntern;
-import net.catena_x.btp.libraries.oem.backend.database.util.annotations.TransactionDefaultCreateNew;
-import net.catena_x.btp.libraries.oem.backend.database.util.annotations.TransactionDefaultUseExisting;
-import net.catena_x.btp.libraries.oem.backend.database.util.annotations.TransactionSerializableCreateNew;
-import net.catena_x.btp.libraries.oem.backend.database.util.annotations.TransactionSerializableUseExisting;
+import net.catena_x.btp.libraries.util.database.annotations.TransactionDefaultCreateNew;
+import net.catena_x.btp.libraries.util.database.annotations.TransactionDefaultUseExisting;
+import net.catena_x.btp.libraries.util.database.annotations.TransactionSerializableCreateNew;
+import net.catena_x.btp.libraries.util.database.annotations.TransactionSerializableUseExisting;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelematicsData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.registration.VehicleInfo;
@@ -27,7 +27,6 @@ import javax.persistence.PersistenceContext;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Component
@@ -101,7 +100,7 @@ public class VehicleTableIntern extends RawTableBase {
         InputTelematicsData telematicsDatatoAdd = telematicsDataIfNewer(newTelematicsData, vehicle.telematicsData());
 
         if(telematicsDatatoAdd != null) {
-            final String newTelematicsId = telematicsDataTable.uploadTelematicsDataGetIdExternTransaction(
+            final String newTelematicsId = telematicsDataTable.updateTelematicsDataGetIdExternTransaction(
                     telematicsDatatoAdd);
 
             try {

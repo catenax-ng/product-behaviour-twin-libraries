@@ -1,12 +1,12 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.telematicsdata;
 
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.table.RawTableBase;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.RawTableBase;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.sync.SyncDAO;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.sync.SyncTableIntern;
-import net.catena_x.btp.libraries.oem.backend.database.util.annotations.TransactionDefaultCreateNew;
-import net.catena_x.btp.libraries.oem.backend.database.util.annotations.TransactionDefaultUseExisting;
-import net.catena_x.btp.libraries.oem.backend.database.util.annotations.TransactionSerializableCreateNew;
-import net.catena_x.btp.libraries.oem.backend.database.util.annotations.TransactionSerializableUseExisting;
+import net.catena_x.btp.libraries.util.database.annotations.TransactionDefaultCreateNew;
+import net.catena_x.btp.libraries.util.database.annotations.TransactionDefaultUseExisting;
+import net.catena_x.btp.libraries.util.database.annotations.TransactionSerializableCreateNew;
+import net.catena_x.btp.libraries.util.database.annotations.TransactionSerializableUseExisting;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelematicsData;
 import org.hibernate.Session;
@@ -32,7 +32,7 @@ public class TelematicsDataTableIntern extends RawTableBase {
     @Autowired private SyncTableIntern syncTable;
 
     @TransactionSerializableUseExisting
-    public String uploadTelematicsDataGetIdExternTransaction(@NotNull final InputTelematicsData newTelematicsData)
+    public String updateTelematicsDataGetIdExternTransaction(@NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
         try {
             entityManager.flush();
@@ -54,9 +54,9 @@ public class TelematicsDataTableIntern extends RawTableBase {
     }
 
     @TransactionSerializableCreateNew
-    public String uploadTelematicsDataGetIdNewTransaction(@NotNull final InputTelematicsData newTelematicsData)
+    public String updateTelematicsDataGetIdNewTransaction(@NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
-        return uploadTelematicsDataGetIdExternTransaction(newTelematicsData);
+        return updateTelematicsDataGetIdExternTransaction(newTelematicsData);
     }
 
     @TransactionDefaultUseExisting

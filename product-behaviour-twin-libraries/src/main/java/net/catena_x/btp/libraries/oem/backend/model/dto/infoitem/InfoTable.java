@@ -1,6 +1,6 @@
 package net.catena_x.btp.libraries.oem.backend.model.dto.infoitem;
 
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.table.RawTableBase;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.RawTableBase;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.infoitem.InfoTableIntern;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import net.catena_x.btp.libraries.oem.backend.model.enums.InfoKey;

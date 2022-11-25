@@ -1,8 +1,8 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.stringdata;
 
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.table.RawTableBase;
-import net.catena_x.btp.libraries.oem.backend.database.util.annotations.TransactionDefaultCreateNew;
-import net.catena_x.btp.libraries.oem.backend.database.util.annotations.TransactionDefaultUseExisting;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.RawTableBase;
+import net.catena_x.btp.libraries.util.database.annotations.TransactionDefaultCreateNew;
+import net.catena_x.btp.libraries.util.database.annotations.TransactionDefaultUseExisting;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

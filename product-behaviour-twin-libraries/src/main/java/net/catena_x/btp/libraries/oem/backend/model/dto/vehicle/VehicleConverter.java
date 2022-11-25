@@ -1,6 +1,6 @@
 package net.catena_x.btp.libraries.oem.backend.model.dto.vehicle;
 
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.converter.DAOConverter;
+import net.catena_x.btp.libraries.util.database.converter.DAOConverter;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.vehicle.VehicleDAO;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.vehicle.VehicleWithTelematicsDataDAO;
 import net.catena_x.btp.libraries.oem.backend.model.dto.telematicsdata.TelematicsData;

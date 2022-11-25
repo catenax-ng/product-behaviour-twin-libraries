@@ -1,6 +1,6 @@
 package net.catena_x.btp.libraries.oem.backend.model.dto.telematicsdata;
 
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.table.RawTableBase;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.RawTableBase;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.telematicsdata.TelematicsDataTableIntern;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelematicsData;
@@ -18,12 +18,12 @@ public class TelematicsDataTable extends RawTableBase {
 
     public String uploadTelematicsDataGetIdNewTransaction(@NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
-        return intern.uploadTelematicsDataGetIdNewTransaction(newTelematicsData);
+        return intern.updateTelematicsDataGetIdNewTransaction(newTelematicsData);
     }
 
     public String uploadTelematicsDataGetIdExternTransaction(@NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
-        return intern.uploadTelematicsDataGetIdExternTransaction(newTelematicsData);
+        return intern.updateTelematicsDataGetIdExternTransaction(newTelematicsData);
     }
 
     public void deleteAllNewTransaction() throws OemDatabaseException {

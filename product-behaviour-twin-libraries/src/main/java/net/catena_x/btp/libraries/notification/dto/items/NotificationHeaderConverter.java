@@ -1,7 +1,7 @@
 package net.catena_x.btp.libraries.notification.dto.items;
 
 import net.catena_x.btp.libraries.notification.dao.items.NotificationHeaderDAO;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.converter.DAOConverter;
+import net.catena_x.btp.libraries.util.database.converter.DAOConverter;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;

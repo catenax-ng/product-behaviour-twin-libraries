@@ -1,6 +1,6 @@
 package net.catena_x.btp.libraries.oem.backend.model.dto.sync;
 
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.converter.DAOConverter;
+import net.catena_x.btp.libraries.util.database.converter.DAOConverter;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.sync.SyncDAO;
 import javax.validation.constraints.NotNull;
 import org.jetbrains.annotations.Nullable;

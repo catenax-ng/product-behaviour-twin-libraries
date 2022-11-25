@@ -1,4 +1,4 @@
-package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.converter;
+package net.catena_x.btp.libraries.util.database.converter;
 
 import org.jetbrains.annotations.Nullable;
 

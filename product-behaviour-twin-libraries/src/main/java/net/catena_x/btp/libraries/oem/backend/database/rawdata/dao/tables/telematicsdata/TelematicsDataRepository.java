@@ -24,6 +24,7 @@ public interface TelematicsDataRepository extends Repository<TelematicsDataDAO, 
     List<TelematicsDataDAO> queryAllOrderByStorageTimestamp();
     List<TelematicsDataDAO> queryAllOrderBySyncCounter();
     List<TelematicsDataDAO> queryByVehicleId(@Param("vehicle_id") @NotNull final String vehicleId);
+    List<TelematicsDataDAO> queryByVehicleIdOrderBySyncCounter(@Param("vehicle_id") @NotNull final String vehicleId);
     List<TelematicsDataDAO> queryByStorageSince(
             @Param("storage_timestamp_since") @NotNull final Instant storageTimestampSince);
     List<TelematicsDataDAO> queryByStorageUntil(
