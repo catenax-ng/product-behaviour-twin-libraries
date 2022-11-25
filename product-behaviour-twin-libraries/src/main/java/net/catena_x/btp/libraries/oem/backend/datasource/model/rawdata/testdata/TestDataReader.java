@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.ClassifiedLoadSpectrum;
+import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import net.catena_x.btp.libraries.util.json.TimeStampDeserializer;
@@ -17,6 +18,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class TestDataReader {
@@ -46,7 +53,18 @@ public class TestDataReader {
         intObjectManager();
 
         try {
-            return  objectMapper.readValue(testDataJson, TestData.class);
+            return objectMapper.readValue(testDataJson, TestData.class);
+        } catch (IOException exception) {
+            throw new DataProviderException("Error while reading testdata from json string!", exception);
+        }
+    }
+
+    public void appendFromJson(@NotNull final TestData existingTestdata,
+                               @NotNull final String testDataJson) throws DataProviderException {
+        intObjectManager();
+
+        try {
+            append(existingTestdata, objectMapper.readValue(testDataJson, TestData.class));
         } catch (IOException exception) {
             throw new DataProviderException("Error while reading testdata from json string!", exception);
         }
@@ -86,5 +104,17 @@ public class TestDataReader {
         testData.setClutchLoadSpectrumGreen(loadClutcLoadSpectrumIfPresent(clutchSpectrumGreen));
         testData.setClutchLoadSpectrumYellow(loadClutcLoadSpectrumIfPresent(clutchSpectrumYellow));
         testData.setClutchLoadSpectrumRed(loadClutcLoadSpectrumIfPresent(clutchSpectrumRed));
+    }
+
+    private void append(@NotNull final TestData existingTestdata, @NotNull final TestData testDataToAppend)
+            throws IOException {
+
+        HashMap<String, DigitalTwin> digitalTwins = Stream.concat(
+                        existingTestdata.getDigitalTwins().stream(),
+                        testDataToAppend.getDigitalTwins().stream())
+                .collect(Collectors.toMap(DigitalTwin::getCatenaXId,
+                        Function.identity(), (prev, next) -> next, HashMap::new));
+
+        existingTestdata.setDigitalTwins(new ArrayList<>(digitalTwins.values()));
     }
 }

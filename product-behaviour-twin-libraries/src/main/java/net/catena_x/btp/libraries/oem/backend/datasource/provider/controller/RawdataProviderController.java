@@ -72,7 +72,8 @@ public class RawdataProviderController {
     @GetMapping("/init/vehicles")
     public ResponseEntity<ApiResult> initVehicles() {
         try {
-            vehicleRegistration.registerFromTestDataCetegorized(getTestDataCategorized(null));
+            vehicleRegistration.registerFromTestDataCetegorized(getTestDataCategorized(
+                    null, true));
             return apiHelper.ok("Vehicles registered.");
         }
         catch(DataProviderException exception) {
@@ -83,7 +84,8 @@ public class RawdataProviderController {
     @GetMapping("/init/telematicsdata")
     public ResponseEntity<ApiResult> initTelematicsData() {
         try {
-            telematicsDataUpdater.updateFromTestDataCetegorized(getTestDataCategorized(null));
+            telematicsDataUpdater.updateFromTestDataCetegorized(getTestDataCategorized(
+                    null, true));
             return apiHelper.ok("Telematics data initialized.");
         }
         catch(DataProviderException exception) {
@@ -127,25 +129,58 @@ public class RawdataProviderController {
         }
     }
 
+    @PostMapping("/init/appendbyfile")
+    public ResponseEntity<ApiResult> appendByFile(@RequestParam(value = "testdata", required = false)
+                                                  @Nullable final MultipartFile testDataFileParam,
+                                                  @RequestBody(required = false)
+                                                  @Nullable final byte[] testDataFileBody) {
+
+        try {
+            if (testDataFileParam != null) {
+                return appendByJsonFile(new String(testDataFileParam.getBytes(), StandardCharsets.UTF_8));
+            } else if (testDataFileBody != null) {
+                return appendByJsonFile(new String(testDataFileBody, StandardCharsets.UTF_8));
+            } else {
+                throw new DataProviderException("No JSON file given!");
+            }
+        } catch (Exception exception) {
+            return apiHelper.failed(exception.toString());
+        }
+    }
+
     private synchronized ResponseEntity<ApiResult> reinitByJsonFile(@NotNull final String testDataJson)
             throws DataProviderException {
 
-        getTestDataCategorized(testDataJson);
+        getTestDataCategorized(testDataJson, true);
 
         return apiHelper.ok("Testdata reinitialized.");
     }
 
+    private synchronized ResponseEntity<ApiResult> appendByJsonFile(@NotNull final String testDataJson)
+            throws DataProviderException {
+
+        getTestDataCategorized(testDataJson, false);
+
+        return apiHelper.ok("Testdata appended.");
+    }
+
     private TestData getTestData() throws DataProviderException {
-        getTestDataCategorized(null);
+        getTestDataCategorized(null, true);
         return testData;
     }
 
-    private synchronized TestDataCategorized getTestDataCategorized(@Nullable final String testDataJson)
+    private synchronized TestDataCategorized getTestDataCategorized(@Nullable final String testDataJson,
+                                                                    @NotNull boolean resetTestdata)
             throws DataProviderException {
 
         if(testDataJson != null) {
+            if(resetTestdata || testData == null) {
+                testData = testDataReader.loadFromJson(testDataJson);
+            } else {
+                testDataReader.appendFromJson(testData, testDataJson);
+            }
+
             testDataCategorized.reset();
-            testData = testDataReader.loadFromJson(testDataJson);
             testDataCategorized.initFromTestData(testData);
             return testDataCategorized;
         }
