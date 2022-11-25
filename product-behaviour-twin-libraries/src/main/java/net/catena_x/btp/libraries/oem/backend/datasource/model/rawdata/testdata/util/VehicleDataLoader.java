@@ -14,7 +14,7 @@ import java.time.Instant;
 import java.util.List;
 
 @Component
-public class VehilceDataLoader extends DataLoader {
+public class VehicleDataLoader extends DataLoader {
 
     public String getCatenaXId(@NotNull final DigitalTwin vehicleTwin) {
         return vehicleTwin.getCatenaXId();
