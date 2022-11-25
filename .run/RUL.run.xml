@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="RUL" type="CompoundRunConfigurationType">
+    <toRun name="OemDataProviderApplication" type="Application" />
+    <toRun name="OemDataUpdaterApplication" type="Application" />
+    <toRun name="OemRulBackendServiceApplication" type="Application" />
+    <method v="2" />
+  </configuration>
+</component>

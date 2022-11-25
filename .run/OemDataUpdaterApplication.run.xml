@@ -1,0 +1,21 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="OemDataUpdaterApplication" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="net.catena_x.btp.libraries.oem.backend.datasource.updater.OemDataUpdaterApplication" />
+    <module name="product-behaviour-twin-libraries" />
+    <option name="PROGRAM_PARAMETERS" value="DATAUPDATER_PORT=8081" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="net.catena_x.btp.libraries.oem.backend.datasource.updater.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <extension name="software.aws.toolkits.jetbrains.core.execution.JavaAwsConnectionExtension">
+      <option name="credential" />
+      <option name="region" />
+      <option name="useCurrentConnection" value="false" />
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
