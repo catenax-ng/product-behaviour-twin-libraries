@@ -177,12 +177,16 @@ public class TestDataCategorized {
         if (!loadSpectraContains(digitalTwin.getClassifiedLoadSpectra(), LoadSpectrumType.CLUTCH)) {
             System.out.println("!!!Adding load spectrum of type clutch, not for productive use!!!");
 
-            digitalTwin.getClassifiedLoadSpectra().add(
-                    switch (loadSpectrumVariant) {
+
+            final ClassifiedLoadSpectrum loadSpectrum = switch (loadSpectrumVariant) {
                             case 1 -> testData.getClutchLoadSpectrumYellow();
                             case 2 -> testData.getClutchLoadSpectrumRed();
                             default -> testData.getClutchLoadSpectrumGreen();
-                        });
+                        };
+
+            if(loadSpectrum != null) {
+                digitalTwin.getClassifiedLoadSpectra().add(loadSpectrum);
+            }
         }
     }
 
@@ -196,7 +200,7 @@ public class TestDataCategorized {
                                         @NotNull final LoadSpectrumType loadSpectrumType) throws DataProviderException {
 
         for (final ClassifiedLoadSpectrum loadSpectrum : loadSpectra) {
-            asserComponentDescription(loadSpectrum);
+            assertComponentDescription(loadSpectrum);
             if(loadSpectrum.getMetadata().getComponentDescription() == loadSpectrumType) {
                 return true;
             }
@@ -205,8 +209,12 @@ public class TestDataCategorized {
         return false;
     }
 
-    private void asserComponentDescription(@NotNull final ClassifiedLoadSpectrum loadSpectrum)
+    private void assertComponentDescription(@NotNull final ClassifiedLoadSpectrum loadSpectrum)
             throws DataProviderException {
+        if(loadSpectrum == null) {
+            throw new DataProviderException("Load spectrum not present!");
+        }
+
         if(loadSpectrum.getMetadata() == null) {
             throw new DataProviderException("Metadata not present!");
         }
@@ -217,6 +225,7 @@ public class TestDataCategorized {
     }
 
     private void reduceLoadSpectra(@Nullable final DigitalTwin digitalTwin) {
+        /*
         System.out.println("!!!Reducing load spectrum size, not for productive use!!!");
 
         final List<ClassifiedLoadSpectrum> loadSpectra = digitalTwin.getClassifiedLoadSpectra();
@@ -228,6 +237,7 @@ public class TestDataCategorized {
         for (final ClassifiedLoadSpectrum loadSpectrum : loadSpectra) {
             reduceSize(loadSpectrum);
         }
+        */
     }
 
     private void reduceSize(@NotNull ClassifiedLoadSpectrum loadSpectrum) {
@@ -262,7 +272,7 @@ public class TestDataCategorized {
 
            for (final ClassifiedLoadSpectrum loadSpectrum : vehicleTwin.getClassifiedLoadSpectra()) {
                 try {
-                    asserComponentDescription(loadSpectrum);
+                    assertComponentDescription(loadSpectrum);
                 } catch (DataProviderException exception) {
                     //ignore
                     continue;

@@ -6,13 +6,10 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.model.TestDataCategorized;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.CatenaXIdToDigitalTwinType;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.VehicleDataLoader;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import net.catena_x.btp.libraries.util.hleper.ContentChecker;
 import net.catena_x.btp.libraries.util.json.TimeStampDeserializer;
 import net.catena_x.btp.libraries.util.json.TimeStampSerializer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
@@ -22,12 +19,9 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 
 @Component
 public class TestDataExporter {
-    @Autowired VehicleDataLoader vehicleDataLoader;
-
     private ObjectMapper objectMapper = null;
 
     public void export(@NotNull final TestData testData, @NotNull final Path filename) throws DataProviderException {

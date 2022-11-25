@@ -9,9 +9,14 @@ import net.catena_x.btp.libraries.oem.backend.database.util.annotations.Transact
 import net.catena_x.btp.libraries.oem.backend.database.util.annotations.TransactionSerializableUseExisting;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelematicsData;
+import org.hibernate.Session;
+import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.constraints.NotNull;

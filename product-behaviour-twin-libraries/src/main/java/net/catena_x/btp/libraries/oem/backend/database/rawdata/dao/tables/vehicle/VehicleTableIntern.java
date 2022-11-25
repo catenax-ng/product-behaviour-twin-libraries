@@ -39,6 +39,16 @@ public class VehicleTableIntern extends RawTableBase {
     @Autowired private SyncTableIntern syncTable;
     @Autowired private InputTelematicsDataConverter inputTelematicsDataConverter;
 
+    @TransactionSerializableCreateNew
+    public void adjust(@NotNull final boolean isPostgreSQL) {
+        final String queryString = isPostgreSQL?
+                "ALTER TABLE telematics_data ALTER COLUMN load_spectra TYPE TEXT" :
+                "ALTER TABLE telematics_data ALTER COLUMN load_spectra VARCHAR(2147483640)";
+
+        final NativeQuery query = (NativeQuery)((Session)entityManager.getDelegate()).createSQLQuery(queryString);
+        query.executeUpdate();
+    }
+
     @TransactionDefaultUseExisting
     public void registerVehicleExternTransaction(@NotNull final VehicleInfo newVehicleInfo)
             throws OemDatabaseException {
