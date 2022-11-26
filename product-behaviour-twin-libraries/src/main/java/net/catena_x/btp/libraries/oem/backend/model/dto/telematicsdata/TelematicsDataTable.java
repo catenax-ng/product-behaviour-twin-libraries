@@ -34,6 +34,38 @@ public class TelematicsDataTable extends RawTableBase {
         internal.deleteAllExternalTransaction();
     }
 
+    public void deleteByIdNewTransaction(@NotNull final String id) throws OemDatabaseException {
+        internal.deleteByIdNewTransaction(id);
+    }
+
+    public void deleteByIdExternalTransaction(@NotNull final String id) throws OemDatabaseException {
+        internal.deleteByIdExternalTransaction(id);
+    }
+
+    public void deleteByVehicleIdNewTransaction(@NotNull final String vehicleId) throws OemDatabaseException {
+        internal.deleteByVehicleIdNewTransaction(vehicleId);
+    }
+
+    public void deleteByVehicleIdExternalTransaction(@NotNull final String vehicleId) throws OemDatabaseException {
+        internal.deleteByVehicleIdExternalTransaction(vehicleId);
+    }
+
+    public void deleteStoredUntilNewTransaction(@NotNull final Instant storedUntil) throws OemDatabaseException {
+        internal.deleteStoredUntilNewTransaction(storedUntil);
+    }
+
+    public void deleteStoredUntilExternalTransaction(@NotNull final Instant storedUntil) throws OemDatabaseException {
+        internal.deleteStoredUntilExternalTransaction(storedUntil);
+    }
+
+    public void deleteSyncCounterUntilNewTransaction(@NotNull final long syncCounter) throws OemDatabaseException {
+        internal.deleteSyncCounterUntilNewTransaction(syncCounter);
+    }
+
+    public void deleteSyncCounterUntilExternalTransaction(@NotNull final long syncCounter) throws OemDatabaseException {
+        internal.deleteSyncCounterUntilExternalTransaction(syncCounter);
+    }
+
     public TelematicsData getByIdNewTransaction(@NotNull final String id) throws OemDatabaseException {
         return telematicsDataConverter.toDTO(internal.getByIdNewTransaction(id));
     }
@@ -52,6 +84,17 @@ public class TelematicsDataTable extends RawTableBase {
         return telematicsDataConverter.toDTO(internal.getByVehicleIdExternalTransaction(vehicleId));
     }
 
+
+    public List<TelematicsData> getByVehicleIdOrderBySyncCounterNewTransaction(@NotNull final String vehicleId)
+            throws OemDatabaseException {
+        return telematicsDataConverter.toDTO(internal.getByVehicleIdOrderBySyncCounterNewTransaction(vehicleId));
+    }
+
+    public List<TelematicsData> getByVehicleIdOrderBySyncCounterExternalTransaction(@NotNull final String vehicleId)
+            throws OemDatabaseException {
+        return telematicsDataConverter.toDTO(internal.getByVehicleIdOrderBySyncCounterExternalTransaction(vehicleId));
+    }
+
     public List<TelematicsData> getUpdatedSinceNewTransaction(@NotNull final Instant timestamp)
             throws OemDatabaseException {
         return telematicsDataConverter.toDTO(internal.getUpdatedSinceNewTransaction(timestamp));
@@ -60,6 +103,16 @@ public class TelematicsDataTable extends RawTableBase {
     public List<TelematicsData> getUpdatedSinceExternalTransaction(@NotNull final Instant timestamp)
             throws OemDatabaseException {
         return telematicsDataConverter.toDTO(internal.getUpdatedSinceExternalTransaction(timestamp));
+    }
+
+    public List<TelematicsData> getUpdatedUntilNewTransaction(@NotNull final Instant timestamp)
+            throws OemDatabaseException {
+        return telematicsDataConverter.toDTO(internal.getUpdatedUntilNewTransaction(timestamp));
+    }
+
+    public List<TelematicsData> getUpdatedUntilExternalTransaction(@NotNull final Instant timestamp)
+            throws OemDatabaseException {
+        return telematicsDataConverter.toDTO(internal.getUpdatedUntilExternalTransaction(timestamp));
     }
 
     public List<TelematicsData> getSyncCounterSinceNewTransaction(@NotNull final long syncCounter)
@@ -72,6 +125,16 @@ public class TelematicsDataTable extends RawTableBase {
         return telematicsDataConverter.toDTO(internal.getSyncCounterSinceExternalTransaction(syncCounter));
     }
 
+    public List<TelematicsData> getSyncCounterUntilNewTransaction(@NotNull final long syncCounter)
+            throws OemDatabaseException {
+        return telematicsDataConverter.toDTO(internal.getSyncCounterUntilNewTransaction(syncCounter));
+    }
+
+    public List<TelematicsData> getSyncCounterUntilExternalTransaction(@NotNull final long syncCounter)
+            throws OemDatabaseException {
+        return telematicsDataConverter.toDTO(internal.getSyncCounterUntilExternalTransaction(syncCounter));
+    }
+    
     public List<TelematicsData> getAllNewTransaction() throws OemDatabaseException {
         return telematicsDataConverter.toDTO(internal.getAllNewTransaction());
     }

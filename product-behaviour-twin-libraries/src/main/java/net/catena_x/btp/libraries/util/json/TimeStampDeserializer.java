@@ -27,15 +27,15 @@ public class TimeStampDeserializer extends StdDeserializer<Instant> {
 
         try {
             return Instant.parse(value);
-        } catch (Exception exception) {}
+        } catch (final Exception exception) {}
 
         try {
             return Instant.parse(value + "Z");
-        } catch (Exception exception) {}
+        } catch (final Exception exception) {}
 
         try {
             return Instant.from( DateTimeFormatter.ofPattern("yyyy-MM-dd").parse(value));
-        } catch (Exception exception) {
+        } catch (final Exception exception) {
             return null;
         }
     }

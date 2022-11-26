@@ -44,7 +44,7 @@ public class VehicleRegistration {
         vehicles.entrySet().stream().forEachOrdered((vehicleEntry) -> {
             try {
                 registerVehicle(vehicleEntry.getValue(), idToType);
-            } catch (DataProviderException exception) {
+            } catch (final DataProviderException exception) {
                 throw new UncheckedDataProviderException(exception);
             }
         });

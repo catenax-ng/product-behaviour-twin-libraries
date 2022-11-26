@@ -41,7 +41,7 @@ public class TelematicsDataUpdater {
         vehicles.entrySet().stream().forEachOrdered((vehicleEntry) -> {
             try {
                 updateTelematicsData(vehicleEntry.getValue(), idToType);
-            } catch (DataProviderException exception) {
+            } catch (final DataProviderException exception) {
                 throw new UncheckedDataProviderException(exception);
             }
         });

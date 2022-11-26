@@ -44,7 +44,7 @@ public class TestDataReader {
             extendTestData(testData, clutchSpectrumGreen, clutchSpectrumYellow, clutchSpectrumRed);
             return testData;
 
-        } catch (IOException exception) {
+        } catch (final IOException exception) {
             throw new DataProviderException("Error while opening testdata file(s)!", exception);
         }
     }
@@ -54,7 +54,7 @@ public class TestDataReader {
 
         try {
             return objectMapper.readValue(testDataJson, TestData.class);
-        } catch (IOException exception) {
+        } catch (final IOException exception) {
             throw new DataProviderException("Error while reading testdata from json string!", exception);
         }
     }
@@ -65,7 +65,7 @@ public class TestDataReader {
 
         try {
             append(existingTestdata, objectMapper.readValue(testDataJson, TestData.class));
-        } catch (IOException exception) {
+        } catch (final IOException exception) {
             throw new DataProviderException("Error while reading testdata from json string!", exception);
         }
     }

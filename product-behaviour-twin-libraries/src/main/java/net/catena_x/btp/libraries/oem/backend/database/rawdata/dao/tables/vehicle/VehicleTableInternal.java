@@ -46,7 +46,7 @@ public class VehicleTableInternal extends RawTableBase {
             rawVehicleRepository.register(newVehicleInfo.vehicleId(), newVehicleInfo.van(),
                     newVehicleInfo.gearboxId(), newVehicleInfo.productionDate(), 0);
         }
-        catch(Exception exception) {
+        catch(final Exception exception) {
             throw failed("Failed to register vehicle!", exception);
         }
     }
@@ -188,7 +188,7 @@ public class VehicleTableInternal extends RawTableBase {
         try {
             rawVehicleRepository.deleteByVan(van);
         }
-        catch(Exception exception) {
+        catch(final Exception exception) {
             throw failed("Deleting vehicle by van failed!", exception);
         }
     }
@@ -317,7 +317,7 @@ public class VehicleTableInternal extends RawTableBase {
         try {
             return rawVehicleRepository.queryAll();
         }
-        catch(Exception exception) {
+        catch(final Exception exception) {
             throw failed("Querying vehicles failed!", exception);
         }
     }
@@ -349,7 +349,7 @@ public class VehicleTableInternal extends RawTableBase {
         try {
             return rawVehicleRepository.queryUpdatedSince(updatedSince);
         }
-        catch(Exception exception) {
+        catch(final Exception exception) {
             throw failed("Querying vehicles failed!", exception);
         }
     }
@@ -493,7 +493,7 @@ public class VehicleTableInternal extends RawTableBase {
         try {
             return (NativeQuery<Object[]>)((Session)this.entityManager.getDelegate()).createSQLQuery(query);
         }
-        catch(Exception exception) {
+        catch(final Exception exception) {
             throw failed("Initializing query failed!", exception);
         }
     }

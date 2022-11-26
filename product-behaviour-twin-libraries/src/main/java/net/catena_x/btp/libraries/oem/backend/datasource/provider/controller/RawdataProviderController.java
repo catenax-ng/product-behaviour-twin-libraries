@@ -67,7 +67,7 @@ public class RawdataProviderController {
             databaseReset.reset();
             return apiHelper.ok("Database reinitialized.");
         }
-        catch(DataProviderException exception) {
+        catch(final DataProviderException exception) {
             return apiHelper.failed(exception.toString());
         } finally {
             testDataMutex.unlock();
@@ -82,7 +82,7 @@ public class RawdataProviderController {
                     null, true));
             return apiHelper.ok("Vehicles registered.");
         }
-        catch(DataProviderException exception) {
+        catch(final DataProviderException exception) {
             return apiHelper.failed(exception.toString());
         } finally {
             testDataMutex.unlock();
@@ -97,7 +97,7 @@ public class RawdataProviderController {
                     null, true));
             return apiHelper.ok("Telematics data initialized.");
         }
-        catch(DataProviderException exception) {
+        catch(final DataProviderException exception) {
             return apiHelper.failed(exception.toString());
         } finally {
             testDataMutex.unlock();
@@ -126,7 +126,7 @@ public class RawdataProviderController {
 
             return apiHelper.ok("Test data exported.");
         }
-        catch(DataProviderException exception) {
+        catch(final DataProviderException exception) {
             return apiHelper.failed(exception.toString());
         } finally {
             testDataMutex.unlock();
@@ -149,7 +149,7 @@ public class RawdataProviderController {
             } else {
                 throw new DataProviderException("No JSON file given!");
             }
-        } catch (Exception exception) {
+        } catch (final Exception exception) {
             return apiHelper.failed(exception.toString());
         } finally {
             testDataMutex.unlock();
@@ -171,7 +171,7 @@ public class RawdataProviderController {
             } else {
                 throw new DataProviderException("No JSON file given!");
             }
-        } catch (Exception exception) {
+        } catch (final Exception exception) {
             return apiHelper.failed(exception.toString());
         } finally {
             testDataMutex.unlock();

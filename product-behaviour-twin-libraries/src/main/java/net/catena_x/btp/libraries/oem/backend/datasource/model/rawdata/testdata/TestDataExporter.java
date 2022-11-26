@@ -29,7 +29,7 @@ public class TestDataExporter {
 
         try {
             objectMapper.writeValue(new File(filename.toString()), testData);
-        } catch (IOException exception) {
+        } catch (final IOException exception) {
             throw new DataProviderException(exception);
         }
     }
@@ -72,7 +72,7 @@ public class TestDataExporter {
                 writeAndResetTestData(buildExportFilename(baseFilename, fileextension, fileIndex, fileCount),
                         maxVehicleCountPerFile, testDataExport);
             }
-        } catch (IOException exception) {
+        } catch (final IOException exception) {
             throw new DataProviderException(exception);
         }
     }

@@ -35,7 +35,7 @@ public class RawdataInputController {
         try {
             key = InfoKey.valueOf(item.key());
         }
-        catch(Exception exception) {
+        catch(final Exception exception) {
             return apiHelper.failed(exception.toString());
         }
 
@@ -43,7 +43,7 @@ public class RawdataInputController {
             infoTable.setInfoItemNewTransaction(key, item.value());
             return apiHelper.ok(item.key() + " set to \"" + item.value() + "\"");
         }
-        catch(OemDatabaseException exception) {
+        catch(final OemDatabaseException exception) {
             return apiHelper.failed(exception.toString());
         }
     }
@@ -53,7 +53,7 @@ public class RawdataInputController {
         try {
             return apiHelper.okWithValue(infoTable.getInfoValueNewTransaction(key));
         }
-        catch(OemDatabaseException exception) {
+        catch(final OemDatabaseException exception) {
             return apiHelper.failed(exception.toString());
         }
     }
@@ -64,7 +64,7 @@ public class RawdataInputController {
             infoInitInternal();
             return apiHelper.okWithValue("");
         }
-        catch(OemDatabaseException exception) {
+        catch(final OemDatabaseException exception) {
             return apiHelper.failed(exception.toString());
         }
     }
@@ -89,7 +89,7 @@ public class RawdataInputController {
 
             return apiHelper.ok("Rawdata database cleared and reinitialized.");
         }
-        catch(OemDatabaseException exception) {
+        catch(final OemDatabaseException exception) {
             return apiHelper.failed(exception.toString());
         }
     }
@@ -100,7 +100,7 @@ public class RawdataInputController {
             vehicleTable.registerVehicleNewTransaction(vehicle);
             return apiHelper.ok("Vehicle registered.");
         }
-        catch(OemDatabaseException exception) {
+        catch(final OemDatabaseException exception) {
             return apiHelper.failed(exception.toString());
         }
     }
@@ -111,7 +111,7 @@ public class RawdataInputController {
             vehicleTable.appendTelematicsDataNewTransaction(telematicsData);
             return apiHelper.ok("Telematics data added.");
         }
-        catch(OemDatabaseException exception) {
+        catch(final OemDatabaseException exception) {
             return apiHelper.failed(exception.toString());
         }
     }

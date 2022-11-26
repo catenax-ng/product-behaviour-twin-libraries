@@ -80,7 +80,7 @@ public class VehicleDataLoader extends DataLoader {
 
         try {
             return manufacturingInformation.getDate();
-        } catch (Exception exception) {
+        } catch (final Exception exception) {
             throw new DataProviderException("Error while parsing date of production!", exception);
         }
     }

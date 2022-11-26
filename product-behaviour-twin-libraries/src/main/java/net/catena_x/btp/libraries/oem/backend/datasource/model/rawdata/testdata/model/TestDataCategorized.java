@@ -80,7 +80,7 @@ public class TestDataCategorized {
             }
 
             return this.getDigitalTwinsGearboxes().get(gearboxId);
-        } catch (DataProviderException exception) {
+        } catch (final DataProviderException exception) {
             return null;
         }
     }
@@ -265,7 +265,7 @@ public class TestDataCategorized {
             String gearboxId = null;
             try {
                 gearboxId = vehicleDataLoader.getGearboxID(vehicleTwin, idToType);
-            } catch (DataProviderException exception) {
+            } catch (final DataProviderException exception) {
                 //ignore
                 return;
            }
@@ -273,7 +273,7 @@ public class TestDataCategorized {
            for (final ClassifiedLoadSpectrum loadSpectrum : vehicleTwin.getClassifiedLoadSpectra()) {
                 try {
                     assertComponentDescription(loadSpectrum);
-                } catch (DataProviderException exception) {
+                } catch (final DataProviderException exception) {
                     //ignore
                     continue;
                 }

@@ -12,6 +12,7 @@ import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTele
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
@@ -81,6 +82,63 @@ public class TelematicsDataTableInternal extends RawTableBase {
     }
 
     @TransactionDefaultUseExisting
+    public void deleteByIdExternalTransaction(@NotNull final String id) throws OemDatabaseException {
+        try {
+            telematicsDataRepository.deleteById(id);
+        } catch(final Exception exception) {
+            throw failed("Deleting telematics data by id failed!", exception);
+        }
+    }
+
+    @TransactionDefaultCreateNew
+    public void deleteByIdNewTransaction(@NotNull final String id) throws OemDatabaseException {
+        deleteByIdExternalTransaction(id);
+    }
+
+    @TransactionDefaultUseExisting
+    public void deleteByVehicleIdExternalTransaction(@NotNull final String vehicleId)
+            throws OemDatabaseException {
+        try {
+            telematicsDataRepository.deleteByVehicleId(vehicleId);
+        } catch(final Exception exception) {
+            throw failed("Deleting telematics data by vehicle id failed!", exception);
+        }
+    }
+
+    @TransactionDefaultCreateNew
+    public void deleteByVehicleIdNewTransaction(@NotNull final String vehicleId) throws OemDatabaseException {
+        deleteByVehicleIdExternalTransaction(vehicleId);
+    }
+
+    @TransactionDefaultUseExisting
+    public void deleteStoredUntilExternalTransaction(@NotNull final Instant storedUntil) throws OemDatabaseException {
+        try {
+            telematicsDataRepository.deleteStoredUntil(storedUntil);
+        } catch(final Exception exception) {
+            throw failed("Deleting telematics data by storage timestamp failed!", exception);
+        }
+    }
+
+    @TransactionDefaultCreateNew
+    public void deleteStoredUntilNewTransaction(@NotNull final Instant storedUntil) throws OemDatabaseException {
+        deleteStoredUntilExternalTransaction(storedUntil);
+    }
+
+    @TransactionDefaultUseExisting
+    public void deleteSyncCounterUntilExternalTransaction(@NotNull final long syncCounter) throws OemDatabaseException {
+        try {
+            telematicsDataRepository.deleteSyncCounterUntil(syncCounter);
+        } catch(final Exception exception) {
+            throw failed("Deleting telematics data by sync counter failed!", exception);
+        }
+    }
+
+    @TransactionDefaultCreateNew
+    public void deleteSyncCounterUntilNewTransaction(@NotNull final long syncCounter) throws OemDatabaseException {
+        deleteSyncCounterUntilExternalTransaction(syncCounter);
+    }
+
+    @TransactionDefaultUseExisting
     public TelematicsDataDAO getByIdExternalTransaction(@NotNull final String id) throws OemDatabaseException {
         try {
             return telematicsDataRepository.queryById(id);
@@ -107,8 +165,26 @@ public class TelematicsDataTableInternal extends RawTableBase {
     }
 
     @TransactionDefaultCreateNew
-    public List<TelematicsDataDAO> getByVehicleIdNewTransaction(final String vehicleId) throws OemDatabaseException {
+    public List<TelematicsDataDAO> getByVehicleIdNewTransaction(@NotNull final String vehicleId)
+            throws OemDatabaseException {
         return getByVehicleIdExternalTransaction(vehicleId);
+    }
+
+    @TransactionDefaultUseExisting
+    public List<TelematicsDataDAO> getByVehicleIdOrderBySyncCounterExternalTransaction(@NotNull final String vehicleId)
+            throws OemDatabaseException {
+        try {
+            return telematicsDataRepository.queryByVehicleIdOrderBySyncCounter(vehicleId);
+        }
+        catch(final Exception exception) {
+            throw failed("Querying database for telematics data by vehicle id failed!", exception);
+        }
+    }
+
+    @TransactionDefaultCreateNew
+    public List<TelematicsDataDAO> getByVehicleIdOrderBySyncCounterNewTransaction(@NotNull final String vehicleId)
+            throws OemDatabaseException {
+        return getByVehicleIdOrderBySyncCounterExternalTransaction(vehicleId);
     }
 
     @TransactionDefaultUseExisting
@@ -129,6 +205,23 @@ public class TelematicsDataTableInternal extends RawTableBase {
     }
 
     @TransactionDefaultUseExisting
+    public List<TelematicsDataDAO> getUpdatedUntilExternalTransaction(@NotNull final Instant timestamp)
+            throws OemDatabaseException {
+        try {
+            return telematicsDataRepository.queryByStorageUntil(timestamp);
+        }
+        catch(final Exception exception) {
+            throw failed("Querying database for telematics data by update timestamp failed!", exception);
+        }
+    }
+
+    @TransactionDefaultCreateNew
+    public List<TelematicsDataDAO> getUpdatedUntilNewTransaction(@NotNull final Instant timestamp)
+            throws OemDatabaseException {
+        return getUpdatedUntilExternalTransaction(timestamp);
+    }
+
+    @TransactionDefaultUseExisting
     public List<TelematicsDataDAO> getSyncCounterSinceExternalTransaction(@NotNull final long syncCounter)
             throws OemDatabaseException {
         try {
@@ -143,6 +236,23 @@ public class TelematicsDataTableInternal extends RawTableBase {
     public List<TelematicsDataDAO> getSyncCounterSinceNewTransaction(@NotNull final long syncCounter)
             throws OemDatabaseException {
         return getSyncCounterSinceExternalTransaction(syncCounter);
+    }
+
+    @TransactionDefaultUseExisting
+    public List<TelematicsDataDAO> getSyncCounterUntilExternalTransaction(@NotNull final long syncCounter)
+            throws OemDatabaseException {
+        try {
+            return telematicsDataRepository.queryBySyncCounterUntil(syncCounter);
+        }
+        catch(final Exception exception) {
+            throw failed("Querying database for telematics data by sync counter failed!", exception);
+        }
+    }
+
+    @TransactionDefaultCreateNew
+    public List<TelematicsDataDAO> getSyncCounterUntilNewTransaction(@NotNull final long syncCounter)
+            throws OemDatabaseException {
+        return getSyncCounterUntilExternalTransaction(syncCounter);
     }
 
     @TransactionDefaultUseExisting
