@@ -14,7 +14,7 @@ import javax.persistence.PersistenceContext;
 import javax.validation.constraints.NotNull;
 
 @Component
-public class SyncTableIntern extends RawTableBase {
+public class SyncTableInternal extends RawTableBase {
     @PersistenceContext EntityManager entityManager;
 
     @Autowired private SyncRepository syncRepository;
@@ -22,7 +22,7 @@ public class SyncTableIntern extends RawTableBase {
     public static final String DEFAULT_ID = "DEFAULT";
 
     @TransactionDefaultUseExisting
-    public void clearExternTransaction() throws OemDatabaseException {
+    public void clearExternalTransaction() throws OemDatabaseException {
         try {
             syncRepository.deleteAll();
         }
@@ -33,11 +33,11 @@ public class SyncTableIntern extends RawTableBase {
 
     @TransactionDefaultCreateNew
     public void clearNewTransaction() throws OemDatabaseException {
-        clearExternTransaction();
+        clearExternalTransaction();
     }
 
     @TransactionDefaultUseExisting
-    public void initExternTransaction(@NotNull final String id) throws OemDatabaseException {
+    public void initExternalTransaction(@NotNull final String id) throws OemDatabaseException {
         try {
             syncRepository.init(id);
         }
@@ -48,15 +48,15 @@ public class SyncTableIntern extends RawTableBase {
 
     @TransactionDefaultCreateNew
     public void initNewTransaction(@NotNull final String id) throws OemDatabaseException {
-        initExternTransaction(id);
+        initExternalTransaction(id);
     }
 
     @TransactionSerializableUseExisting
-    public void reInitExternTransaction(@NotNull final String id) throws OemDatabaseException {
+    public void reInitExternalTransaction(@NotNull final String id) throws OemDatabaseException {
         try {
             final SyncDAO current = syncRepository.getCurrent(id);
             if( current == null ) {
-                initExternTransaction(id);
+                initExternalTransaction(id);
             } else {
                 syncRepository.setCurrent(id, 0);
             }
@@ -68,11 +68,11 @@ public class SyncTableIntern extends RawTableBase {
 
     @TransactionSerializableCreateNew
     public void reInitNewTransaction(@NotNull final String id) throws OemDatabaseException {
-        reInitExternTransaction(id);
+        reInitExternalTransaction(id);
     }
 
     @TransactionDefaultUseExisting
-    public SyncDAO getCurrentExternTransaction(@NotNull final String id) throws OemDatabaseException {
+    public SyncDAO getCurrentExternalTransaction(@NotNull final String id) throws OemDatabaseException {
         try {
             return syncRepository.getCurrent(id);
         } catch (final Exception exception) {
@@ -82,11 +82,11 @@ public class SyncTableIntern extends RawTableBase {
 
     @TransactionDefaultCreateNew
     public SyncDAO getCurrentNewTransaction(@NotNull final String id) throws OemDatabaseException {
-        return getCurrentExternTransaction(id);
+        return getCurrentExternalTransaction(id);
     }
 
     @TransactionSerializableUseExisting
-    public SyncDAO setCurrentExternTransaction(@NotNull final String id) throws OemDatabaseException {
+    public SyncDAO setCurrentExternalTransaction(@NotNull final String id) throws OemDatabaseException {
         try {
             syncRepository.setCurrent(id, syncRepository.getCurrent(id).getSyncCounter() + 1);
             entityManager.flush();
@@ -99,6 +99,6 @@ public class SyncTableIntern extends RawTableBase {
 
     @TransactionSerializableCreateNew
     public SyncDAO setCurrentNewTransaction(@NotNull final String id) throws OemDatabaseException {
-        return setCurrentExternTransaction(id);
+        return setCurrentExternalTransaction(id);
     }
 }

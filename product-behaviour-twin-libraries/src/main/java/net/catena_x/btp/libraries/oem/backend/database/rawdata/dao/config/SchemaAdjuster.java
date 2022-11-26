@@ -1,6 +1,6 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.config;
 
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.vehicle.VehicleTableIntern;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.telematicsdata.TelematicsDataTableInternal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -11,7 +11,8 @@ import javax.validation.constraints.NotNull;
 
 @Component
 public class SchemaAdjuster {
-    @Autowired VehicleTableIntern vehicleTableIntern;
+    @Autowired
+    TelematicsDataTableInternal telematicsDataTableInternal;
 
     @Value("${rawdatadb.drivername}") private String dbDriverName;
 
@@ -22,6 +23,6 @@ public class SchemaAdjuster {
     }
 
     private void adjustTelematicsData(@NotNull final boolean isPostgreSQL) {
-        vehicleTableIntern.adjust(isPostgreSQL);
+        telematicsDataTableInternal.adjust(isPostgreSQL);
     }
 }

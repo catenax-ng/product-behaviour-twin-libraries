@@ -143,7 +143,6 @@ public class RawdataProviderController {
             testDataMutex.lock();
 
             if (testDataFileParam != null) {
-                testDataMutex.lock();
                 return reinitByJsonFile(new String(testDataFileParam.getBytes(), StandardCharsets.UTF_8));
             } else if (testDataFileBody != null) {
                 return reinitByJsonFile(new String(testDataFileBody, StandardCharsets.UTF_8));

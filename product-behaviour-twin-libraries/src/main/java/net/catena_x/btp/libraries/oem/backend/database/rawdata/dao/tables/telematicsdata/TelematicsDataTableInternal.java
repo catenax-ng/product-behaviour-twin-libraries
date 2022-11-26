@@ -2,7 +2,7 @@ package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.telem
 
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.RawTableBase;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.sync.SyncDAO;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.sync.SyncTableIntern;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.sync.SyncTableInternal;
 import net.catena_x.btp.libraries.util.database.annotations.TransactionDefaultCreateNew;
 import net.catena_x.btp.libraries.util.database.annotations.TransactionDefaultUseExisting;
 import net.catena_x.btp.libraries.util.database.annotations.TransactionSerializableCreateNew;
@@ -12,11 +12,8 @@ import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTele
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.constraints.NotNull;
@@ -24,22 +21,32 @@ import java.time.Instant;
 import java.util.List;
 
 @Component
-public class TelematicsDataTableIntern extends RawTableBase {
+public class TelematicsDataTableInternal extends RawTableBase {
     @PersistenceContext EntityManager entityManager;
 
     @Autowired private TelematicsDataRepository telematicsDataRepository;
     @Autowired private InputTelematicsDataConverter inputTelematicsDataConverter;
-    @Autowired private SyncTableIntern syncTable;
+    @Autowired private SyncTableInternal syncTable;
+
+    @TransactionSerializableCreateNew
+    public void adjust(@NotNull final boolean isPostgreSQL) {
+        final String queryString = isPostgreSQL?
+                "ALTER TABLE telematics_data ALTER COLUMN load_spectra TYPE TEXT" :
+                "ALTER TABLE telematics_data ALTER COLUMN load_spectra VARCHAR(2147483640)";
+
+        final NativeQuery query = (NativeQuery)((Session)entityManager.getDelegate()).createSQLQuery(queryString);
+        query.executeUpdate();
+    }
 
     @TransactionSerializableUseExisting
-    public String updateTelematicsDataGetIdExternTransaction(@NotNull final InputTelematicsData newTelematicsData)
+    public String updateTelematicsDataGetIdExternalTransaction(@NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
         try {
             entityManager.flush();
             entityManager.clear();
 
             final String newId = generateNewId();
-            final SyncDAO sync = syncTable.setCurrentExternTransaction(SyncTableIntern.DEFAULT_ID);
+            final SyncDAO sync = syncTable.setCurrentExternalTransaction(SyncTableInternal.DEFAULT_ID);
             final TelematicsDataDAO newDAO = inputTelematicsDataConverter.toDAOWithId(newId, newTelematicsData);
 
             telematicsDataRepository.insert(
@@ -56,11 +63,11 @@ public class TelematicsDataTableIntern extends RawTableBase {
     @TransactionSerializableCreateNew
     public String updateTelematicsDataGetIdNewTransaction(@NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
-        return updateTelematicsDataGetIdExternTransaction(newTelematicsData);
+        return updateTelematicsDataGetIdExternalTransaction(newTelematicsData);
     }
 
     @TransactionDefaultUseExisting
-    public void deleteAllExternTransaction() throws OemDatabaseException {
+    public void deleteAllExternalTransaction() throws OemDatabaseException {
         try {
             telematicsDataRepository.deleteAll();
         } catch(final Exception exception) {
@@ -70,11 +77,11 @@ public class TelematicsDataTableIntern extends RawTableBase {
 
     @TransactionDefaultCreateNew
     public void deleteAllNewTransaction() throws OemDatabaseException {
-        deleteAllExternTransaction();
+        deleteAllExternalTransaction();
     }
 
     @TransactionDefaultUseExisting
-    public TelematicsDataDAO getByIdExternTransaction(@NotNull final String id) throws OemDatabaseException {
+    public TelematicsDataDAO getByIdExternalTransaction(@NotNull final String id) throws OemDatabaseException {
         try {
             return telematicsDataRepository.queryById(id);
         }
@@ -85,11 +92,11 @@ public class TelematicsDataTableIntern extends RawTableBase {
 
     @TransactionDefaultCreateNew
     public TelematicsDataDAO getByIdNewTransaction(@NotNull final String id) throws OemDatabaseException {
-        return getByIdExternTransaction(id);
+        return getByIdExternalTransaction(id);
     }
 
     @TransactionDefaultUseExisting
-    public List<TelematicsDataDAO> getByVehicleIdExternTransaction(@NotNull final String vehicleId)
+    public List<TelematicsDataDAO> getByVehicleIdExternalTransaction(@NotNull final String vehicleId)
             throws OemDatabaseException {
         try {
             return telematicsDataRepository.queryByVehicleId(vehicleId);
@@ -101,11 +108,11 @@ public class TelematicsDataTableIntern extends RawTableBase {
 
     @TransactionDefaultCreateNew
     public List<TelematicsDataDAO> getByVehicleIdNewTransaction(final String vehicleId) throws OemDatabaseException {
-        return getByVehicleIdExternTransaction(vehicleId);
+        return getByVehicleIdExternalTransaction(vehicleId);
     }
 
     @TransactionDefaultUseExisting
-    public List<TelematicsDataDAO> getUpdatedSinceExternTransaction(@NotNull final Instant timestamp)
+    public List<TelematicsDataDAO> getUpdatedSinceExternalTransaction(@NotNull final Instant timestamp)
             throws OemDatabaseException {
         try {
             return telematicsDataRepository.queryByStorageSince(timestamp);
@@ -118,11 +125,11 @@ public class TelematicsDataTableIntern extends RawTableBase {
     @TransactionDefaultCreateNew
     public List<TelematicsDataDAO> getUpdatedSinceNewTransaction(@NotNull final Instant timestamp)
             throws OemDatabaseException {
-        return getUpdatedSinceExternTransaction(timestamp);
+        return getUpdatedSinceExternalTransaction(timestamp);
     }
 
     @TransactionDefaultUseExisting
-    public List<TelematicsDataDAO> getSyncCounterSinceExternTransaction(@NotNull final long syncCounter)
+    public List<TelematicsDataDAO> getSyncCounterSinceExternalTransaction(@NotNull final long syncCounter)
             throws OemDatabaseException {
         try {
             return telematicsDataRepository.queryBySyncCounterSince(syncCounter);
@@ -135,11 +142,11 @@ public class TelematicsDataTableIntern extends RawTableBase {
     @TransactionDefaultCreateNew
     public List<TelematicsDataDAO> getSyncCounterSinceNewTransaction(@NotNull final long syncCounter)
             throws OemDatabaseException {
-        return getSyncCounterSinceExternTransaction(syncCounter);
+        return getSyncCounterSinceExternalTransaction(syncCounter);
     }
 
     @TransactionDefaultUseExisting
-    public List<TelematicsDataDAO> getAllExternTransaction() throws OemDatabaseException {
+    public List<TelematicsDataDAO> getAllExternalTransaction() throws OemDatabaseException {
         try {
             return telematicsDataRepository.queryAll();
         }
@@ -150,11 +157,11 @@ public class TelematicsDataTableIntern extends RawTableBase {
 
     @TransactionDefaultCreateNew
     public List<TelematicsDataDAO> getAllNewTransaction() throws OemDatabaseException {
-        return getAllExternTransaction();
+        return getAllExternalTransaction();
     }
 
     @TransactionDefaultUseExisting
-    public List<TelematicsDataDAO> getAllOrderByStorageTimestampExternTransaction() throws OemDatabaseException {
+    public List<TelematicsDataDAO> getAllOrderByStorageTimestampExternalTransaction() throws OemDatabaseException {
         try {
             return telematicsDataRepository.queryAllOrderByStorageTimestamp();
         }
@@ -165,11 +172,11 @@ public class TelematicsDataTableIntern extends RawTableBase {
 
     @TransactionDefaultCreateNew
     public List<TelematicsDataDAO> getAllOrderByStorageTimestampNewTransaction() throws OemDatabaseException {
-        return getAllOrderByStorageTimestampExternTransaction();
+        return getAllOrderByStorageTimestampExternalTransaction();
     }
 
     @TransactionDefaultUseExisting
-    public List<TelematicsDataDAO> getAllOrderBySyncCounterExternTransaction() throws OemDatabaseException {
+    public List<TelematicsDataDAO> getAllOrderBySyncCounterExternalTransaction() throws OemDatabaseException {
         try {
             return telematicsDataRepository.queryAllOrderBySyncCounter();
         }
@@ -180,6 +187,6 @@ public class TelematicsDataTableIntern extends RawTableBase {
 
     @TransactionDefaultCreateNew
     public List<TelematicsDataDAO> getAllOrderBySyncCounterNewTransaction() throws OemDatabaseException {
-        return getAllOrderBySyncCounterExternTransaction();
+        return getAllOrderBySyncCounterExternalTransaction();
     }
 }

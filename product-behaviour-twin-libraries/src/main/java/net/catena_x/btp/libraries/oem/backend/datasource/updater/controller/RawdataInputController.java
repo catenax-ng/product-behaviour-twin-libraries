@@ -61,7 +61,7 @@ public class RawdataInputController {
     @GetMapping("/info/init")
     public ResponseEntity<ApiResult> infoInit() {
         try {
-            infoInitIntern();
+            infoInitInternal();
             return apiHelper.okWithValue("");
         }
         catch(OemDatabaseException exception) {
@@ -69,7 +69,7 @@ public class RawdataInputController {
         }
     }
 
-    private void infoInitIntern() throws OemDatabaseException {
+    private void infoInitInternal() throws OemDatabaseException {
         infoTable.setInfoItemNewTransaction(InfoKey.DATAVERSION, "DV_0.0.99");
         infoTable.setInfoItemNewTransaction(InfoKey.ADAPTIONVALUEINFO, "{}");
         infoTable.setInfoItemNewTransaction(InfoKey.LOADSPECTRUMINFO,
@@ -81,7 +81,7 @@ public class RawdataInputController {
         try {
             infoTable.deleteAllNewTransaction();
 
-            infoInitIntern();
+            infoInitInternal();
 
             vehicleTable.deleteAllNewTransaction();
             telematicsDataTable.deleteAllNewTransaction();

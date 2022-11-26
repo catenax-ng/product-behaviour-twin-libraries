@@ -1,7 +1,7 @@
 package net.catena_x.btp.libraries.oem.backend.model.dto.sync;
 
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.RawTableBase;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.sync.SyncTableIntern;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.sync.SyncTableInternal;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,72 +10,72 @@ import javax.validation.constraints.NotNull;
 
 @Component
 public class SyncTable extends RawTableBase {
-    @Autowired private SyncTableIntern intern;
+    @Autowired private SyncTableInternal internal;
     @Autowired private SyncConverter syncConverter;
 
     final String ID_DEFAULT = "DEFAULT";
 
     public void clearNewTransaction() throws OemDatabaseException {
-        intern.clearNewTransaction();
+        internal.clearNewTransaction();
     }
 
-    public void clearExternTransaction() throws OemDatabaseException {
-        intern.clearExternTransaction();
+    public void clearExternalTransaction() throws OemDatabaseException {
+        internal.clearExternalTransaction();
     }
 
     public void initDefaultNewTransaction() throws OemDatabaseException {
-        intern.initNewTransaction(ID_DEFAULT);
+        internal.initNewTransaction(ID_DEFAULT);
     }
 
-    public void initDefaultExternTransaction() throws OemDatabaseException {
-        intern.initExternTransaction(ID_DEFAULT);
+    public void initDefaultExternalTransaction() throws OemDatabaseException {
+        internal.initExternalTransaction(ID_DEFAULT);
     }
 
     public void reInitDefaultNewTransaction() throws OemDatabaseException {
-        intern.reInitNewTransaction(ID_DEFAULT);
+        internal.reInitNewTransaction(ID_DEFAULT);
     }
 
-    public void reInitDefaultExternTransaction() throws OemDatabaseException {
-        intern.reInitExternTransaction(ID_DEFAULT);
+    public void reInitDefaultExternalTransaction() throws OemDatabaseException {
+        internal.reInitExternalTransaction(ID_DEFAULT);
     }
 
     public Sync getCurrentDefaultNewTransaction() throws OemDatabaseException {
-        return syncConverter.toDTO(intern.getCurrentNewTransaction(ID_DEFAULT));
+        return syncConverter.toDTO(internal.getCurrentNewTransaction(ID_DEFAULT));
     }
 
-    public Sync getCurrentDefaultExternTransaction() throws OemDatabaseException {
-        return syncConverter.toDTO(intern.getCurrentExternTransaction(ID_DEFAULT));
+    public Sync getCurrentDefaultExternalTransaction() throws OemDatabaseException {
+        return syncConverter.toDTO(internal.getCurrentExternalTransaction(ID_DEFAULT));
     }
 
     public Sync setCurrentDefaultNewTransaction() throws OemDatabaseException {
-        return syncConverter.toDTO(intern.setCurrentNewTransaction(ID_DEFAULT));
+        return syncConverter.toDTO(internal.setCurrentNewTransaction(ID_DEFAULT));
     }
 
-    public Sync setCurrentDefaultExternTransaction() throws OemDatabaseException {
-        return syncConverter.toDTO(intern.setCurrentExternTransaction(ID_DEFAULT));
+    public Sync setCurrentDefaultExternalTransaction() throws OemDatabaseException {
+        return syncConverter.toDTO(internal.setCurrentExternalTransaction(ID_DEFAULT));
     }
 
     private void initNewTransaction(@NotNull final String id) throws OemDatabaseException {
-        intern.initNewTransaction(id);
+        internal.initNewTransaction(id);
     }
 
-    private void initExternTransaction(@NotNull final String id) throws OemDatabaseException {
-        intern.initExternTransaction(id);
+    private void initExternalTransaction(@NotNull final String id) throws OemDatabaseException {
+        internal.initExternalTransaction(id);
     }
 
     private Sync getCurrentNewTransaction(@NotNull final String id) throws OemDatabaseException {
-        return syncConverter.toDTO(intern.getCurrentNewTransaction(id));
+        return syncConverter.toDTO(internal.getCurrentNewTransaction(id));
     }
 
-    private Sync getCurrentExternTransaction(@NotNull final String id) throws OemDatabaseException {
-        return syncConverter.toDTO(intern.getCurrentExternTransaction(id));
+    private Sync getCurrentExternalTransaction(@NotNull final String id) throws OemDatabaseException {
+        return syncConverter.toDTO(internal.getCurrentExternalTransaction(id));
     }
 
     private Sync setCurrentNewTransaction(@NotNull final String id) throws OemDatabaseException {
-        return syncConverter.toDTO(intern.setCurrentNewTransaction(id));
+        return syncConverter.toDTO(internal.setCurrentNewTransaction(id));
     }
 
-    private Sync setCurrentExternTransaction(@NotNull final String id) throws OemDatabaseException {
-        return syncConverter.toDTO(intern.setCurrentExternTransaction(id));
+    private Sync setCurrentExternalTransaction(@NotNull final String id) throws OemDatabaseException {
+        return syncConverter.toDTO(internal.setCurrentExternalTransaction(id));
     }
 }

@@ -15,11 +15,11 @@ import java.time.Instant;
 import java.util.List;
 
 @Component
-public class InfoTableIntern extends RawTableBase {
+public class InfoTableInternal extends RawTableBase {
     @Autowired private InfoItemRepository infoItemRepository;
 
     @TransactionDefaultUseExisting
-    public void setInfoItemExternTransaction(@NotNull final InfoKey key, @NotNull final String value)
+    public void setInfoItemExternalTransaction(@NotNull final InfoKey key, @NotNull final String value)
             throws OemDatabaseException {
         try {
             infoItemRepository.insert(key.toString(), value);
@@ -31,11 +31,11 @@ public class InfoTableIntern extends RawTableBase {
     @TransactionDefaultCreateNew
     public void setInfoItemNewTransaction(@NotNull final InfoKey key, @NotNull final String value)
             throws OemDatabaseException {
-        setInfoItemExternTransaction(key, value);
+        setInfoItemExternalTransaction(key, value);
     }
 
     @TransactionDefaultUseExisting
-    public InfoItemDAO getInfoItemExternTransaction(@NotNull final InfoKey key) throws OemDatabaseException {
+    public InfoItemDAO getInfoItemExternalTransaction(@NotNull final InfoKey key) throws OemDatabaseException {
         try {
             return infoItemRepository.queryByKey(key.toString());
         } catch (final Exception exception) {
@@ -45,11 +45,11 @@ public class InfoTableIntern extends RawTableBase {
 
     @TransactionDefaultCreateNew
     public InfoItemDAO getInfoItemNewTransaction(@NotNull final InfoKey key) throws OemDatabaseException {
-        return getInfoItemExternTransaction(key);
+        return getInfoItemExternalTransaction(key);
     }
 
     @TransactionDefaultUseExisting
-    public List<InfoItemDAO> getAllExternTransaction() throws OemDatabaseException {
+    public List<InfoItemDAO> getAllExternalTransaction() throws OemDatabaseException {
         try {
             return infoItemRepository.queryAll();
         } catch (final Exception exception) {
@@ -59,11 +59,11 @@ public class InfoTableIntern extends RawTableBase {
 
     @TransactionDefaultCreateNew
     public List<InfoItemDAO> getAllNewTransaction() throws OemDatabaseException {
-        return getAllExternTransaction();
+        return getAllExternalTransaction();
     }
 
     @TransactionDefaultUseExisting
-    public void deleteAllExternTransaction() throws OemDatabaseException {
+    public void deleteAllExternalTransaction() throws OemDatabaseException {
         try {
             infoItemRepository.deleteAll();
         } catch (final Exception exception) {
@@ -73,26 +73,26 @@ public class InfoTableIntern extends RawTableBase {
 
     @TransactionDefaultCreateNew
     public void deleteAllNewTransaction() throws OemDatabaseException {
-        deleteAllExternTransaction();
+        deleteAllExternalTransaction();
     }
 
     @TransactionDefaultUseExisting
-    public String getInfoValueExternTransaction(@NotNull final InfoKey key) throws OemDatabaseException {
-        return getInfoItemExternTransaction(key).getValue();
+    public String getInfoValueExternalTransaction(@NotNull final InfoKey key) throws OemDatabaseException {
+        return getInfoItemExternalTransaction(key).getValue();
     }
 
     @TransactionDefaultCreateNew
     public String getInfoValueNewTransaction(@NotNull final InfoKey key) throws OemDatabaseException {
-        return getInfoValueExternTransaction(key);
+        return getInfoValueExternalTransaction(key);
     }
 
     @TransactionSerializableUseExisting
-    public Instant getCurrentDatabaseTimestampExternTransaction() throws OemDatabaseException {
-        return getInfoItemExternTransaction(InfoKey.DATAVERSION).getQueryTimestamp();
+    public Instant getCurrentDatabaseTimestampExternalTransaction() throws OemDatabaseException {
+        return getInfoItemExternalTransaction(InfoKey.DATAVERSION).getQueryTimestamp();
     }
 
     @TransactionSerializableCreateNew
     public Instant getCurrentDatabaseTimestampNewTransaction() throws OemDatabaseException {
-        return getCurrentDatabaseTimestampExternTransaction();
+        return getCurrentDatabaseTimestampExternalTransaction();
     }
 }
