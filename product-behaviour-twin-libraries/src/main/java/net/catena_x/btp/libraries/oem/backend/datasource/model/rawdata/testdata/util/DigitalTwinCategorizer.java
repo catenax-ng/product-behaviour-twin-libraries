@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DigitalTwinCategorizer extends DataLoader {
-    public DigitalTwinType categorize(final DigitalTwin digitalTwin) throws DataProviderException {
+    public DigitalTwinType categorize(@NotNull final DigitalTwin digitalTwin) throws DataProviderException {
         String nameAtManufacturer = getNameAtManufacturer(digitalTwin);
 
         if (nameAtManufacturer == null) {
