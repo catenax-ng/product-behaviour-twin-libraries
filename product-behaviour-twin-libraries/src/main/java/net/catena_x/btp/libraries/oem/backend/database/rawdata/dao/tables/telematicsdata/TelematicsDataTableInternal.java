@@ -12,7 +12,6 @@ import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTele
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
