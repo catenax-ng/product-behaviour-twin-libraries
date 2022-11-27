@@ -1,10 +1,11 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.sync;
 
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.annotations.RDTransactionDefaultCreateNew;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.annotations.RDTransactionDefaultUseExisting;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.annotations.RDTransactionSerializableCreateNew;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.annotations.RDTransactionSerializableUseExisting;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.RawTableBase;
-import net.catena_x.btp.libraries.util.database.annotations.TransactionDefaultCreateNew;
-import net.catena_x.btp.libraries.util.database.annotations.TransactionDefaultUseExisting;
-import net.catena_x.btp.libraries.util.database.annotations.TransactionSerializableCreateNew;
-import net.catena_x.btp.libraries.util.database.annotations.TransactionSerializableUseExisting;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.config.PersistenceRawDataConfiguration;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,13 +16,13 @@ import javax.validation.constraints.NotNull;
 
 @Component
 public class SyncTableInternal extends RawTableBase {
-    @PersistenceContext EntityManager entityManager;
+    @PersistenceContext(unitName = PersistenceRawDataConfiguration.UNIT_NAME) EntityManager entityManager;
 
     @Autowired private SyncRepository syncRepository;
 
     public static final String DEFAULT_ID = "DEFAULT";
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public void clearExternalTransaction() throws OemDatabaseException {
         try {
             syncRepository.deleteAll();
@@ -31,12 +32,12 @@ public class SyncTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public void clearNewTransaction() throws OemDatabaseException {
         clearExternalTransaction();
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public void initExternalTransaction(@NotNull final String id) throws OemDatabaseException {
         try {
             syncRepository.init(id);
@@ -46,12 +47,12 @@ public class SyncTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public void initNewTransaction(@NotNull final String id) throws OemDatabaseException {
         initExternalTransaction(id);
     }
 
-    @TransactionSerializableUseExisting
+    @RDTransactionSerializableUseExisting
     public void reInitExternalTransaction(@NotNull final String id) throws OemDatabaseException {
         try {
             final SyncDAO current = syncRepository.getCurrent(id);
@@ -66,12 +67,12 @@ public class SyncTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionSerializableCreateNew
+    @RDTransactionSerializableCreateNew
     public void reInitNewTransaction(@NotNull final String id) throws OemDatabaseException {
         reInitExternalTransaction(id);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public SyncDAO getCurrentExternalTransaction(@NotNull final String id) throws OemDatabaseException {
         try {
             return syncRepository.getCurrent(id);
@@ -80,12 +81,12 @@ public class SyncTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public SyncDAO getCurrentNewTransaction(@NotNull final String id) throws OemDatabaseException {
         return getCurrentExternalTransaction(id);
     }
 
-    @TransactionSerializableUseExisting
+    @RDTransactionSerializableUseExisting
     public SyncDAO setCurrentExternalTransaction(@NotNull final String id) throws OemDatabaseException {
         try {
             syncRepository.setCurrent(id, syncRepository.getCurrent(id).getSyncCounter() + 1);
@@ -97,7 +98,7 @@ public class SyncTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionSerializableCreateNew
+    @RDTransactionSerializableCreateNew
     public SyncDAO setCurrentNewTransaction(@NotNull final String id) throws OemDatabaseException {
         return setCurrentExternalTransaction(id);
     }

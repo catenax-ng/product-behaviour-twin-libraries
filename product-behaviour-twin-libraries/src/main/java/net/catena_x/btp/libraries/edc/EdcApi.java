@@ -26,16 +26,13 @@ public class EdcApi {
     @Value("${edc.apiwrapper.username}") private String apiWrapperUsername;
     @Value("${edc.apiwrapper.password}") private String apiWrapperPassword;
 
-    @Bean
-    public static RestTemplate restTemplate(RestTemplateBuilder builder) {
+    @Bean public static RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder.build();
     }
 
     public <ResponseType> ResponseEntity<ResponseType> get(
-                                               @NotNull final HttpUrl partnerUrl, @NotNull final String asset,
-                                               @NotNull Class<ResponseType> responseClass,
-                                               @Nullable final HttpHeaders headers)
-            throws EdcException {
+            @NotNull final HttpUrl partnerUrl, @NotNull final String asset, @NotNull Class<ResponseType> responseClass,
+            @Nullable final HttpHeaders headers) throws EdcException {
 
         HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
 
@@ -53,7 +50,7 @@ public class EdcApi {
             @NotNull final HttpUrl partnerUrl,
             @NotNull final String asset,
             @NotNull Class<ResponseType> responseClass,
-            BodyType body,
+            @NotNull BodyType body,
             @Nullable HttpHeaders headers) throws EdcException {
 
         HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);

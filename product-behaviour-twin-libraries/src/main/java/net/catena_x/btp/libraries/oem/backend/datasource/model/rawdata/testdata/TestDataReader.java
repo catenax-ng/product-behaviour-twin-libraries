@@ -1,23 +1,18 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.ClassifiedLoadSpectrum;
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
-import net.catena_x.btp.libraries.util.json.TimeStampDeserializer;
-import net.catena_x.btp.libraries.util.json.TimeStampSerializer;
-import javax.validation.constraints.NotNull;
-
 import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.Function;
@@ -26,7 +21,7 @@ import java.util.stream.Stream;
 
 @Component
 public class TestDataReader {
-    private ObjectMapper objectMapper = null;
+    @Autowired private ObjectMapper objectMapper;
 
     public TestData loadFromFile(@NotNull final Path filename) throws DataProviderException {
         return loadFromFiles(filename, null, null, null);
@@ -35,8 +30,6 @@ public class TestDataReader {
     public TestData loadFromFiles(@NotNull final Path filename, @Nullable final Path clutchSpectrumGreen,
                                   @Nullable final Path clutchSpectrumYellow, @Nullable final Path clutchSpectrumRed)
             throws DataProviderException {
-
-        intObjectManager();
 
         try {
             final TestData testData = objectMapper.readValue(new File(filename.toString()), TestData.class);
@@ -49,8 +42,6 @@ public class TestDataReader {
     }
 
     public TestData loadFromJson(@NotNull final String testDataJson) throws DataProviderException {
-        intObjectManager();
-
         try {
             return objectMapper.readValue(testDataJson, TestData.class);
         } catch (final IOException exception) {
@@ -60,8 +51,6 @@ public class TestDataReader {
 
     public void appendFromJson(@NotNull final TestData existingTestdata,
                                @NotNull final String testDataJson) throws DataProviderException {
-        intObjectManager();
-
         try {
             append(existingTestdata, objectMapper.readValue(testDataJson, TestData.class));
         } catch (final IOException exception) {
@@ -77,23 +66,6 @@ public class TestDataReader {
         }
 
         return objectMapper.readValue(new File(clutchSpectrum.toString()), ClassifiedLoadSpectrum.class);
-    }
-
-    private synchronized void intObjectManager() {
-        if(objectMapper != null) {
-            return;
-        }
-
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-
-        SimpleModule timestampSerializerModule = new SimpleModule();
-        timestampSerializerModule.addSerializer(Instant.class, new TimeStampSerializer());
-        objectMapper.registerModule(timestampSerializerModule);
-
-        SimpleModule timestampDeserializerModule = new SimpleModule();
-        timestampDeserializerModule.addDeserializer(Instant.class, new TimeStampDeserializer());
-        objectMapper.registerModule(timestampDeserializerModule);
     }
 
     private void extendTestData(@NotNull TestData testData, @Nullable final Path clutchSpectrumGreen,

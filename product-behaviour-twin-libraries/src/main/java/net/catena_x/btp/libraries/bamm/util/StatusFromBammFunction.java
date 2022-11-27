@@ -1,7 +1,6 @@
 package net.catena_x.btp.libraries.bamm.util;
 
 import javax.validation.constraints.NotNull;
-
 import java.time.Instant;
 
 @FunctionalInterface

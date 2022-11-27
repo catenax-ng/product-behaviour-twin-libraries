@@ -6,15 +6,17 @@ import net.catena_x.btp.libraries.bamm.custom.serialparttypization.SerialPartTyp
 import net.catena_x.btp.libraries.bamm.custom.serialparttypization.items.SPTManufacturingInformation;
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
-import javax.validation.constraints.NotNull;
+import net.catena_x.btp.libraries.util.datahelper.DataHelper;
+import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
 
 @Component
-public class VehicleDataLoader extends DataLoader {
+public class VehicleDataLoader {
 
     public String getCatenaXId(@NotNull final DigitalTwin vehicleTwin) {
         return vehicleTwin.getCatenaXId();
@@ -49,7 +51,7 @@ public class VehicleDataLoader extends DataLoader {
             @Nullable final List<APRChildPart> childParts,
             @NotNull final CatenaXIdToDigitalTwinType idToType) throws DataProviderException {
 
-        if(isNullOrEmpty(childParts)) {
+        if(DataHelper.isNullOrEmpty(childParts)) {
             return null;
         }
 
@@ -87,23 +89,35 @@ public class VehicleDataLoader extends DataLoader {
 
     private SerialPartTypization getSerialPartTypizationOrNull(@NotNull final DigitalTwin vehicleTwin)
             throws DataProviderException {
-        return getFirstAndOnlyItemAllowNull(vehicleTwin.getSerialPartTypizations());
+        try {
+            return DataHelper.getFirstAndOnlyItemAllowNull(vehicleTwin.getSerialPartTypizations());
+        } catch (final BtpException exception) {
+            throw new DataProviderException(exception);
+        }
     }
 
     private AssemblyPartRelationship getAssemblyPartRelationshipsOrNull(@NotNull final DigitalTwin vehicleTwin)
             throws DataProviderException {
-        return getFirstAndOnlyItemAllowNull(vehicleTwin.getAssemblyPartRelationships());
+        try {
+            return DataHelper.getFirstAndOnlyItemAllowNull(vehicleTwin.getAssemblyPartRelationships());
+        } catch (final BtpException exception) {
+            throw new DataProviderException(exception);
+        }
     }
 
     private String getLocalIdentifierOrNull(@NotNull final DigitalTwin vehicleTwin, @NotNull final String key)
             throws DataProviderException {
 
-        SerialPartTypization serialPartTypization = getSerialPartTypizationOrNull(vehicleTwin);
+        try {
+            SerialPartTypization serialPartTypization = getSerialPartTypizationOrNull(vehicleTwin);
 
-        if(serialPartTypization == null) {
-            return null;
+            if (serialPartTypization == null) {
+                return null;
+            }
+
+            return serialPartTypization.getLocelIdentifier(key);
+        } catch (final BtpException exception) {
+            throw new DataProviderException(exception);
         }
-
-        return serialPartTypization.getLocelIdentifier(key);
     }
 }

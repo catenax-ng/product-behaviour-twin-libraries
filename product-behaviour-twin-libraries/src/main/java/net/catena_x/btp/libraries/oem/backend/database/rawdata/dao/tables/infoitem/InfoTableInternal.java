@@ -1,10 +1,10 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.infoitem;
 
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.annotations.RDTransactionDefaultCreateNew;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.annotations.RDTransactionDefaultUseExisting;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.annotations.RDTransactionSerializableCreateNew;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.annotations.RDTransactionSerializableUseExisting;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.RawTableBase;
-import net.catena_x.btp.libraries.util.database.annotations.TransactionDefaultCreateNew;
-import net.catena_x.btp.libraries.util.database.annotations.TransactionDefaultUseExisting;
-import net.catena_x.btp.libraries.util.database.annotations.TransactionSerializableCreateNew;
-import net.catena_x.btp.libraries.util.database.annotations.TransactionSerializableUseExisting;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import net.catena_x.btp.libraries.oem.backend.model.enums.InfoKey;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import java.util.List;
 public class InfoTableInternal extends RawTableBase {
     @Autowired private InfoItemRepository infoItemRepository;
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public void setInfoItemExternalTransaction(@NotNull final InfoKey key, @NotNull final String value)
             throws OemDatabaseException {
         try {
@@ -28,13 +28,13 @@ public class InfoTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public void setInfoItemNewTransaction(@NotNull final InfoKey key, @NotNull final String value)
             throws OemDatabaseException {
         setInfoItemExternalTransaction(key, value);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public InfoItemDAO getInfoItemExternalTransaction(@NotNull final InfoKey key) throws OemDatabaseException {
         try {
             return infoItemRepository.queryByKey(key.toString());
@@ -43,12 +43,12 @@ public class InfoTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public InfoItemDAO getInfoItemNewTransaction(@NotNull final InfoKey key) throws OemDatabaseException {
         return getInfoItemExternalTransaction(key);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public List<InfoItemDAO> getAllExternalTransaction() throws OemDatabaseException {
         try {
             return infoItemRepository.queryAll();
@@ -57,12 +57,12 @@ public class InfoTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public List<InfoItemDAO> getAllNewTransaction() throws OemDatabaseException {
         return getAllExternalTransaction();
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public void deleteAllExternalTransaction() throws OemDatabaseException {
         try {
             infoItemRepository.deleteAll();
@@ -71,27 +71,27 @@ public class InfoTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public void deleteAllNewTransaction() throws OemDatabaseException {
         deleteAllExternalTransaction();
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public String getInfoValueExternalTransaction(@NotNull final InfoKey key) throws OemDatabaseException {
         return getInfoItemExternalTransaction(key).getValue();
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public String getInfoValueNewTransaction(@NotNull final InfoKey key) throws OemDatabaseException {
         return getInfoValueExternalTransaction(key);
     }
 
-    @TransactionSerializableUseExisting
+    @RDTransactionSerializableUseExisting
     public Instant getCurrentDatabaseTimestampExternalTransaction() throws OemDatabaseException {
         return getInfoItemExternalTransaction(InfoKey.DATAVERSION).getQueryTimestamp();
     }
 
-    @TransactionSerializableCreateNew
+    @RDTransactionSerializableCreateNew
     public Instant getCurrentDatabaseTimestampNewTransaction() throws OemDatabaseException {
         return getCurrentDatabaseTimestampExternalTransaction();
     }

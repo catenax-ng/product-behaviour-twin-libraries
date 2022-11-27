@@ -4,7 +4,6 @@ import lombok.Getter;
 import net.catena_x.btp.libraries.bamm.common.BammStatus;
 import net.catena_x.btp.libraries.bamm.custom.adaptionvalues.AdaptionValues;
 import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.ClassifiedLoadSpectrum;
-import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.items.CLSClass;
 import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.items.LoadSpectrumType;
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
@@ -13,16 +12,17 @@ import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.DigitalTwinType;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.VehicleDataLoader;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
-import javax.validation.constraints.NotNull;
-
-import net.catena_x.btp.libraries.util.hleper.ContentChecker;
+import net.catena_x.btp.libraries.util.datahelper.DataHelper;
+import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Component
@@ -80,7 +80,7 @@ public class TestDataCategorized {
             }
 
             return this.getDigitalTwinsGearboxes().get(gearboxId);
-        } catch (final DataProviderException exception) {
+        } catch (final BtpException exception) {
             return null;
         }
     }
@@ -110,9 +110,6 @@ public class TestDataCategorized {
                     appendMissingClutchLoadSpectrum(digitalTwin, testData, loadSpectrumVariant);
                     loadSpectrumVariant = (loadSpectrumVariant + 1) % 3;
 
-                    //FA: Reduce data size of load spectra to fit in database varchar type.
-                    reduceLoadSpectra(digitalTwin);
-
                     digitalTwinsVehicles.put(digitalTwin.getCatenaXId(), digitalTwin);
                     break;
                 }
@@ -140,7 +137,7 @@ public class TestDataCategorized {
 
         BammStatus status = null;
 
-        if(!ContentChecker.isNullOrEmpty(digitalTwin.getClassifiedLoadSpectra())) {
+        if(!DataHelper.isNullOrEmpty(digitalTwin.getClassifiedLoadSpectra())) {
             if(digitalTwin.getClassifiedLoadSpectra().get(0).getMetadata() != null) {
                 status = digitalTwin.getClassifiedLoadSpectra().get(0).getMetadata().getStatus();
             }
@@ -224,37 +221,6 @@ public class TestDataCategorized {
         }
     }
 
-    private void reduceLoadSpectra(@Nullable final DigitalTwin digitalTwin) {
-        /*
-        System.out.println("!!!Reducing load spectrum size, not for productive use!!!");
-
-        final List<ClassifiedLoadSpectrum> loadSpectra = digitalTwin.getClassifiedLoadSpectra();
-
-        if(loadSpectra == null) {
-            return;
-        }
-
-        for (final ClassifiedLoadSpectrum loadSpectrum : loadSpectra) {
-            reduceSize(loadSpectrum);
-        }
-        */
-    }
-
-    private void reduceSize(@NotNull ClassifiedLoadSpectrum loadSpectrum) {
-        final int count = loadSpectrum.getBody().getCounts().getCountsList().length;
-
-        if(count <= 100) {
-            return;
-        }
-
-        loadSpectrum.getBody().getCounts().setCountsList(
-                Arrays.copyOfRange(loadSpectrum.getBody().getCounts().getCountsList(), 0, 100));
-
-        for (CLSClass clsClass : loadSpectrum.getBody().getClasses()) {
-            clsClass.setClassList(Arrays.copyOfRange(clsClass.getClassList(), 0, 100));
-        }
-    }
-
     private void postProcessLoadCollectiveTargetComponentIds() {
         digitalTwinsVehicles.forEach((vehicleId, vehicleTwin)->{
             ensureLoadspectraList(vehicleTwin);
@@ -265,7 +231,7 @@ public class TestDataCategorized {
             String gearboxId = null;
             try {
                 gearboxId = vehicleDataLoader.getGearboxID(vehicleTwin, idToType);
-            } catch (final DataProviderException exception) {
+            } catch (final BtpException exception) {
                 //ignore
                 return;
            }

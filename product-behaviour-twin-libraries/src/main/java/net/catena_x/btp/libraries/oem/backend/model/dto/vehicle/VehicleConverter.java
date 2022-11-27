@@ -1,10 +1,10 @@
 package net.catena_x.btp.libraries.oem.backend.model.dto.vehicle;
 
-import net.catena_x.btp.libraries.util.database.converter.DAOConverter;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.vehicle.VehicleDAO;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.vehicle.VehicleWithTelematicsDataDAO;
 import net.catena_x.btp.libraries.oem.backend.model.dto.telematicsdata.TelematicsData;
 import net.catena_x.btp.libraries.oem.backend.model.dto.telematicsdata.TelematicsDataConverter;
+import net.catena_x.btp.libraries.util.database.converter.DAOConverter;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

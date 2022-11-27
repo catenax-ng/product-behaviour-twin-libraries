@@ -1,10 +1,11 @@
 package net.catena_x.btp.libraries.edc.util.exceptions;
 
+import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.NotNull;
 
-public class EdcException extends Exception {
+public class EdcException extends BtpException {
     public EdcException() {
         super();
     }

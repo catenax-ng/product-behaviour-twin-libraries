@@ -1,12 +1,13 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.telematicsdata;
 
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.annotations.RDTransactionDefaultCreateNew;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.annotations.RDTransactionDefaultUseExisting;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.annotations.RDTransactionSerializableCreateNew;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.annotations.RDTransactionSerializableUseExisting;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.RawTableBase;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.config.PersistenceRawDataConfiguration;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.sync.SyncDAO;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.sync.SyncTableInternal;
-import net.catena_x.btp.libraries.util.database.annotations.TransactionDefaultCreateNew;
-import net.catena_x.btp.libraries.util.database.annotations.TransactionDefaultUseExisting;
-import net.catena_x.btp.libraries.util.database.annotations.TransactionSerializableCreateNew;
-import net.catena_x.btp.libraries.util.database.annotations.TransactionSerializableUseExisting;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelematicsData;
 import org.hibernate.Session;
@@ -22,13 +23,13 @@ import java.util.List;
 
 @Component
 public class TelematicsDataTableInternal extends RawTableBase {
-    @PersistenceContext EntityManager entityManager;
+    @PersistenceContext(unitName = PersistenceRawDataConfiguration.UNIT_NAME) EntityManager entityManager;
 
     @Autowired private TelematicsDataRepository telematicsDataRepository;
     @Autowired private InputTelematicsDataConverter inputTelematicsDataConverter;
     @Autowired private SyncTableInternal syncTable;
 
-    @TransactionSerializableCreateNew
+    @RDTransactionSerializableCreateNew
     public void adjust(@NotNull final boolean isPostgreSQL) {
         final String queryString = isPostgreSQL?
                 "ALTER TABLE telematics_data ALTER COLUMN load_spectra TYPE TEXT" :
@@ -38,7 +39,7 @@ public class TelematicsDataTableInternal extends RawTableBase {
         query.executeUpdate();
     }
 
-    @TransactionSerializableUseExisting
+    @RDTransactionSerializableUseExisting
     public String updateTelematicsDataGetIdExternalTransaction(@NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
         try {
@@ -60,13 +61,13 @@ public class TelematicsDataTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionSerializableCreateNew
+    @RDTransactionSerializableCreateNew
     public String updateTelematicsDataGetIdNewTransaction(@NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
         return updateTelematicsDataGetIdExternalTransaction(newTelematicsData);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public void deleteAllExternalTransaction() throws OemDatabaseException {
         try {
             telematicsDataRepository.deleteAll();
@@ -75,12 +76,12 @@ public class TelematicsDataTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public void deleteAllNewTransaction() throws OemDatabaseException {
         deleteAllExternalTransaction();
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public void deleteByIdExternalTransaction(@NotNull final String id) throws OemDatabaseException {
         try {
             telematicsDataRepository.deleteById(id);
@@ -89,12 +90,12 @@ public class TelematicsDataTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public void deleteByIdNewTransaction(@NotNull final String id) throws OemDatabaseException {
         deleteByIdExternalTransaction(id);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public void deleteByVehicleIdExternalTransaction(@NotNull final String vehicleId)
             throws OemDatabaseException {
         try {
@@ -104,12 +105,12 @@ public class TelematicsDataTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public void deleteByVehicleIdNewTransaction(@NotNull final String vehicleId) throws OemDatabaseException {
         deleteByVehicleIdExternalTransaction(vehicleId);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public void deleteStoredUntilExternalTransaction(@NotNull final Instant storedUntil) throws OemDatabaseException {
         try {
             telematicsDataRepository.deleteStoredUntil(storedUntil);
@@ -118,12 +119,12 @@ public class TelematicsDataTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public void deleteStoredUntilNewTransaction(@NotNull final Instant storedUntil) throws OemDatabaseException {
         deleteStoredUntilExternalTransaction(storedUntil);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public void deleteSyncCounterUntilExternalTransaction(@NotNull final long syncCounter) throws OemDatabaseException {
         try {
             telematicsDataRepository.deleteSyncCounterUntil(syncCounter);
@@ -132,12 +133,12 @@ public class TelematicsDataTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public void deleteSyncCounterUntilNewTransaction(@NotNull final long syncCounter) throws OemDatabaseException {
         deleteSyncCounterUntilExternalTransaction(syncCounter);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public TelematicsDataDAO getByIdExternalTransaction(@NotNull final String id) throws OemDatabaseException {
         try {
             return telematicsDataRepository.queryById(id);
@@ -147,12 +148,12 @@ public class TelematicsDataTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public TelematicsDataDAO getByIdNewTransaction(@NotNull final String id) throws OemDatabaseException {
         return getByIdExternalTransaction(id);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public List<TelematicsDataDAO> getByVehicleIdExternalTransaction(@NotNull final String vehicleId)
             throws OemDatabaseException {
         try {
@@ -163,13 +164,13 @@ public class TelematicsDataTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public List<TelematicsDataDAO> getByVehicleIdNewTransaction(@NotNull final String vehicleId)
             throws OemDatabaseException {
         return getByVehicleIdExternalTransaction(vehicleId);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public List<TelematicsDataDAO> getByVehicleIdOrderBySyncCounterExternalTransaction(@NotNull final String vehicleId)
             throws OemDatabaseException {
         try {
@@ -180,13 +181,13 @@ public class TelematicsDataTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public List<TelematicsDataDAO> getByVehicleIdOrderBySyncCounterNewTransaction(@NotNull final String vehicleId)
             throws OemDatabaseException {
         return getByVehicleIdOrderBySyncCounterExternalTransaction(vehicleId);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public List<TelematicsDataDAO> getUpdatedSinceExternalTransaction(@NotNull final Instant timestamp)
             throws OemDatabaseException {
         try {
@@ -197,13 +198,13 @@ public class TelematicsDataTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public List<TelematicsDataDAO> getUpdatedSinceNewTransaction(@NotNull final Instant timestamp)
             throws OemDatabaseException {
         return getUpdatedSinceExternalTransaction(timestamp);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public List<TelematicsDataDAO> getUpdatedUntilExternalTransaction(@NotNull final Instant timestamp)
             throws OemDatabaseException {
         try {
@@ -214,13 +215,13 @@ public class TelematicsDataTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public List<TelematicsDataDAO> getUpdatedUntilNewTransaction(@NotNull final Instant timestamp)
             throws OemDatabaseException {
         return getUpdatedUntilExternalTransaction(timestamp);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public List<TelematicsDataDAO> getSyncCounterSinceExternalTransaction(@NotNull final long syncCounter)
             throws OemDatabaseException {
         try {
@@ -231,13 +232,13 @@ public class TelematicsDataTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public List<TelematicsDataDAO> getSyncCounterSinceNewTransaction(@NotNull final long syncCounter)
             throws OemDatabaseException {
         return getSyncCounterSinceExternalTransaction(syncCounter);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public List<TelematicsDataDAO> getSyncCounterUntilExternalTransaction(@NotNull final long syncCounter)
             throws OemDatabaseException {
         try {
@@ -248,13 +249,13 @@ public class TelematicsDataTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public List<TelematicsDataDAO> getSyncCounterUntilNewTransaction(@NotNull final long syncCounter)
             throws OemDatabaseException {
         return getSyncCounterUntilExternalTransaction(syncCounter);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public List<TelematicsDataDAO> getAllExternalTransaction() throws OemDatabaseException {
         try {
             return telematicsDataRepository.queryAll();
@@ -264,12 +265,12 @@ public class TelematicsDataTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public List<TelematicsDataDAO> getAllNewTransaction() throws OemDatabaseException {
         return getAllExternalTransaction();
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public List<TelematicsDataDAO> getAllOrderByStorageTimestampExternalTransaction() throws OemDatabaseException {
         try {
             return telematicsDataRepository.queryAllOrderByStorageTimestamp();
@@ -279,12 +280,12 @@ public class TelematicsDataTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public List<TelematicsDataDAO> getAllOrderByStorageTimestampNewTransaction() throws OemDatabaseException {
         return getAllOrderByStorageTimestampExternalTransaction();
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public List<TelematicsDataDAO> getAllOrderBySyncCounterExternalTransaction() throws OemDatabaseException {
         try {
             return telematicsDataRepository.queryAllOrderBySyncCounter();
@@ -294,7 +295,7 @@ public class TelematicsDataTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public List<TelematicsDataDAO> getAllOrderBySyncCounterNewTransaction() throws OemDatabaseException {
         return getAllOrderBySyncCounterExternalTransaction();
     }

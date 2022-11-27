@@ -1,8 +1,8 @@
 package net.catena_x.btp.libraries.oem.backend.model.dto.infoitem;
 
-import net.catena_x.btp.libraries.util.database.converter.DAOConverter;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.infoitem.InfoItemDAO;
 import net.catena_x.btp.libraries.oem.backend.model.enums.InfoKey;
+import net.catena_x.btp.libraries.util.database.converter.DAOConverter;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;

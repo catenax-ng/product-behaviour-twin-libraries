@@ -3,16 +3,17 @@ package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.vehic
 import net.catena_x.btp.libraries.bamm.custom.adaptionvalues.AdaptionValues;
 import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.ClassifiedLoadSpectrum;
 import net.catena_x.btp.libraries.bamm.util.StatusFromBammFunction;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.annotations.RDTransactionDefaultCreateNew;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.annotations.RDTransactionDefaultUseExisting;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.annotations.RDTransactionSerializableCreateNew;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.annotations.RDTransactionSerializableUseExisting;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.RawTableBase;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.config.PersistenceRawDataConfiguration;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.sync.SyncDAO;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.sync.SyncTableInternal;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.telematicsdata.InputTelematicsDataConverter;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.telematicsdata.TelematicsDataDAO;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.telematicsdata.TelematicsDataTableInternal;
-import net.catena_x.btp.libraries.util.database.annotations.TransactionDefaultCreateNew;
-import net.catena_x.btp.libraries.util.database.annotations.TransactionDefaultUseExisting;
-import net.catena_x.btp.libraries.util.database.annotations.TransactionSerializableCreateNew;
-import net.catena_x.btp.libraries.util.database.annotations.TransactionSerializableUseExisting;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelematicsData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.registration.VehicleInfo;
@@ -31,14 +32,14 @@ import java.util.List;
 
 @Component
 public class VehicleTableInternal extends RawTableBase {
-    @PersistenceContext EntityManager entityManager;
+    @PersistenceContext(unitName = PersistenceRawDataConfiguration.UNIT_NAME) EntityManager entityManager;
 
     @Autowired private RawVehicleRepository rawVehicleRepository;
     @Autowired private TelematicsDataTableInternal telematicsDataTable;
     @Autowired private SyncTableInternal syncTable;
     @Autowired private InputTelematicsDataConverter inputTelematicsDataConverter;
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public void registerVehicleExternalTransaction(@NotNull final VehicleInfo newVehicleInfo)
             throws OemDatabaseException {
         try {
@@ -51,12 +52,12 @@ public class VehicleTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public void registerVehicleNewTransaction(@NotNull VehicleInfo newVehicleInfo) throws OemDatabaseException {
         registerVehicleExternalTransaction(newVehicleInfo);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public void deleteAllExternalTransaction() throws OemDatabaseException {
         try {
             rawVehicleRepository.deleteAll();
@@ -65,19 +66,19 @@ public class VehicleTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public void deleteAllNewTransaction() throws OemDatabaseException {
         deleteAllExternalTransaction();
     }
 
-    @TransactionSerializableUseExisting
+    @RDTransactionSerializableUseExisting
     public void appendTelematicsDataExternalTransaction(@NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
         appendTelematicsData(getByIdWithTelematicsDataExternalTransaction(newTelematicsData.vehicleId()),
                 newTelematicsData);
     }
 
-    @TransactionSerializableCreateNew
+    @RDTransactionSerializableCreateNew
     public void appendTelematicsDataNewTransaction(@NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
         appendTelematicsDataExternalTransaction(newTelematicsData);
@@ -168,7 +169,7 @@ public class VehicleTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public void deleteByIdExternalTransaction(@NotNull final String id) throws OemDatabaseException {
         try {
             rawVehicleRepository.deleteByVehilceId(id);
@@ -178,12 +179,12 @@ public class VehicleTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public void deleteByIdNewTransaction(@NotNull final String id) throws OemDatabaseException {
         deleteByIdExternalTransaction(id);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public void deleteByVanExternalTransaction(@NotNull final String van) throws OemDatabaseException {
         try {
             rawVehicleRepository.deleteByVan(van);
@@ -193,12 +194,12 @@ public class VehicleTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public void deleteByVanNewTransaction(@NotNull final String van) throws OemDatabaseException {
         deleteByVanExternalTransaction(van);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public VehicleDAO getByIdExternalTransaction(@NotNull final String vehicleId) throws OemDatabaseException {
         try {
             return rawVehicleRepository.queryByVehicleId(vehicleId);
@@ -207,12 +208,12 @@ public class VehicleTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public VehicleDAO getByIdNewTransaction(@NotNull final String vehicleId) throws OemDatabaseException {
         return getByIdExternalTransaction(vehicleId);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public VehicleWithTelematicsDataDAO getByIdWithTelematicsDataExternalTransaction(@NotNull final String vehicleId)
             throws OemDatabaseException {
         try {
@@ -224,13 +225,13 @@ public class VehicleTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public VehicleWithTelematicsDataDAO getByIdWithTelematicsDataNewTransaction(@NotNull final String vehicleId)
             throws OemDatabaseException {
         return getByIdWithTelematicsDataExternalTransaction(vehicleId);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public VehicleDAO findByVanExternalTransaction(@NotNull final String van) throws OemDatabaseException {
         try {
             return rawVehicleRepository.queryByVan(van);
@@ -239,12 +240,12 @@ public class VehicleTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public VehicleDAO findByVanNewTransaction(@NotNull final String van) throws OemDatabaseException {
         return findByVanExternalTransaction(van);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public VehicleWithTelematicsDataDAO getByVanWithTelematicsDataExternalTransaction(@NotNull final String van)
             throws OemDatabaseException {
         try {
@@ -256,13 +257,13 @@ public class VehicleTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public VehicleWithTelematicsDataDAO getByVanWithTelematicsDataNewTransaction(
             @NotNull final String van) throws OemDatabaseException {
         return getByVanWithTelematicsDataExternalTransaction(van);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public VehicleDAO getByGearboxIdExternalTransaction(@NotNull final String gearboxId) throws OemDatabaseException {
         try {
             return rawVehicleRepository.queryByGearboxId(gearboxId);
@@ -271,12 +272,12 @@ public class VehicleTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public VehicleDAO getByGearboxIdNewTransaction(@NotNull final String gearboxId) throws OemDatabaseException {
         return getByGearboxIdExternalTransaction(gearboxId);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public VehicleWithTelematicsDataDAO getByGearboxIdWithTelematicsDataExternalTransaction(
             @NotNull final String gearboxId) throws OemDatabaseException {
         try {
@@ -289,7 +290,7 @@ public class VehicleTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public VehicleWithTelematicsDataDAO getByGearboxIdWithTelematicsDataNewTransaction(@NotNull final String gearboxId)
             throws OemDatabaseException {
         return getByGearboxIdWithTelematicsDataExternalTransaction(gearboxId);
@@ -312,7 +313,7 @@ public class VehicleTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public List<VehicleDAO> getAllExternalTransaction() throws OemDatabaseException {
         try {
             return rawVehicleRepository.queryAll();
@@ -322,12 +323,12 @@ public class VehicleTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public List<VehicleDAO> getAllNewTransaction() throws OemDatabaseException {
         return getAllExternalTransaction();
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public List<VehicleWithTelematicsDataDAO> getAllWithTelematicsDataExternalTransaction() throws OemDatabaseException {
         try {
             final NativeQuery<Object[]> query = createJoinQueryVehicleTelematicsData();
@@ -338,12 +339,12 @@ public class VehicleTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public List<VehicleWithTelematicsDataDAO> getAllWithTelematicsDataNewTransaction() throws OemDatabaseException {
         return getAllWithTelematicsDataExternalTransaction();
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public List<VehicleDAO> getUpdatedSinceExternalTransaction(@NotNull final Instant updatedSince)
             throws OemDatabaseException {
         try {
@@ -354,13 +355,13 @@ public class VehicleTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public List<VehicleDAO> getUpdatedSinceNewTransaction(@NotNull final Instant updatedSince)
             throws OemDatabaseException {
         return getUpdatedSinceExternalTransaction(updatedSince);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public List<VehicleWithTelematicsDataDAO> getUpdatedSinceWithTelematicsDataExternalTransaction(
             @NotNull final Instant updatedSince) throws OemDatabaseException {
         try {
@@ -374,13 +375,13 @@ public class VehicleTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public List<VehicleWithTelematicsDataDAO> getUpdatedSinceWithTelematicsDataNewTransaction(
             @NotNull final Instant updatedSince) throws OemDatabaseException {
         return getUpdatedSinceWithTelematicsDataExternalTransaction(updatedSince);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public List<VehicleDAO> getProducedBetweenExternalTransaction(@NotNull final Instant producedSince,
                                                                 @NotNull final Instant producedUntil)
             throws OemDatabaseException {
@@ -392,14 +393,14 @@ public class VehicleTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public List<VehicleDAO> getProducedBetweenNewTransaction(@NotNull final Instant producedSince,
                                                           @NotNull final Instant producedUntil)
             throws OemDatabaseException {
         return getProducedBetweenExternalTransaction(producedSince, producedUntil);
     }
 
-    @TransactionDefaultUseExisting
+    @RDTransactionDefaultUseExisting
     public List<VehicleWithTelematicsDataDAO> getProducedBetweenWithTelematicsDataExternalTransaction(
             @NotNull final Instant producedSince, @NotNull final Instant producedUntil) throws OemDatabaseException {
         try {
@@ -414,13 +415,13 @@ public class VehicleTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionDefaultCreateNew
+    @RDTransactionDefaultCreateNew
     public List<VehicleWithTelematicsDataDAO> getProducedBetweenWithTelematicsDataNewTransaction(
             @NotNull final Instant producedSince, @NotNull final Instant producedUntil) throws OemDatabaseException {
         return getProducedBetweenWithTelematicsDataExternalTransaction(producedSince, producedUntil);
     }
 
-    @TransactionSerializableUseExisting
+    @RDTransactionSerializableUseExisting
     public List<VehicleDAO> getSyncCounterSinceExternalTransaction(@NotNull final long syncCounter)
             throws OemDatabaseException {
         try {
@@ -430,13 +431,13 @@ public class VehicleTableInternal extends RawTableBase {
             throw failed("Querying vehicles by sync counter failed!", exception);
         }    }
 
-    @TransactionSerializableCreateNew
+    @RDTransactionSerializableCreateNew
     public List<VehicleDAO> getSyncCounterSinceNewTransaction(@NotNull final long syncCounter)
             throws OemDatabaseException {
         return getSyncCounterSinceExternalTransaction(syncCounter);
     }
 
-    @TransactionSerializableUseExisting
+    @RDTransactionSerializableUseExisting
     public List<VehicleWithTelematicsDataDAO> getSyncCounterSinceWithTelematicsDataExternalTransaction(
             @NotNull long syncCounter)
             throws OemDatabaseException {
@@ -451,7 +452,7 @@ public class VehicleTableInternal extends RawTableBase {
         }
     }
 
-    @TransactionSerializableCreateNew
+    @RDTransactionSerializableCreateNew
     public List<VehicleWithTelematicsDataDAO> getSyncCounterSinceWithTelematicsDataNewTransaction(
             @NotNull final long syncCounter)
             throws OemDatabaseException {

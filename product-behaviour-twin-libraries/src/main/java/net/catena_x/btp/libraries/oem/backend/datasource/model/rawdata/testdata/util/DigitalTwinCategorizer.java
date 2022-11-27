@@ -4,12 +4,15 @@ import net.catena_x.btp.libraries.bamm.custom.serialparttypization.SerialPartTyp
 import net.catena_x.btp.libraries.bamm.custom.serialparttypization.items.SPTPartTypeInformation;
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
-import javax.validation.constraints.NotNull;
+import net.catena_x.btp.libraries.util.datahelper.DataHelper;
+import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
+
 @Component
-public class DigitalTwinCategorizer extends DataLoader {
+public class DigitalTwinCategorizer {
     public DigitalTwinType categorize(@NotNull final DigitalTwin digitalTwin) throws DataProviderException {
         String nameAtManufacturer = getNameAtManufacturer(digitalTwin);
 
@@ -37,8 +40,13 @@ public class DigitalTwinCategorizer extends DataLoader {
     private String getNameAtManufacturer(@NotNull final DigitalTwin digitalTwin) throws DataProviderException {
         // Breaking the law of demeter but want to avoid getting business logic within pure data classes.
         // The data classes are standardized so there won't be frequent changes.
-        return getNameAtManufacturerFromSerialPartTypization(getFirstAndOnlyItemAllowNull(
-                                                             digitalTwin.getSerialPartTypizations()));
+        try {
+            return getNameAtManufacturerFromSerialPartTypization(DataHelper.getFirstAndOnlyItemAllowNull(
+                    digitalTwin.getSerialPartTypizations()));
+        } catch (final BtpException exception) {
+            throw new DataProviderException(exception);
+        }
+
     }
 
     private String getNameAtManufacturerFromSerialPartTypization(

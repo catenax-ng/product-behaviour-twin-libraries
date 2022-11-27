@@ -1,10 +1,11 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions;
 
+import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.NotNull;
 
-public class DataProviderException extends Exception {
+public class DataProviderException extends BtpException {
     public DataProviderException() {
         super();
     }

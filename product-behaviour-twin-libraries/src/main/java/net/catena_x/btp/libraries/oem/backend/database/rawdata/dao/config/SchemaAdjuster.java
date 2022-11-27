@@ -11,8 +11,7 @@ import javax.validation.constraints.NotNull;
 
 @Component
 public class SchemaAdjuster {
-    @Autowired
-    TelematicsDataTableInternal telematicsDataTableInternal;
+    @Autowired TelematicsDataTableInternal telematicsDataTableInternal;
 
     @Value("${rawdatadb.drivername}") private String dbDriverName;
 
