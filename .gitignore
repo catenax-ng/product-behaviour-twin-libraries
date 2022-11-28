@@ -5,3 +5,4 @@
 /product-behaviour-twin-libraries/src/main/resources/dataprovider-bindings.properties
 /product-behaviour-twin-libraries/src/main/resources/dataupdater-bindings.properties
 /product-behaviour-twin-libraries/src/main/resources/rawdatadb-bindings.properties
+/product-oem-hi-app/src/main/resources/templates/tmp_index.html
