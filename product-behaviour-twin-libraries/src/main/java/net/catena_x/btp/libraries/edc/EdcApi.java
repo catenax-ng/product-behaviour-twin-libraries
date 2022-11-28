@@ -5,8 +5,6 @@ import okhttp3.HttpUrl;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -25,10 +23,6 @@ public class EdcApi {
     @Value("${edc.apiwrapper.providerEdcUrlKey}") private String providerEdcUrlKey; //"provider-connector-url"
     @Value("${edc.apiwrapper.username}") private String apiWrapperUsername;
     @Value("${edc.apiwrapper.password}") private String apiWrapperPassword;
-
-    @Bean public static RestTemplate restTemplate(RestTemplateBuilder builder) {
-        return builder.build();
-    }
 
     public <ResponseType> ResponseEntity<ResponseType> get(
             @NotNull final HttpUrl partnerUrl, @NotNull final String asset, @NotNull Class<ResponseType> responseClass,

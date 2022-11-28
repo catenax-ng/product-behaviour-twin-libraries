@@ -22,11 +22,10 @@ import java.util.HashMap;
 
 @Component
 public class VehicleRegistration {
-    private final RestTemplate restTemplate = new RestTemplate();
-
     @Autowired private DataUpdaterApi dataUpdaterApi;
     @Autowired private VehicleDataLoader vehicleDataLoader;
     @Autowired private TestDataCategorized testDataCategorized;
+    @Autowired private RestTemplate restTemplate;
 
     public void registerFromTestData(@NotNull TestData testData) throws DataProviderException {
         testDataCategorized.initFromTestData(testData);
@@ -71,10 +70,8 @@ public class VehicleRegistration {
         dataUpdaterApi.addAuthorizationHeaders(headers);
 
         final HttpEntity<VehicleInfo> request = new HttpEntity<>(vehicleInfo, headers);
-
         final ResponseEntity<ApiResult> response = restTemplate.postForEntity(
                 requestUrl.toString(), request, ApiResult.class);
-
         dataUpdaterApi.checkResponse(response);
     }
 }

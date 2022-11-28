@@ -115,5 +115,4 @@ public class RawdataInputController {
             return apiHelper.failed(exception.toString());
         }
     }
-
 }

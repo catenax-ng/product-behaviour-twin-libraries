@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import net.catena_x.btp.libraries.util.json.ObjectMapperFactory;
+import net.catena_x.btp.libraries.util.json.ObjectMapperFactoryBtp;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
@@ -15,7 +15,7 @@ public class DAOJsonConverter<T_DTO> extends DAOConverter<String, T_DTO> {
     final private ObjectWriter objectWriter;
 
     public DAOJsonConverter(final TypeReference type) {
-        final ObjectMapper objectMapper = ObjectMapperFactory.createObjectManager();
+        final ObjectMapper objectMapper = ObjectMapperFactoryBtp.createObjectMapper();
         objectReader = objectMapper.readerFor(type);
         objectWriter = objectMapper.writerFor(type);
     }

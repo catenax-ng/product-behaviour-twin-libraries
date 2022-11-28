@@ -6,7 +6,9 @@ import net.catena_x.btp.libraries.bamm.testdata.TestData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.model.TestDataCategorized;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import net.catena_x.btp.libraries.util.datahelper.DataHelper;
+import net.catena_x.btp.libraries.util.json.ObjectMapperFactoryBtp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
@@ -18,7 +20,7 @@ import java.util.Collection;
 
 @Component
 public class TestDataExporter {
-    @Autowired private ObjectMapper objectMapper;
+    @Autowired @Qualifier(ObjectMapperFactoryBtp.EXTENDED_OBJECT_MAPPER) private ObjectMapper objectMapper;
 
     public void export(@NotNull final TestData testData, @NotNull final Path filename) throws DataProviderException {
         try {

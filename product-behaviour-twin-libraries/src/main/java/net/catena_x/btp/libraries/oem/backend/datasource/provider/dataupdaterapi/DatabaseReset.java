@@ -13,8 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 public class DatabaseReset {
-    private final RestTemplate restTemplate = new RestTemplate();
-
+    @Autowired private RestTemplate restTemplate;
     @Autowired private DataUpdaterApi dataUpdaterApi;
 
     public void reset() throws DataProviderException {

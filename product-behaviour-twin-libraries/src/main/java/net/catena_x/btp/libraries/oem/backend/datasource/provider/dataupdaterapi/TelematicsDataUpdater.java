@@ -21,8 +21,7 @@ import java.util.HashMap;
 
 @Component
 public class TelematicsDataUpdater {
-    private final RestTemplate restTemplate = new RestTemplate();
-
+    @Autowired private RestTemplate restTemplate;
     @Autowired private DataUpdaterApi dataUpdaterApi;
     @Autowired private TestDataCategorized testDataCategorized;
 
