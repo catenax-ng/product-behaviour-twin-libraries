@@ -95,8 +95,10 @@ public class EdcApi {
         if(response == null) {
             throw new EdcException("Internal error using edc api!");
         }
-        else if( response.getStatusCode() != HttpStatus.OK) {
-            throw new EdcException("Http status not ok while using edc api!");
+        else if( response.getStatusCode() != HttpStatus.OK
+                && response.getStatusCode() != HttpStatus.CREATED
+                && response.getStatusCode() != HttpStatus.ACCEPTED) {
+            throw new EdcException("Http status not ok, created or accepted while using edc api!");
         }
     }
 }

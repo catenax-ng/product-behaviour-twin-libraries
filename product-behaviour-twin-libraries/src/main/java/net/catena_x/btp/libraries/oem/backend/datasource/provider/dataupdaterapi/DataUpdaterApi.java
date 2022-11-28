@@ -39,7 +39,9 @@ public class DataUpdaterApi {
         if(response == null) {
             throw new DataProviderException("Internal error using data updater api!");
         }
-        else if(response.getStatusCode() != HttpStatus.OK) {
+        else if(response.getStatusCode() != HttpStatus.OK
+                        && response.getStatusCode() != HttpStatus.CREATED
+                        && response.getStatusCode() != HttpStatus.ACCEPTED) {
             String message = null;
             if(response.getBody() != null) {
                 if(response.getBody().message() != null) {

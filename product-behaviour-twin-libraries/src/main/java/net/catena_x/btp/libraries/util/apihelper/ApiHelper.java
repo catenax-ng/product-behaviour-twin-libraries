@@ -24,7 +24,7 @@ public class ApiHelper {
     public ResponseEntity<ApiResult> ok(@Nullable final String info, @Nullable final String value) {
         return new ResponseEntity<ApiResult>(
                 new ApiResult(Instant.now(), ApiResultType.OK, info, value),
-                generateDefaultHeaders(), HttpStatus.OK);
+                                    generateDefaultHeaders(), HttpStatus.OK);
     }
 
     public ResponseEntity<ApiResult> failed(@NotNull final String error) {
