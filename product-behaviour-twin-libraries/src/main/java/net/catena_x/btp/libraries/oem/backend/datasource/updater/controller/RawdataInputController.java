@@ -5,18 +5,18 @@ import net.catena_x.btp.libraries.oem.backend.datasource.model.api.ApiResult;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputInfo;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelematicsData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.registration.VehicleInfo;
-import net.catena_x.btp.libraries.util.apihelper.ApiHelper;
 import net.catena_x.btp.libraries.oem.backend.model.dto.infoitem.InfoTable;
 import net.catena_x.btp.libraries.oem.backend.model.dto.sync.SyncTable;
 import net.catena_x.btp.libraries.oem.backend.model.dto.telematicsdata.TelematicsDataTable;
 import net.catena_x.btp.libraries.oem.backend.model.dto.vehicle.VehicleTable;
 import net.catena_x.btp.libraries.oem.backend.model.enums.InfoKey;
-import javax.validation.constraints.NotNull;
-
+import net.catena_x.btp.libraries.util.apihelper.ApiHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.constraints.NotNull;
 
 @RestController
 @EnableTransactionManagement
@@ -35,7 +35,7 @@ public class RawdataInputController {
         try {
             key = InfoKey.valueOf(item.key());
         }
-        catch(Exception exception) {
+        catch(final Exception exception) {
             return apiHelper.failed(exception.toString());
         }
 
@@ -43,7 +43,7 @@ public class RawdataInputController {
             infoTable.setInfoItemNewTransaction(key, item.value());
             return apiHelper.ok(item.key() + " set to \"" + item.value() + "\"");
         }
-        catch(OemDatabaseException exception) {
+        catch(final OemDatabaseException exception) {
             return apiHelper.failed(exception.toString());
         }
     }
@@ -53,7 +53,7 @@ public class RawdataInputController {
         try {
             return apiHelper.okWithValue(infoTable.getInfoValueNewTransaction(key));
         }
-        catch(OemDatabaseException exception) {
+        catch(final OemDatabaseException exception) {
             return apiHelper.failed(exception.toString());
         }
     }
@@ -61,15 +61,15 @@ public class RawdataInputController {
     @GetMapping("/info/init")
     public ResponseEntity<ApiResult> infoInit() {
         try {
-            infoInitIntern();
+            infoInitInternal();
             return apiHelper.okWithValue("");
         }
-        catch(OemDatabaseException exception) {
+        catch(final OemDatabaseException exception) {
             return apiHelper.failed(exception.toString());
         }
     }
 
-    private void infoInitIntern() throws OemDatabaseException {
+    private void infoInitInternal() throws OemDatabaseException {
         infoTable.setInfoItemNewTransaction(InfoKey.DATAVERSION, "DV_0.0.99");
         infoTable.setInfoItemNewTransaction(InfoKey.ADAPTIONVALUEINFO, "{}");
         infoTable.setInfoItemNewTransaction(InfoKey.LOADSPECTRUMINFO,
@@ -81,7 +81,7 @@ public class RawdataInputController {
         try {
             infoTable.deleteAllNewTransaction();
 
-            infoInitIntern();
+            infoInitInternal();
 
             vehicleTable.deleteAllNewTransaction();
             telematicsDataTable.deleteAllNewTransaction();
@@ -89,7 +89,7 @@ public class RawdataInputController {
 
             return apiHelper.ok("Rawdata database cleared and reinitialized.");
         }
-        catch(OemDatabaseException exception) {
+        catch(final OemDatabaseException exception) {
             return apiHelper.failed(exception.toString());
         }
     }
@@ -100,7 +100,7 @@ public class RawdataInputController {
             vehicleTable.registerVehicleNewTransaction(vehicle);
             return apiHelper.ok("Vehicle registered.");
         }
-        catch(OemDatabaseException exception) {
+        catch(final OemDatabaseException exception) {
             return apiHelper.failed(exception.toString());
         }
     }
@@ -111,9 +111,8 @@ public class RawdataInputController {
             vehicleTable.appendTelematicsDataNewTransaction(telematicsData);
             return apiHelper.ok("Telematics data added.");
         }
-        catch(OemDatabaseException exception) {
+        catch(final OemDatabaseException exception) {
             return apiHelper.failed(exception.toString());
         }
     }
-
 }

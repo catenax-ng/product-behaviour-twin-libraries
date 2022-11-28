@@ -1,7 +1,7 @@
 package net.catena_x.btp.libraries.oem.backend.model.dto.infoitem;
 
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.table.RawTableBase;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.infoitem.InfoTableIntern;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.RawTableBase;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.infoitem.InfoTableInternal;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import net.catena_x.btp.libraries.oem.backend.model.enums.InfoKey;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,52 +13,52 @@ import java.util.List;
 
 @Component
 public class InfoTable extends RawTableBase {
-    @Autowired private InfoTableIntern intern;
+    @Autowired private InfoTableInternal internal;
     @Autowired private InfoItemConverter infoItemconverter;
 
     public void setInfoItemNewTransaction(@NotNull final InfoKey key, @NotNull final String value)
             throws OemDatabaseException {
-        intern.setInfoItemNewTransaction(key, value);
+        internal.setInfoItemNewTransaction(key, value);
     }
 
-    public void setInfoItemExternTransaction(@NotNull final InfoKey key, @NotNull final String value)
+    public void setInfoItemExternalTransaction(@NotNull final InfoKey key, @NotNull final String value)
             throws OemDatabaseException {
-        intern.setInfoItemExternTransaction(key, value);
+        internal.setInfoItemExternalTransaction(key, value);
     }
 
     public InfoItem getInfoItemNewTransaction(@NotNull final InfoKey key) throws OemDatabaseException {
-        return infoItemconverter.toDTO(intern.getInfoItemNewTransaction(key));
+        return infoItemconverter.toDTO(internal.getInfoItemNewTransaction(key));
     }
 
-    public InfoItem getInfoItemExternTransaction(@NotNull final InfoKey key) throws OemDatabaseException {
-        return infoItemconverter.toDTO(intern.getInfoItemExternTransaction(key));
+    public InfoItem getInfoItemExternalTransaction(@NotNull final InfoKey key) throws OemDatabaseException {
+        return infoItemconverter.toDTO(internal.getInfoItemExternalTransaction(key));
     }
 
     public List<InfoItem> getAllNewTransaction() throws OemDatabaseException {
-        return infoItemconverter.toDTO(intern.getAllNewTransaction());
+        return infoItemconverter.toDTO(internal.getAllNewTransaction());
     }
 
-    public List<InfoItem> getAllExternTransaction() throws OemDatabaseException {
-        return infoItemconverter.toDTO(intern.getAllExternTransaction());
+    public List<InfoItem> getAllExternalTransaction() throws OemDatabaseException {
+        return infoItemconverter.toDTO(internal.getAllExternalTransaction());
     }
 
     public void deleteAllNewTransaction() throws OemDatabaseException {
-        intern.deleteAllNewTransaction();
+        internal.deleteAllNewTransaction();
     }
 
-    public void deleteAllExternTransaction() throws OemDatabaseException {
-        intern.deleteAllExternTransaction();
+    public void deleteAllExternalTransaction() throws OemDatabaseException {
+        internal.deleteAllExternalTransaction();
     }
 
     public String getInfoValueNewTransaction(@NotNull final InfoKey key) throws OemDatabaseException {
-        return intern.getInfoValueNewTransaction(key);
+        return internal.getInfoValueNewTransaction(key);
     }
 
-    public String getInfoValueExternTransaction(@NotNull final InfoKey key) throws OemDatabaseException {
-        return intern.getInfoValueExternTransaction(key);
+    public String getInfoValueExternalTransaction(@NotNull final InfoKey key) throws OemDatabaseException {
+        return internal.getInfoValueExternalTransaction(key);
     }
 
     public Instant getCurrentDatabaseTimestampNewTransaction() throws OemDatabaseException {
-        return intern.getCurrentDatabaseTimestampNewTransaction();
+        return internal.getCurrentDatabaseTimestampNewTransaction();
     }
 }

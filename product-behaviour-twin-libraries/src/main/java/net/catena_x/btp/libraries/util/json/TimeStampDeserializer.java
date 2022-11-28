@@ -1,7 +1,6 @@
 package net.catena_x.btp.libraries.util.json;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
@@ -27,15 +26,15 @@ public class TimeStampDeserializer extends StdDeserializer<Instant> {
 
         try {
             return Instant.parse(value);
-        } catch (Exception exception) {}
+        } catch (final Exception exception) {}
 
         try {
             return Instant.parse(value + "Z");
-        } catch (Exception exception) {}
+        } catch (final Exception exception) {}
 
         try {
             return Instant.from( DateTimeFormatter.ofPattern("yyyy-MM-dd").parse(value));
-        } catch (Exception exception) {
+        } catch (final Exception exception) {
             return null;
         }
     }

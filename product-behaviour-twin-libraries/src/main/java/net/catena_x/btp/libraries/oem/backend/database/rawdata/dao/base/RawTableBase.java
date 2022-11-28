@@ -1,4 +1,4 @@
-package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.table;
+package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base;
 
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import org.jetbrains.annotations.Nullable;

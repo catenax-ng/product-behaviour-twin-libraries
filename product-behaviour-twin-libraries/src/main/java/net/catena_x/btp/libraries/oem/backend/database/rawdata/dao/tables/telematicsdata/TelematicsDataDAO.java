@@ -26,13 +26,15 @@ import java.time.Instant;
 @NamedNativeQuery(name = "TelematicsDataDAO.queryAll", resultClass = TelematicsDataDAO.class,
         query = "SELECT * FROM telematics_data")
 @NamedNativeQuery(name = "TelematicsDataDAO.queryById", resultClass = TelematicsDataDAO.class,
-        query = "DELETE * FROM telematics_data WHERE id=:id")
+        query = "SELECT * FROM telematics_data WHERE id=:id")
 @NamedNativeQuery(name = "TelematicsDataDAO.queryAllOrderByStorageTimestamp", resultClass = TelematicsDataDAO.class,
         query = "SELECT * FROM telematics_data ORDER BY storage_timestamp")
 @NamedNativeQuery(name = "TelematicsDataDAO.queryAllOrderBySyncCounter", resultClass = TelematicsDataDAO.class,
         query = "SELECT * FROM telematics_data ORDER BY sync_counter")
 @NamedNativeQuery(name = "TelematicsDataDAO.queryByVehicleId", resultClass = TelematicsDataDAO.class,
         query = "SELECT * FROM telematics_data WHERE vehicle_id=:vehicle_id")
+@NamedNativeQuery(name = "TelematicsDataDAO.queryByVehicleIdOrderBySyncCounter", resultClass = TelematicsDataDAO.class,
+        query = "SELECT * FROM telematics_data WHERE vehicle_id=:vehicle_id ORDER BY sync_counter")
 @NamedNativeQuery(name = "TelematicsDataDAO.queryByStorageSince", resultClass = TelematicsDataDAO.class,
         query = "SELECT * FROM telematics_data WHERE storage_timestamp<=:storage_timestamp_since")
 @NamedNativeQuery(name = "TelematicsDataDAO.queryByStorageUntil", resultClass = TelematicsDataDAO.class,
@@ -47,22 +49,22 @@ import java.time.Instant;
 @AllArgsConstructor
 public class TelematicsDataDAO {
     @Id
-    @Column(name="id", length=50, nullable=false, unique=true)
+    @Column(name="id", length=50, updatable=false, nullable=false, unique=true)
     private String id;
 
     @Column(name="storage_timestamp", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
             insertable=false, updatable=false, nullable=false)
     private Instant storageTimestamp;
 
-    @Column(name="sync_counter", nullable=false)
+    @Column(name="sync_counter", updatable=false, nullable=false)
     private long syncCounter;
 
-    @Column(name="vehicle_id", length=50, nullable=false)
+    @Column(name="vehicle_id", length=50, updatable=false, nullable=false)
     private String vehicleId;
 
-    @Column(name="load_spectra", length=65000, nullable=false)
+    @Column(name="load_spectra", length=65000, updatable=false, nullable=false)
     private String loadSpectra;
 
-    @Column(name="adaption_values", length=65000, nullable=false)
+    @Column(name="adaption_values", length=65000, updatable=false, nullable=false)
     private String adaptionValues;
 }

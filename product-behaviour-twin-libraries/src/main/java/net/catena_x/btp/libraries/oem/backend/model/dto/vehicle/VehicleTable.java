@@ -1,7 +1,7 @@
 package net.catena_x.btp.libraries.oem.backend.model.dto.vehicle;
 
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.table.RawTableBase;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.vehicle.VehicleTableIntern;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.RawTableBase;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.vehicle.VehicleTableInternal;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelematicsData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.registration.VehicleInfo;
@@ -14,166 +14,166 @@ import java.util.List;
 
 @Component
 public class VehicleTable extends RawTableBase {
-    @Autowired private VehicleTableIntern intern;
+    @Autowired private VehicleTableInternal internal;
     @Autowired private VehicleConverter vehicleConverter;
 
     public void registerVehicleNewTransaction(@NotNull final VehicleInfo newVehicleInfo) throws OemDatabaseException {
-        intern.registerVehicleNewTransaction(newVehicleInfo);
+        internal.registerVehicleNewTransaction(newVehicleInfo);
     }
 
-    public void registerVehicleExternTransaction(@NotNull final VehicleInfo newVehicleInfo) throws OemDatabaseException {
-        intern.registerVehicleExternTransaction(newVehicleInfo);
+    public void registerVehicleExternalTransaction(@NotNull final VehicleInfo newVehicleInfo) throws OemDatabaseException {
+        internal.registerVehicleExternalTransaction(newVehicleInfo);
     }
 
     public void deleteAllNewTransaction() throws OemDatabaseException {
-        intern.deleteAllNewTransaction();
+        internal.deleteAllNewTransaction();
     }
 
-    public void deleteAllExternTransaction() throws OemDatabaseException {
-        intern.deleteAllExternTransaction();
+    public void deleteAllExternalTransaction() throws OemDatabaseException {
+        internal.deleteAllExternalTransaction();
     }
 
     public void appendTelematicsDataNewTransaction(@NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
-        intern.appendTelematicsDataNewTransaction(newTelematicsData);
+        internal.appendTelematicsDataNewTransaction(newTelematicsData);
     }
 
-    public void appendTelematicsDataExternTransaction(@NotNull final InputTelematicsData newTelematicsData)
+    public void appendTelematicsDataExternalTransaction(@NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
-        intern.appendTelematicsDataExternTransaction(newTelematicsData);
+        internal.appendTelematicsDataExternalTransaction(newTelematicsData);
     }
 
     public void deleteByIdNewTransaction(@NotNull final String id) throws OemDatabaseException {
-        intern.deleteByIdNewTransaction(id);
+        internal.deleteByIdNewTransaction(id);
     }
 
-    public void deleteByIdExternTransaction(@NotNull final String id) throws OemDatabaseException {
-        intern.deleteByIdExternTransaction(id);
+    public void deleteByIdExternalTransaction(@NotNull final String id) throws OemDatabaseException {
+        internal.deleteByIdExternalTransaction(id);
     }
 
     public void deleteByVanNewTransaction(@NotNull final String van) throws OemDatabaseException {
-        intern.deleteByVanNewTransaction(van);
+        internal.deleteByVanNewTransaction(van);
     }
 
-    public void deleteByVanExternTransaction(@NotNull final String van) throws OemDatabaseException {
-        intern.deleteByVanExternTransaction(van);
+    public void deleteByVanExternalTransaction(@NotNull final String van) throws OemDatabaseException {
+        internal.deleteByVanExternalTransaction(van);
     }
 
     public Vehicle getByIdNewTransaction(@NotNull final String vehicleId) throws OemDatabaseException {
-        return vehicleConverter.toDTO(intern.getByIdNewTransaction(vehicleId));
+        return vehicleConverter.toDTO(internal.getByIdNewTransaction(vehicleId));
     }
 
-    public Vehicle getByIdExternTransaction(@NotNull final String vehicleId) throws OemDatabaseException {
-        return vehicleConverter.toDTO(intern.getByIdExternTransaction(vehicleId));
+    public Vehicle getByIdExternalTransaction(@NotNull final String vehicleId) throws OemDatabaseException {
+        return vehicleConverter.toDTO(internal.getByIdExternalTransaction(vehicleId));
     }
 
     public Vehicle getByIdWithTelematicsDataNewTransaction(@NotNull final String vehicleId)
             throws OemDatabaseException {
-        return vehicleConverter.toDTOWithTelematicsData(intern.getByIdWithTelematicsDataNewTransaction(vehicleId));
+        return vehicleConverter.toDTOWithTelematicsData(internal.getByIdWithTelematicsDataNewTransaction(vehicleId));
     }
 
-    public Vehicle getByIdWithTelematicsDataExternTransaction(@NotNull final String vehicleId)
+    public Vehicle getByIdWithTelematicsDataExternalTransaction(@NotNull final String vehicleId)
             throws OemDatabaseException {
-        return vehicleConverter.toDTOWithTelematicsData(intern.getByIdWithTelematicsDataExternTransaction(vehicleId));
+        return vehicleConverter.toDTOWithTelematicsData(internal.getByIdWithTelematicsDataExternalTransaction(vehicleId));
     }
 
     public Vehicle findByVanNewTransaction(@NotNull final String van) throws OemDatabaseException {
-        return vehicleConverter.toDTO(intern.findByVanNewTransaction(van));
+        return vehicleConverter.toDTO(internal.findByVanNewTransaction(van));
     }
 
-    public Vehicle findByVanExternTransaction(@NotNull final String van) throws OemDatabaseException {
-        return vehicleConverter.toDTO(intern.findByVanExternTransaction(van));
+    public Vehicle findByVanExternalTransaction(@NotNull final String van) throws OemDatabaseException {
+        return vehicleConverter.toDTO(internal.findByVanExternalTransaction(van));
     }
 
     public Vehicle getByVanWithTelematicsDataNewTransaction(@NotNull final String van) throws OemDatabaseException {
-        return vehicleConverter.toDTOWithTelematicsData(intern.getByVanWithTelematicsDataNewTransaction(van));
+        return vehicleConverter.toDTOWithTelematicsData(internal.getByVanWithTelematicsDataNewTransaction(van));
     }
 
-    public Vehicle getByVanWithTelematicsDataExternTransaction(@NotNull final String van) throws OemDatabaseException {
-        return vehicleConverter.toDTOWithTelematicsData(intern.getByVanWithTelematicsDataExternTransaction(van));
+    public Vehicle getByVanWithTelematicsDataExternalTransaction(@NotNull final String van) throws OemDatabaseException {
+        return vehicleConverter.toDTOWithTelematicsData(internal.getByVanWithTelematicsDataExternalTransaction(van));
     }
 
     public List<Vehicle> getAllNewTransaction() throws OemDatabaseException {
-        return vehicleConverter.toDTO(intern.getAllNewTransaction());
+        return vehicleConverter.toDTO(internal.getAllNewTransaction());
     }
 
-    public List<Vehicle> getAllExternTransaction() throws OemDatabaseException {
-        return vehicleConverter.toDTO(intern.getAllExternTransaction());
+    public List<Vehicle> getAllExternalTransaction() throws OemDatabaseException {
+        return vehicleConverter.toDTO(internal.getAllExternalTransaction());
     }
 
     public List<Vehicle> getAllWithTelematicsDataNewTransaction() throws OemDatabaseException {
-        return vehicleConverter.toDTOWithTelematicsData(intern.getAllWithTelematicsDataNewTransaction());
+        return vehicleConverter.toDTOWithTelematicsData(internal.getAllWithTelematicsDataNewTransaction());
     }
 
-    public List<Vehicle> getAllWithTelematicsDataExternTransaction() throws OemDatabaseException {
-        return vehicleConverter.toDTOWithTelematicsData(intern.getAllWithTelematicsDataExternTransaction());
+    public List<Vehicle> getAllWithTelematicsDataExternalTransaction() throws OemDatabaseException {
+        return vehicleConverter.toDTOWithTelematicsData(internal.getAllWithTelematicsDataExternalTransaction());
     }
 
     public List<Vehicle> getUpdatedSinceNewTransaction(@NotNull final Instant updatedSince)
             throws OemDatabaseException {
-        return vehicleConverter.toDTO(intern.getUpdatedSinceNewTransaction(updatedSince));
+        return vehicleConverter.toDTO(internal.getUpdatedSinceNewTransaction(updatedSince));
     }
 
-    public List<Vehicle> getUpdatedSinceExternTransaction(@NotNull final Instant updatedSince)
+    public List<Vehicle> getUpdatedSinceExternalTransaction(@NotNull final Instant updatedSince)
             throws OemDatabaseException {
-        return vehicleConverter.toDTO(intern.getUpdatedSinceExternTransaction(updatedSince));
+        return vehicleConverter.toDTO(internal.getUpdatedSinceExternalTransaction(updatedSince));
     }
 
     public List<Vehicle> getUpdatedSinceWithTelematicsDataNewTransaction(@NotNull final Instant updatedSince)
             throws OemDatabaseException {
         return vehicleConverter.toDTOWithTelematicsData(
-                intern.getUpdatedSinceWithTelematicsDataNewTransaction(updatedSince));
+                internal.getUpdatedSinceWithTelematicsDataNewTransaction(updatedSince));
     }
 
-    public List<Vehicle> getUpdatedSinceWithTelematicsDataExternTransaction(@NotNull final Instant updatedSince)
+    public List<Vehicle> getUpdatedSinceWithTelematicsDataExternalTransaction(@NotNull final Instant updatedSince)
             throws OemDatabaseException {
         return vehicleConverter.toDTOWithTelematicsData(
-                intern.getUpdatedSinceWithTelematicsDataExternTransaction(updatedSince));
+                internal.getUpdatedSinceWithTelematicsDataExternalTransaction(updatedSince));
     }
 
     public List<Vehicle> getProducedBetweenNewTransaction(@NotNull final Instant producedSince,
                                                           @NotNull final Instant producedUntil)
             throws OemDatabaseException {
-        return vehicleConverter.toDTO(intern.getProducedBetweenNewTransaction(producedSince, producedUntil));
+        return vehicleConverter.toDTO(internal.getProducedBetweenNewTransaction(producedSince, producedUntil));
     }
 
-    public List<Vehicle> getProducedBetweenExternTransaction(@NotNull final Instant producedSince,
+    public List<Vehicle> getProducedBetweenExternalTransaction(@NotNull final Instant producedSince,
                                                              @NotNull final Instant producedUntil)
             throws OemDatabaseException {
-        return vehicleConverter.toDTO(intern.getProducedBetweenExternTransaction(producedSince, producedUntil));
+        return vehicleConverter.toDTO(internal.getProducedBetweenExternalTransaction(producedSince, producedUntil));
     }
 
     public List<Vehicle> getProducedBetweenWithTelematicsDataNewTransaction(
             @NotNull final Instant producedSince, @NotNull final Instant producedUntil) throws OemDatabaseException {
         return vehicleConverter.toDTOWithTelematicsData(
-                intern.getProducedBetweenWithTelematicsDataNewTransaction(producedSince, producedUntil));
+                internal.getProducedBetweenWithTelematicsDataNewTransaction(producedSince, producedUntil));
     }
 
-    public List<Vehicle> getProducedBetweenWithTelematicsDataExternTransaction(
+    public List<Vehicle> getProducedBetweenWithTelematicsDataExternalTransaction(
             @NotNull final Instant producedSince, @NotNull final Instant producedUntil) throws OemDatabaseException {
         return vehicleConverter.toDTOWithTelematicsData(
-                intern.getProducedBetweenWithTelematicsDataExternTransaction(producedSince, producedUntil));
+                internal.getProducedBetweenWithTelematicsDataExternalTransaction(producedSince, producedUntil));
     }
 
     public List<Vehicle> getSyncCounterSinceNewTransaction(@NotNull final long syncCounter)
             throws OemDatabaseException {
-        return vehicleConverter.toDTO(intern.getSyncCounterSinceNewTransaction(syncCounter));
+        return vehicleConverter.toDTO(internal.getSyncCounterSinceNewTransaction(syncCounter));
     }
 
-    public List<Vehicle> getSyncCounterSinceExternTransaction(@NotNull final long syncCounter)
+    public List<Vehicle> getSyncCounterSinceExternalTransaction(@NotNull final long syncCounter)
             throws OemDatabaseException {
-        return vehicleConverter.toDTO(intern.getSyncCounterSinceExternTransaction(syncCounter));
+        return vehicleConverter.toDTO(internal.getSyncCounterSinceExternalTransaction(syncCounter));
     }
 
     public List<Vehicle> getSyncCounterSinceWithTelematicsDataNewTransaction(@NotNull final long syncCounter)
             throws OemDatabaseException {
         return vehicleConverter.toDTOWithTelematicsData(
-                intern.getSyncCounterSinceWithTelematicsDataNewTransaction(syncCounter));
+                internal.getSyncCounterSinceWithTelematicsDataNewTransaction(syncCounter));
     }
 
-    public List<Vehicle> getSyncCounterSinceWithTelematicsDataExternTransaction(@NotNull final long syncCounter)
+    public List<Vehicle> getSyncCounterSinceWithTelematicsDataExternalTransaction(@NotNull final long syncCounter)
             throws OemDatabaseException {
         return vehicleConverter.toDTOWithTelematicsData(
-                intern.getSyncCounterSinceWithTelematicsDataExternTransaction(syncCounter));
+                internal.getSyncCounterSinceWithTelematicsDataExternalTransaction(syncCounter));
     }
 }

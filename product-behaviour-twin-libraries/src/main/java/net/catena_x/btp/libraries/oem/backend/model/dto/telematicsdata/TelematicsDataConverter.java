@@ -1,7 +1,7 @@
 package net.catena_x.btp.libraries.oem.backend.model.dto.telematicsdata;
 
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.converter.DAOConverter;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.telematicsdata.TelematicsDataDAO;
+import net.catena_x.btp.libraries.util.database.converter.DAOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

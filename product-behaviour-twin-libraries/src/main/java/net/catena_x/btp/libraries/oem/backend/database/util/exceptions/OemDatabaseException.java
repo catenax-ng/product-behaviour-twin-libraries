@@ -1,10 +1,11 @@
 package net.catena_x.btp.libraries.oem.backend.database.util.exceptions;
 
+import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.NotNull;
 
-public class OemDatabaseException extends Exception {
+public class OemDatabaseException extends BtpException {
     public OemDatabaseException() {
         super();
     }

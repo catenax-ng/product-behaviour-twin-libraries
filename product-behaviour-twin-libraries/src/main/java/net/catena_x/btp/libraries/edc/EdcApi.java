@@ -5,8 +5,6 @@ import okhttp3.HttpUrl;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -26,16 +24,9 @@ public class EdcApi {
     @Value("${edc.apiwrapper.username}") private String apiWrapperUsername;
     @Value("${edc.apiwrapper.password}") private String apiWrapperPassword;
 
-    @Bean
-    public static RestTemplate restTemplate(RestTemplateBuilder builder) {
-        return builder.build();
-    }
-
     public <ResponseType> ResponseEntity<ResponseType> get(
-                                               @NotNull final HttpUrl partnerUrl, @NotNull final String asset,
-                                               @NotNull Class<ResponseType> responseClass,
-                                               @Nullable final HttpHeaders headers)
-            throws EdcException {
+            @NotNull final HttpUrl partnerUrl, @NotNull final String asset, @NotNull Class<ResponseType> responseClass,
+            @Nullable final HttpHeaders headers) throws EdcException {
 
         HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
 
@@ -53,12 +44,13 @@ public class EdcApi {
             @NotNull final HttpUrl partnerUrl,
             @NotNull final String asset,
             @NotNull Class<ResponseType> responseClass,
-            BodyType body,
+            @NotNull BodyType body,
             @Nullable HttpHeaders headers) throws EdcException {
 
-        HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
+        final HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
         addAuthorizationHeaders(headers);
-        HttpEntity<BodyType> request = new HttpEntity<>(body, headers);
+        final HttpEntity<BodyType> request = new HttpEntity<>(body, headers);
+
         String url = requestUrl.toString();
 
         // this is a bad fix for API wrapper behaviour
@@ -68,7 +60,7 @@ public class EdcApi {
 
         url = URLDecoder.decode(url, Charset.defaultCharset());
 
-        ResponseEntity<ResponseType> response = restTemplate.postForEntity(url, request, responseClass);
+        final ResponseEntity<ResponseType> response = restTemplate.postForEntity(url, request, responseClass);
 
         checkResponse(response);
 
@@ -76,8 +68,7 @@ public class EdcApi {
     }
 
     private HttpUrl buildApiWrapperUrl(@NotNull final HttpUrl partnerUrl, @NotNull final String asset) {
-        final HttpUrl apiWrapperUrl = HttpUrl.parse(this.apiWrapperUrl);
-        return apiWrapperUrl.newBuilder()
+        return HttpUrl.parse(this.apiWrapperUrl).newBuilder()
                 .addPathSegments(submodelPath)
                 .addPathSegment(asset)
                 .addPathSegment(submodel)
@@ -104,8 +95,10 @@ public class EdcApi {
         if(response == null) {
             throw new EdcException("Internal error using edc api!");
         }
-        else if( response.getStatusCode() != HttpStatus.OK) {
-            throw new EdcException("Http status not ok while using edc api!");
+        else if( response.getStatusCode() != HttpStatus.OK
+                && response.getStatusCode() != HttpStatus.CREATED
+                && response.getStatusCode() != HttpStatus.ACCEPTED) {
+            throw new EdcException("Http status not ok, created or accepted while using edc api!");
         }
     }
 }

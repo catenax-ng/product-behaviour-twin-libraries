@@ -2,7 +2,7 @@ package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.telem
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import net.catena_x.btp.libraries.bamm.custom.adaptionvalues.AdaptionValues;
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.converter.DAOJsonConverter;
+import net.catena_x.btp.libraries.util.database.converter.DAOJsonConverter;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
