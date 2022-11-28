@@ -47,9 +47,10 @@ public class EdcApi {
             @NotNull BodyType body,
             @Nullable HttpHeaders headers) throws EdcException {
 
-        HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
+        final HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
         addAuthorizationHeaders(headers);
-        HttpEntity<BodyType> request = new HttpEntity<>(body, headers);
+        final HttpEntity<BodyType> request = new HttpEntity<>(body, headers);
+
         String url = requestUrl.toString();
 
         // this is a bad fix for API wrapper behaviour
@@ -59,7 +60,7 @@ public class EdcApi {
 
         url = URLDecoder.decode(url, Charset.defaultCharset());
 
-        ResponseEntity<ResponseType> response = restTemplate.postForEntity(url, request, responseClass);
+        final ResponseEntity<ResponseType> response = restTemplate.postForEntity(url, request, responseClass);
 
         checkResponse(response);
 
