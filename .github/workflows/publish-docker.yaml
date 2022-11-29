@@ -23,6 +23,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - dockerfile: ./Dockerfile_hifrontend
+            image: ghcr.io/catenax-ng/product-oem-hi-app-frontend
           - dockerfile: ./Dockerfile_hibackend
             image: ghcr.io/catenax-ng/product-oem-hi-app
           - dockerfile: ./Dockerfile_provider

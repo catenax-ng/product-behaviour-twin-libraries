@@ -8,12 +8,12 @@ WORKDIR /usr/src/app
 COPY . /usr/src/app
 # Compile and package the application to an executable JAR
 RUN mvn -pl product-behaviour-twin-libraries clean install -DskipTests
-RUN mvn -pl product-oem-hi-app clean package spring-boot:repackage -DskipTests -P hibackendservice
+RUN mvn -pl product-oem-hi-app clean package spring-boot:repackage -DskipTests -P hifrontend
 
 # For Java 11,
 FROM openjdk:17-oracle
 
-EXPOSE 25553
+EXPOSE 8080
 
 ARG JAR_FILE=product-oem-hi-app/target/product-oem-hi-app-0.0.1-SNAPSHOT.jar
 
@@ -22,4 +22,4 @@ WORKDIR /opt/app
 # Copy the  jar from the maven stage to the /opt/app directory of the current stage.
 COPY --from=maven /usr/src/app/${JAR_FILE} /opt/app/app.jar
 
-ENTRYPOINT ["java","-jar", "app.jar", "-Dspring.profiles.active=hibackendservice", "--spring.config.location=application-hibackendservice.properties"]
+ENTRYPOINT ["java","-jar", "app.jar", "-Dspring.profiles.active=hifrontend", "--spring.config.location=application-hifrontend.properties"]
