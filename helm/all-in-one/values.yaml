@@ -135,7 +135,7 @@ oem-hi-frontend:
       spring.application.name=hifrontend
       spring.jpa.open-in-view=false
       security.api.role=USER
-      healthindicatordb.url=jdbc:postgresql://rawdatadb/healthindicator
+      healthindicatordb.url=jdbc:postgresql://healthindicatordb/healthindicator
       security.api.endpoints.hidatareceiver.notifyresult.noauth=true
       hifrontend.adaptionsvalues.thresholds.greenYellow=0.8
       hifrontend.adaptionsvalues.thresholds.yellowRed=1.0
