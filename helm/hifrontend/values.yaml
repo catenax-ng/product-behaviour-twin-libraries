@@ -154,7 +154,7 @@ affinity: {}
 ## For the EDC configuration consult the eclipse-dataspaceconnector documentation for further details: https://github.com/eclipse-dataspaceconnector/DataSpaceConnector
 ##
 server:
-  port: 25553
+  port: 8080
 
 connection:
   endpoints:
@@ -182,33 +182,12 @@ credentials:
 
 configuration:
   properties: |-
-    spring.application.name=hibackendservice
+    spring.application.name=hifrontend
     spring.jpa.open-in-view=false
-    edc.apiwrapper.submodelPath=api/service
-    edc.apiwrapper.submodel=submodel
-    edc.apiwrapper.providerEdcUrlKey=provider-connector-url
-    cloud.endpoint=https://play.min.io
-    cloud.region=eu-west-1
-    cloud.bucket=test
-    cloud.inputFile.bucketName=testbucket
-    cloud.inputFile.key=testfile
-    supplier.hiservice.endpoint=http://edc.zf.com/endpoint
-    supplier.bpn=BPN0000SUPPLIER
-    supplier.hiservice.inputAssetName=urn:example:id
-    edc.bpn=BPN0000OEM
-    edc.endpoint=https://oem.com/edc
-    edc.apiwrapper.url=http://myapiwrapper.url
     security.api.role=USER
-    rawdatadb.drivername=org.postgresql.Driver
-    rawdatadb.show-sql=false
-    rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
-    rawdatadb.hibernate.hbm2ddl.auto=update
-    rawdatadb.drivername=org.postgresql.Driver
-    rawdatadb.show-sql=false
-    rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
-    rawdatadb.hibernate.hbm2ddl.auto=update
-    rawdatadb.url=jdbc:postgresql://localhost:64321/rawdata
     healthindicatordb.url=jdbc:postgresql://rawdatadb/healthindicator
     security.api.endpoints.hidatareceiver.notifyresult.noauth=true
+    hifrontend.adaptionsvalues.thresholds.greenYellow=0.8
+    hifrontend.adaptionsvalues.thresholds.yellowRed=1.0
     spring.config.import=
     

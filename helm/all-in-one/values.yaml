@@ -88,6 +88,58 @@ oem-hi-app:
       rawdatadb.url=jdbc:postgresql://rawdatadb/rawdata
       healthindicatordb.url=jdbc:postgresql://healthindicatordb/healthindicator
       spring.config.import=
+      
+
+oem-hi-frontend:
+  ingress:
+    enabled: true
+    className: ""
+    tls: true
+    certManager:
+      issuer: ""
+      clusterIssuer: ""
+
+    annotations: { }
+    hostname: "bmw-hiapp.dev.demo.catena-x.net"
+    secret: tls-secret
+
+  server:
+    port: &frontendPort 8080
+
+  connection:
+    endpoints:
+      default:
+        port: *frontendPort
+        path: /
+        ingress: True
+
+  credentials:
+    cloud:
+      accessKey: *cloudKey
+      secretKey: *cloudSecret
+    apiwrapper:
+      username: *apiwrapperUser
+      password: *apiwrapperPass
+    api:
+      username: *apiUser
+      password: *apiPass
+    rawdata:
+      username: *rawdataUser
+      password: *rawdataPass
+    healthindicator:
+      username: *hiUser
+      password: *hiPass
+
+  configuration:
+    properties: |-
+      spring.application.name=hifrontend
+      spring.jpa.open-in-view=false
+      security.api.role=USER
+      healthindicatordb.url=jdbc:postgresql://rawdatadb/healthindicator
+      security.api.endpoints.hidatareceiver.notifyresult.noauth=true
+      hifrontend.adaptionsvalues.thresholds.greenYellow=0.8
+      hifrontend.adaptionsvalues.thresholds.yellowRed=1.0
+      spring.config.import=
 
 provider:
   ingress:
