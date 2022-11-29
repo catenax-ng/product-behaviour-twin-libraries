@@ -26,4 +26,7 @@ dependencies:
   - name: updater
     version: "0.0.1"
     repository: file://../updater
+  - name: oem-hi-frontend
+    version: "0.0.1"
+    repository: file://../hifrontend
 
