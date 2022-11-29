@@ -177,8 +177,8 @@ credentials:
     username: rawdata_user
     password: rawdata_pass
   healthindicator:
-    username: healthindicator_user
-    password: healthindicator_pass
+    username: healthindicator_user1
+    password: healthindicator_pass1
 
 configuration:
   properties: |-

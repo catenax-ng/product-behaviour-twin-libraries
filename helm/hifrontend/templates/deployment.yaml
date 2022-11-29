@@ -79,8 +79,8 @@ spec:
           configMap:
             name: {{ include "helper.fullname" . }}-configmap
             items:
-              - key: application-hibackendservice.properties
-                path: application-hibackendservice.properties
+              - key: application-hifrontend.properties
+                path: application-hifrontend.properties
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
