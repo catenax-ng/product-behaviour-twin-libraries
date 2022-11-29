@@ -12,7 +12,6 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BammStatus {
-    private String routeDescription;
     private Instant date;
     private String operatingTime;
     private long mileage;

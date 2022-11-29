@@ -2,6 +2,7 @@ package net.catena_x.btp.libraries.oem.backend.model.dto.vehicle;
 
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.RawTableBase;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.vehicle.VehicleTableInternal;
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.vehicle.VehicleWithTelematicsDataDAO;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelematicsData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.registration.VehicleInfo;
@@ -167,8 +168,9 @@ public class VehicleTable extends RawTableBase {
 
     public List<Vehicle> getSyncCounterSinceWithTelematicsDataNewTransaction(@NotNull final long syncCounter)
             throws OemDatabaseException {
-        return vehicleConverter.toDTOWithTelematicsData(
-                internal.getSyncCounterSinceWithTelematicsDataNewTransaction(syncCounter));
+        final List<VehicleWithTelematicsDataDAO> result =
+                internal.getSyncCounterSinceWithTelematicsDataNewTransaction(syncCounter);
+        return vehicleConverter.toDTOWithTelematicsData(result);
     }
 
     public List<Vehicle> getSyncCounterSinceWithTelematicsDataExternalTransaction(@NotNull final long syncCounter)
