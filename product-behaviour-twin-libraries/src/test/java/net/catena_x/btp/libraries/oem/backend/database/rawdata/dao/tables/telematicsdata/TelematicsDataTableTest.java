@@ -84,7 +84,7 @@ class TelematicsDataTableTest {
         List<ClassifiedLoadSpectrum> list = new ArrayList<>();
 
         BammStatus bammStatus = new BammStatus();
-        bammStatus.setRouteDescription("Default route");
+        // bammStatus.setRouteDescription("Default route");
         bammStatus.setOperatingTime("210");
         bammStatus.setMileage(1233L);
         bammStatus.setDate(Instant.now());
@@ -107,7 +107,7 @@ class TelematicsDataTableTest {
 
     private List<AdaptionValues> helperGenerateAdaptionValues() {
         BammStatus bammStatus = new BammStatus();
-        bammStatus.setRouteDescription("Default route");
+        // bammStatus.setRouteDescription("Default route");
         bammStatus.setOperatingTime("211");
         bammStatus.setMileage(1233L);
         bammStatus.setDate(Instant.now());
