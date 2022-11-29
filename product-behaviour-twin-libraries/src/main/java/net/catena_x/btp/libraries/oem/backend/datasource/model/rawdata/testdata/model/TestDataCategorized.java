@@ -148,7 +148,6 @@ public class TestDataCategorized {
             status.setMileage(123456L);
             status.setDate(Instant.now());
             status.setOperatingTime("12.3456");
-            status.setRouteDescription("Illegal status!");
         }
 
         if(status.getDate() == null) {
@@ -159,7 +158,7 @@ public class TestDataCategorized {
 
         adaptionValues.setValues(new double[]{0.5, 16554.6, 234.3,323.0});
 
-        List<AdaptionValues> adaptionValueList = new ArrayList<>(1);
+        final List<AdaptionValues> adaptionValueList = new ArrayList<>(1);
         adaptionValueList.add(adaptionValues);
 
         digitalTwin.setAdaptionValues(adaptionValueList);
