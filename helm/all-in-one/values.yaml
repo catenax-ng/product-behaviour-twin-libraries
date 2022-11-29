@@ -100,7 +100,7 @@ oem-hi-frontend:
       clusterIssuer: ""
 
     annotations: { }
-    hostname: "bmw-hiapp.dev.demo.catena-x.net"
+    hostname: "bmw-hipage.dev.demo.catena-x.net"
     secret: tls-secret
 
   server:
