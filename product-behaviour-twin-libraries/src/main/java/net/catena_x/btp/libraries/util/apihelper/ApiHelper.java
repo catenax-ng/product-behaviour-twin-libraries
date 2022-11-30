@@ -27,6 +27,20 @@ public class ApiHelper {
                                     generateDefaultHeaders(), HttpStatus.OK);
     }
 
+    public ResponseEntity<ApiResult> accepted(@NotNull final String info) {
+        return accepted(info, null);
+    }
+
+    public ResponseEntity<ApiResult> acceptedWithValue(@NotNull final String value) {
+        return ok(null, value);
+    }
+
+    public ResponseEntity<ApiResult> accepted(@Nullable final String info, @Nullable final String value) {
+        return new ResponseEntity<ApiResult>(
+                new ApiResult(Instant.now(), ApiResultType.OK, info, value),
+                generateDefaultHeaders(), HttpStatus.ACCEPTED);
+    }
+
     public ResponseEntity<ApiResult> failed(@NotNull final String error) {
         return new ResponseEntity<ApiResult>(
                 new ApiResult(Instant.now(), ApiResultType.ERROR, error, null),
