@@ -31,16 +31,21 @@ public class EdcApi {
 
     public <ResponseType> ResponseEntity<ResponseType> get(
             @NotNull final HttpUrl partnerUrl, @NotNull final String asset, @NotNull Class<ResponseType> responseClass,
-            @Nullable final HttpHeaders headers) throws BtpException {
+            @Nullable final HttpHeaders headers) throws EdcException {
 
-        HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
+        final HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
 
         addAuthorizationHeaders(headers);
-        HttpEntity<String> request = new HttpEntity<>(headers);
-        ResponseEntity<ResponseType> response = restTemplate.exchange(
+
+        final HttpEntity<String> request = new HttpEntity<>(headers);
+        final ResponseEntity<ResponseType> response = restTemplate.exchange(
                 requestUrl.uri(), HttpMethod.GET, request, responseClass);
 
-        ResponseChecker.checkResponse(response);
+        try {
+            ResponseChecker.checkResponse(response);
+        } catch (final BtpException exception) {
+            throw new EdcException(exception);
+        }
 
         return response;
     }
