@@ -1,7 +1,6 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.provider.controller;
 
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.api.ApiResult;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.TestDataExporter;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.TestDataReader;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.model.TestDataCategorized;
@@ -11,6 +10,7 @@ import net.catena_x.btp.libraries.oem.backend.datasource.provider.dataupdaterapi
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.dataupdaterapi.VehicleRegistration;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import net.catena_x.btp.libraries.util.apihelper.ApiHelper;
+import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,7 +61,7 @@ public class RawdataProviderController {
     private String testdataExportPath;
 
     @GetMapping("/reset")
-    public ResponseEntity<ApiResult> reset() {
+    public ResponseEntity<DefaultApiResult> reset() {
         try {
             testDataMutex.lock();
             databaseReset.reset();
@@ -75,7 +75,7 @@ public class RawdataProviderController {
     }
 
     @GetMapping("/init/vehicles")
-    public ResponseEntity<ApiResult> initVehicles() {
+    public ResponseEntity<DefaultApiResult> initVehicles() {
         try {
             testDataMutex.lock();
             vehicleRegistration.registerFromTestDataCetegorized(getTestDataCategorized(
@@ -90,7 +90,7 @@ public class RawdataProviderController {
     }
 
     @GetMapping("/init/telematicsdata")
-    public ResponseEntity<ApiResult> initTelematicsData() {
+    public ResponseEntity<DefaultApiResult> initTelematicsData() {
         try {
             testDataMutex.lock();
             telematicsDataUpdater.updateFromTestDataCetegorized(getTestDataCategorized(
@@ -105,7 +105,7 @@ public class RawdataProviderController {
     }
 
     @GetMapping("/export/testdata")
-    public ResponseEntity<ApiResult> exportTestdata(@RequestParam(required = false) @Nullable Integer limitperfile) {
+    public ResponseEntity<DefaultApiResult> exportTestdata(@RequestParam(required = false) @Nullable Integer limitperfile) {
         try {
             testDataMutex.lock();
 
@@ -134,9 +134,9 @@ public class RawdataProviderController {
     }
 
     @PostMapping("/init/reinitbyfile")
-    public ResponseEntity<ApiResult> reinitByFile(@RequestParam(value = "testdata", required = false)
+    public ResponseEntity<DefaultApiResult> reinitByFile(@RequestParam(value = "testdata", required = false)
                                                   @Nullable final MultipartFile testDataFileParam,
-                                                  @RequestBody(required = false)
+                                                         @RequestBody(required = false)
                                                   @Nullable final byte[] testDataFileBody) {
 
         try {
@@ -157,9 +157,9 @@ public class RawdataProviderController {
     }
 
     @PostMapping("/init/appendbyfile")
-    public ResponseEntity<ApiResult> appendByFile(@RequestParam(value = "testdata", required = false)
+    public ResponseEntity<DefaultApiResult> appendByFile(@RequestParam(value = "testdata", required = false)
                                                   @Nullable final MultipartFile testDataFileParam,
-                                                  @RequestBody(required = false)
+                                                         @RequestBody(required = false)
                                                   @Nullable final byte[] testDataFileBody) {
 
         try {
@@ -178,7 +178,7 @@ public class RawdataProviderController {
         }
     }
 
-    private synchronized ResponseEntity<ApiResult> reinitByJsonFile(@NotNull final String testDataJson)
+    private synchronized ResponseEntity<DefaultApiResult> reinitByJsonFile(@NotNull final String testDataJson)
             throws DataProviderException {
 
         getTestDataCategorized(testDataJson, true);
@@ -186,7 +186,7 @@ public class RawdataProviderController {
         return apiHelper.ok("Testdata reinitialized.");
     }
 
-    private synchronized ResponseEntity<ApiResult> appendByJsonFile(@NotNull final String testDataJson)
+    private synchronized ResponseEntity<DefaultApiResult> appendByJsonFile(@NotNull final String testDataJson)
             throws DataProviderException {
 
         getTestDataCategorized(testDataJson, false);

@@ -1,11 +1,16 @@
 package net.catena_x.btp.libraries.edc;
 
 import net.catena_x.btp.libraries.edc.util.exceptions.EdcException;
+import net.catena_x.btp.libraries.util.apihelper.ResponseChecker;
+import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import okhttp3.HttpUrl;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -26,7 +31,7 @@ public class EdcApi {
 
     public <ResponseType> ResponseEntity<ResponseType> get(
             @NotNull final HttpUrl partnerUrl, @NotNull final String asset, @NotNull Class<ResponseType> responseClass,
-            @Nullable final HttpHeaders headers) throws EdcException {
+            @Nullable final HttpHeaders headers) throws BtpException {
 
         HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
 
@@ -35,7 +40,7 @@ public class EdcApi {
         ResponseEntity<ResponseType> response = restTemplate.exchange(
                 requestUrl.uri(), HttpMethod.GET, request, responseClass);
 
-        checkResponse(response);
+        ResponseChecker.checkResponse(response);
 
         return response;
     }
@@ -62,7 +67,11 @@ public class EdcApi {
 
         final ResponseEntity<ResponseType> response = restTemplate.postForEntity(url, request, responseClass);
 
-        checkResponse(response);
+        try {
+            ResponseChecker.checkResponse(response);
+        } catch (final BtpException exception) {
+            throw new EdcException(exception);
+        }
 
         return response;
     }
@@ -88,17 +97,5 @@ public class EdcApi {
         sb.setLength(0);
         sb.append("Basic ").append(Base64.getEncoder().encodeToString(authStr.getBytes()));
         return sb.toString();
-    }
-
-    private <ResponseType> void checkResponse(@Nullable ResponseEntity<ResponseType> response)
-            throws EdcException {
-        if(response == null) {
-            throw new EdcException("Internal error using edc api!");
-        }
-        else if( response.getStatusCode() != HttpStatus.OK
-                && response.getStatusCode() != HttpStatus.CREATED
-                && response.getStatusCode() != HttpStatus.ACCEPTED) {
-            throw new EdcException("Http status not ok, created or accepted while using edc api!");
-        }
     }
 }

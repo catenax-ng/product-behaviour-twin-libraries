@@ -2,12 +2,14 @@ package net.catena_x.btp.libraries.oem.backend.datasource.provider.dataupdaterap
 
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.api.ApiResult;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelematicsData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.model.TestDataCategorized;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.CatenaXIdToDigitalTwinType;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.UncheckedDataProviderException;
+import net.catena_x.btp.libraries.util.apihelper.ResponseChecker;
+import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
+import net.catena_x.btp.libraries.util.datahelper.DataHelper;
+import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import okhttp3.HttpUrl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -34,20 +36,16 @@ public class TelematicsDataUpdater {
             throws DataProviderException {
         final HashMap<String, DigitalTwin> vehicles = testDataCategorized.getDigitalTwinsVehicles();
 
-        final CatenaXIdToDigitalTwinType idToType = (String catenaXId)-> testDataCategorized.catenaXIdToType(catenaXId);
-
         vehicles.entrySet().stream().forEachOrdered((vehicleEntry) -> {
             try {
-                updateTelematicsData(vehicleEntry.getValue(), idToType);
-            } catch (final DataProviderException exception) {
-                throw new UncheckedDataProviderException(exception);
+                updateTelematicsData(vehicleEntry.getValue());
+            } catch (final BtpException exception) {
+                throw new UncheckedDataProviderException(new DataProviderException(exception));
             }
         });
     }
 
-    private void updateTelematicsData(@NotNull final DigitalTwin vehicle,
-                                      @NotNull final CatenaXIdToDigitalTwinType idToType)
-            throws DataProviderException {
+    private void updateTelematicsData(@NotNull final DigitalTwin vehicle) throws BtpException {
 
         assertTelematicsDataPresent(vehicle);
 
@@ -57,17 +55,14 @@ public class TelematicsDataUpdater {
     }
 
     private void assertTelematicsDataPresent(@NotNull final DigitalTwin vehicle) throws DataProviderException {
-        if((vehicle.getClassifiedLoadSpectra() == null) || (vehicle.getAdaptionValues() == null)) {
-            throw new DataProviderException("Missing telematics data in vehicle twin!");
-        }
-
-        if(vehicle.getClassifiedLoadSpectra().isEmpty() || vehicle.getAdaptionValues().isEmpty()) {
+        if(DataHelper.isNullOrEmpty(vehicle.getClassifiedLoadSpectra())
+                        || DataHelper.isNullOrEmpty(vehicle.getAdaptionValues())) {
             throw new DataProviderException("Missing telematics data in vehicle twin!");
         }
     }
 
     private void callTelematicsDataUpdateService(@NotNull final InputTelematicsData telematicsData)
-            throws DataProviderException {
+            throws BtpException {
 
         final HttpUrl requestUrl = HttpUrl.parse(
                 dataUpdaterApi.getRawdataApiBaseUrl()).newBuilder().
@@ -79,9 +74,9 @@ public class TelematicsDataUpdater {
 
         final HttpEntity<InputTelematicsData> request = new HttpEntity<>(telematicsData, headers);
 
-        final ResponseEntity<ApiResult> response = restTemplate.postForEntity(
-                requestUrl.toString(), request, ApiResult.class);
+        final ResponseEntity<DefaultApiResult> response = restTemplate.postForEntity(
+                requestUrl.toString(), request, DefaultApiResult.class);
 
-        dataUpdaterApi.checkResponse(response);
+        ResponseChecker.checkResponse(response);
     }
 }

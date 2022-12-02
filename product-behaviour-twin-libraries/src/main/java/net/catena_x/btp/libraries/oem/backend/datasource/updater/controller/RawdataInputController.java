@@ -1,7 +1,6 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.updater.controller;
 
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.api.ApiResult;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputInfo;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelematicsData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.registration.VehicleInfo;
@@ -11,6 +10,7 @@ import net.catena_x.btp.libraries.oem.backend.model.dto.telematicsdata.Telematic
 import net.catena_x.btp.libraries.oem.backend.model.dto.vehicle.VehicleTable;
 import net.catena_x.btp.libraries.oem.backend.model.enums.InfoKey;
 import net.catena_x.btp.libraries.util.apihelper.ApiHelper;
+import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -29,7 +29,7 @@ public class RawdataInputController {
     @Autowired private ApiHelper apiHelper;
 
     @PostMapping("/info/set")
-    public ResponseEntity<ApiResult> infoSet(@RequestBody @NotNull final InputInfo item) {
+    public ResponseEntity<DefaultApiResult> infoSet(@RequestBody @NotNull final InputInfo item) {
         InfoKey key;
 
         try {
@@ -49,20 +49,20 @@ public class RawdataInputController {
     }
 
     @GetMapping("/info/get/{key}")
-    public ResponseEntity<ApiResult> infoGet(@PathVariable @NotNull final InfoKey key) {
+    public ResponseEntity<String> infoGet(@PathVariable @NotNull final InfoKey key) {
         try {
-            return apiHelper.okWithValue(infoTable.getInfoValueNewTransaction(key));
+            return apiHelper.okWithValueAsString(null, infoTable.getInfoValueNewTransaction(key));
         }
         catch(final OemDatabaseException exception) {
-            return apiHelper.failed(exception.toString());
+            return apiHelper.failedAsString(exception.toString());
         }
     }
 
     @GetMapping("/info/init")
-    public ResponseEntity<ApiResult> infoInit() {
+    public ResponseEntity<DefaultApiResult> infoInit() {
         try {
             infoInitInternal();
-            return apiHelper.okWithValue("");
+            return apiHelper.ok("Initialized rawdata info elements.");
         }
         catch(final OemDatabaseException exception) {
             return apiHelper.failed(exception.toString());
@@ -77,7 +77,7 @@ public class RawdataInputController {
     }
 
     @GetMapping("/reset")
-    public ResponseEntity<ApiResult> reset() throws OemDatabaseException {
+    public ResponseEntity<DefaultApiResult> reset() throws OemDatabaseException {
         try {
             infoTable.deleteAllNewTransaction();
 
@@ -95,7 +95,7 @@ public class RawdataInputController {
     }
 
     @PostMapping("/vehicle/register")
-    public ResponseEntity<ApiResult> registerVehicle(@RequestBody @NotNull final VehicleInfo vehicle) {
+    public ResponseEntity<DefaultApiResult> registerVehicle(@RequestBody @NotNull final VehicleInfo vehicle) {
         try {
             vehicleTable.registerVehicleNewTransaction(vehicle);
             return apiHelper.ok("Vehicle registered.");
@@ -106,7 +106,7 @@ public class RawdataInputController {
     }
 
     @PostMapping("/telematicsdata/add")
-    public ResponseEntity<ApiResult> addTelemeticsData(@RequestBody @NotNull final InputTelematicsData telematicsData) {
+    public ResponseEntity<DefaultApiResult> addTelemeticsData(@RequestBody @NotNull final InputTelematicsData telematicsData) {
         try {
             vehicleTable.appendTelematicsDataNewTransaction(telematicsData);
             return apiHelper.ok("Telematics data added.");
