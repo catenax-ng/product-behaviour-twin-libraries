@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 public class TimeStampDeserializer extends StdDeserializer<Instant> {
@@ -33,7 +35,8 @@ public class TimeStampDeserializer extends StdDeserializer<Instant> {
         } catch (final Exception exception) {}
 
         try {
-            return Instant.from( DateTimeFormatter.ofPattern("yyyy-MM-dd").parse(value));
+            final LocalDate date = LocalDate.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            return date.atStartOfDay(ZoneId.of("UTC")).toInstant();
         } catch (final Exception exception) {
             return null;
         }

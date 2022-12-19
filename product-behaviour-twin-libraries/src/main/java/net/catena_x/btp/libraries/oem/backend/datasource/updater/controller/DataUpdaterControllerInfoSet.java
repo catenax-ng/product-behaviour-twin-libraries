@@ -25,6 +25,7 @@ public class DataUpdaterControllerInfoSet {
 
     @PostMapping(value = "/info/set", produces = "application/json")
     @io.swagger.v3.oas.annotations.Operation(
+            tags = {"Development"},
             summary = InfoSetDoc.SUMMARY, description = InfoSetDoc.DESCRIPTION,
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = InfoSetDoc.BODY_DESCRIPTION, required = true,

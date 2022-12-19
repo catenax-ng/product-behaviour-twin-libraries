@@ -21,6 +21,7 @@ public class DataUpdaterControllerInfoInit {
     @GetMapping(value = "/info/init", produces = "application/json")
     @io.swagger.v3.oas.annotations.Operation(
             summary = InfoInitDoc.SUMMARY, description = InfoInitDoc.DESCRIPTION,
+            tags = {"Initializing"},
             responses = {
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(
                             responseCode = "200",

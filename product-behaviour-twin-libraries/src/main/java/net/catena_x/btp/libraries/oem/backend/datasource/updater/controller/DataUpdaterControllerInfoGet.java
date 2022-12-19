@@ -6,6 +6,7 @@ import net.catena_x.btp.libraries.oem.backend.model.dto.infoitem.InfoTable;
 import net.catena_x.btp.libraries.oem.backend.model.enums.InfoKey;
 import net.catena_x.btp.libraries.util.apihelper.ApiHelper;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
+import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResultWithValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ public class DataUpdaterControllerInfoGet {
 
     @GetMapping(value = "/info/get/{key}", produces = "application/json")
     @io.swagger.v3.oas.annotations.Operation(
+            tags = {"Development"},
             summary = InfoGetDoc.SUMMARY, description = InfoGetDoc.DESCRIPTION,
             parameters = @io.swagger.v3.oas.annotations.Parameter(
                     name = InfoGetDoc.KEY_NAME,
@@ -57,7 +59,7 @@ public class DataUpdaterControllerInfoGet {
                                                     value = InfoGetDoc.RESPONSE_OK_VALUE
                                             )},
                                     schema = @io.swagger.v3.oas.annotations.media.Schema(
-                                            implementation = String.class)
+                                            implementation = DefaultApiResultWithValue.class)
                             )),
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(
                             responseCode = "500",
@@ -73,10 +75,14 @@ public class DataUpdaterControllerInfoGet {
                             ))
             }
     )
-
     public ResponseEntity<String> infoGet(@PathVariable @NotNull final InfoKey key) {
         try {
-            return apiHelper.okWithValueAsString(null, infoTable.getInfoValueNewTransaction(key));
+            final String value = infoTable.getInfoValueNewTransaction(key);
+            if(value == null) {
+                return apiHelper.failedAsString("Info element for key " + key + " not found!");
+            }
+
+            return apiHelper.okWithValueAsString(null, value);
         }
         catch(final OemDatabaseException exception) {
             return apiHelper.failedAsString(exception.toString());

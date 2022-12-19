@@ -25,6 +25,7 @@ public class DataUpdaterControllerTelematicsDataAdd {
     @PostMapping(value = "/telematicsdata/add", produces = "application/json")
     @io.swagger.v3.oas.annotations.Operation(
             summary = TelematicsDataAddDoc.SUMMARY, description = TelematicsDataAddDoc.DESCRIPTION,
+            tags = {"Productive"},
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = TelematicsDataAddDoc.BODY_DESCRIPTION, required = true,
                     content =  @io.swagger.v3.oas.annotations.media.Content(

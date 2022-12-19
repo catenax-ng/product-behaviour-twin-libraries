@@ -78,7 +78,12 @@ public class InfoTableInternal extends RawTableBase {
 
     @RDTransactionDefaultUseExisting
     public String getInfoValueExternalTransaction(@NotNull final InfoKey key) throws OemDatabaseException {
-        return getInfoItemExternalTransaction(key).getValue();
+        final InfoItemDAO info = getInfoItemExternalTransaction(key);
+        if(info == null) {
+            return null;
+        }
+
+        return info.getValue();
     }
 
     @RDTransactionDefaultCreateNew
@@ -88,7 +93,12 @@ public class InfoTableInternal extends RawTableBase {
 
     @RDTransactionSerializableUseExisting
     public Instant getCurrentDatabaseTimestampExternalTransaction() throws OemDatabaseException {
-        return getInfoItemExternalTransaction(InfoKey.DATAVERSION).getQueryTimestamp();
+        final InfoItemDAO info = getInfoItemExternalTransaction(InfoKey.DATAVERSION);
+        if(info == null) {
+            return null;
+        }
+
+        return info.getQueryTimestamp();
     }
 
     @RDTransactionSerializableCreateNew

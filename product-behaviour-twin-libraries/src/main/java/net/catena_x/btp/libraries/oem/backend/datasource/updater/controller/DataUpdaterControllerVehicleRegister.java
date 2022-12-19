@@ -25,6 +25,7 @@ public class DataUpdaterControllerVehicleRegister {
     @PostMapping(value = "/vehicle/register", produces = "application/json")
     @io.swagger.v3.oas.annotations.Operation(
             summary = VehicleRegisterDoc.SUMMARY, description = VehicleRegisterDoc.DESCRIPTION,
+            tags = {"Productive"},
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = VehicleRegisterDoc.BODY_DESCRIPTION, required = true,
                     content =  @io.swagger.v3.oas.annotations.media.Content(

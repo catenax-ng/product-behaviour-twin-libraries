@@ -8,7 +8,7 @@ The default workflow is not to use this endpoint directly. Instead, the endpoint
 """;
     public static final String BODY_DESCRIPTION = "Info item to be inserted.";
 
-    public static final String BODY_EXAMPLE_1_NAME = "Version example";
+    public static final String BODY_EXAMPLE_1_NAME = "version example";
     public static final String BODY_EXAMPLE_1_DESCRIPTION = "Sets the data version element.";
     public static final String BODY_EXAMPLE_1_VALUE ="""
 {
@@ -17,19 +17,25 @@ The default workflow is not to use this endpoint directly. Instead, the endpoint
 }
 """;
 
-    public static final String BODY_EXAMPLE_2_NAME = "TODO: EXAMPLE 2 NAME.";
-    public static final String BODY_EXAMPLE_2_DESCRIPTION = "TODO: EXAMPLE 2 DESCRIPTION.";
+    public static final String BODY_EXAMPLE_2_NAME = "adaption values info example";
+    public static final String BODY_EXAMPLE_2_DESCRIPTION = "Sets the adaption values info element.";
     public static final String BODY_EXAMPLE_2_VALUE = """
-TODO: EXAMPLE 2 VALUE.
+{
+  "key": "ADAPTIONVALUEINFO",
+  "value": "{\\"names\\" : [ \\"AV1\\", \\"AV2\\", \\"AV3\\", \\"AV4\\" ]}"
+}
 """;
 
-    public static final String BODY_EXAMPLE_3_NAME = "TODO: EXAMPLE 3 NAME.";
-    public static final String BODY_EXAMPLE_3_DESCRIPTION = "TODO: EXAMPLE 3 DESCRIPTION.";
+    public static final String BODY_EXAMPLE_3_NAME = "load spectra info example";
+    public static final String BODY_EXAMPLE_3_DESCRIPTION = "Sets the load spectra info element.";
     public static final String BODY_EXAMPLE_3_VALUE = """
-TODO: EXAMPLE 3 VALUE.
+{
+  "key": "LOADSPECTRUMINFO",
+  "value": "{}"
+}
 """;
 
-    public static final String RESPONSE_OK_DESCRIPTION = "Setting data version successful.";
+    public static final String RESPONSE_OK_DESCRIPTION = "OK: Setting data version successful.";
     public static final String RESPONSE_OK_VALUE = """
 {
   "timestamp": "2022-12-09T17:18:01.434285Z",
@@ -38,7 +44,7 @@ TODO: EXAMPLE 3 VALUE.
 }
 """;
 
-    public static final String RESPONSE_ERROR_DESCRIPTION = "Setting dat version element failed.";
+    public static final String RESPONSE_ERROR_DESCRIPTION = "ERROR: Setting data version element failed.";
     public static final String RESPONSE_ERROR_VALUE = """
 {
   "timestamp": "2022-12-09T16:24:52.741984700Z",
