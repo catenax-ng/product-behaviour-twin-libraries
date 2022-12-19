@@ -1,5 +1,6 @@
 package net.catena_x.btp.libraries.util.apihelper;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResultWithValue;
 import net.catena_x.btp.libraries.util.apihelper.preparation.ApiResponse;
@@ -21,7 +22,7 @@ public class ApiHelper {
     }
 
     public ResponseEntity<String> okAsString(@NotNull final String message) {
-        return apiResponse.toString(ApiResult.ok(message));
+        return apiResponse.toString(ApiResult.ok(message), DefaultApiResult.class);
     }
 
     public <T> ResponseEntity<T> ok(@NotNull final T value) {
@@ -29,7 +30,7 @@ public class ApiHelper {
     }
 
     public <T> ResponseEntity<String> okAsString(@NotNull final T value) {
-        return apiResponse.toString(ApiResult.ok(value));
+        return apiResponse.toString(ApiResult.ok(value), DefaultApiResult.class);
     }
 
     public <T> ResponseEntity<DefaultApiResultWithValue<T>> okWithValue(@Nullable final String message,
@@ -38,7 +39,8 @@ public class ApiHelper {
     }
 
     public <T> ResponseEntity<String> okWithValueAsString(@Nullable final String message, @Nullable final T value) {
-        return apiResponse.toString(ApiResult.okWithValue(message, value));
+        final ApiResult<DefaultApiResultWithValue<T>> result = ApiResult.okWithValue(message, value);
+        return apiResponse.toString(result, DefaultApiResultWithValue.class);
     }
 
     public ResponseEntity<DefaultApiResult> accepted(@NotNull final String message) {
@@ -46,7 +48,7 @@ public class ApiHelper {
     }
 
     public ResponseEntity<String> acceptedAsString(@NotNull final String message) {
-        return apiResponse.toString(ApiResult.accepted(message));
+        return apiResponse.toString(ApiResult.accepted(message), DefaultApiResult.class);
     }
 
     public <T> ResponseEntity<T> accepted(@NotNull final T value) {
@@ -54,7 +56,7 @@ public class ApiHelper {
     }
 
     public <T> ResponseEntity<String> acceptedAsString(@NotNull final T value) {
-        return apiResponse.toString(ApiResult.accepted(value));
+        return apiResponse.toString(ApiResult.accepted(value), DefaultApiResult.class);
     }
 
     public <T> ResponseEntity<DefaultApiResultWithValue<T>> acceptedWithValue(
@@ -64,7 +66,7 @@ public class ApiHelper {
 
     public <T> ResponseEntity<String> acceptedWithValueAsStringAsString(
             @Nullable final String message, @Nullable final T value) {
-        return apiResponse.toString(ApiResult.acceptedWithValue(message, value));
+        return apiResponse.toString(ApiResult.acceptedWithValue(message, value), DefaultApiResultWithValue.class);
     }
 
     public ResponseEntity<DefaultApiResult> failed(@NotNull final String error) {
@@ -72,7 +74,7 @@ public class ApiHelper {
     }
 
     public ResponseEntity<String> failedAsString(@NotNull final String error) {
-        return apiResponse.toString(ApiResult.failed(error));
+        return apiResponse.toString(ApiResult.failed(error), DefaultApiResult.class);
     }
 
     public <T> ResponseEntity<T> failed(@NotNull final T errorValue) {
@@ -80,7 +82,7 @@ public class ApiHelper {
     }
 
     public <T> ResponseEntity<String> failedAsString(@NotNull final T errorValue) {
-        return apiResponse.toString(ApiResult.failed(errorValue));
+        return apiResponse.toString(ApiResult.failed(errorValue), DefaultApiResult.class);
     }
 
     public <T> ResponseEntity<DefaultApiResultWithValue<T>> failedWithValue(@Nullable final String error,
@@ -90,7 +92,7 @@ public class ApiHelper {
 
     public <T> ResponseEntity<String> failedWithValueAsString(@Nullable final String error,
                                                               @Nullable final T errorValue) {
-        return apiResponse.toString(ApiResult.failedWithValue(error, errorValue));
+        return apiResponse.toString(ApiResult.failedWithValue(error, errorValue), DefaultApiResultWithValue.class);
     }
 
     private HttpHeaders generateDefaultHeaders() {

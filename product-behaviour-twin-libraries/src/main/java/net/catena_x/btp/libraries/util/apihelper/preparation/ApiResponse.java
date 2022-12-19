@@ -1,6 +1,7 @@
 package net.catena_x.btp.libraries.util.apihelper.preparation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,10 @@ import javax.validation.constraints.NotNull;
 public final class ApiResponse {
     @Autowired ObjectMapper objectMapper;
 
-    public <T> ResponseEntity<String> toString(@NotNull final ApiResult<T> apiResult) {
+    public <T> ResponseEntity<String> toString(@NotNull final ApiResult<T> apiResult,
+                                               @NotNull final Class<?> typeOfT) {
         try {
-            final String resultAsString = objectMapper.writerFor(DefaultApiResult.class)
+            final String resultAsString = objectMapper.writerFor(typeOfT)
                     .writeValueAsString(apiResult.getApiResult());
             return new ResponseEntity<>(resultAsString, apiResult.getHeaders(),
                     apiResult.getStatusCode() );
