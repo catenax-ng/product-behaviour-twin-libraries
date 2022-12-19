@@ -22,6 +22,7 @@ public class DataProviderControllerInitTelematicsData {
     @GetMapping(value = "/init/telematicsdata", produces = "application/json")
     @io.swagger.v3.oas.annotations.Operation(
             summary = InitTelematicsDataDoc.SUMMARY, description = InitTelematicsDataDoc.DESCRIPTION,
+            tags = {"Initializing"},
             responses = {
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(
                             responseCode = "200",

@@ -36,13 +36,17 @@ public class TelematicsDataUpdater {
             throws DataProviderException {
         final HashMap<String, DigitalTwin> vehicles = testDataCategorized.getDigitalTwinsVehicles();
 
-        vehicles.entrySet().stream().forEachOrdered((vehicleEntry) -> {
-            try {
-                updateTelematicsData(vehicleEntry.getValue());
-            } catch (final BtpException exception) {
-                throw new UncheckedDataProviderException(new DataProviderException(exception));
-            }
-        });
+        try {
+            vehicles.entrySet().stream().forEachOrdered((vehicleEntry) -> {
+                try {
+                    updateTelematicsData(vehicleEntry.getValue());
+                } catch (final Exception exception) {
+                    throw new UncheckedDataProviderException(new DataProviderException(exception));
+                }
+            });
+        } catch(final Exception exception) {
+            throw new DataProviderException(exception);
+        }
     }
 
     private void updateTelematicsData(@NotNull final DigitalTwin vehicle) throws BtpException {

@@ -36,13 +36,14 @@ public class VehicleRegistration {
 
     public void registerFromTestDataCetegorized(@NotNull TestDataCategorized testDataCategorized)
             throws DataProviderException {
-        final HashMap<String, DigitalTwin> vehicles = testDataCategorized.getDigitalTwinsVehicles();
-        final CatenaXIdToDigitalTwinType idToType =
-                (final String catenaXId) -> testDataCategorized.catenaXIdToType(catenaXId);
 
         try {
+            final HashMap<String, DigitalTwin> vehicles = testDataCategorized.getDigitalTwinsVehicles();
+            final CatenaXIdToDigitalTwinType idToType =
+                    (final String catenaXId) -> testDataCategorized.catenaXIdToType(catenaXId);
+
             sortVehicles(vehicles, idToType);
-        } catch (final UncheckedDataProviderException exception) {
+        } catch (final Exception exception) {
             throw new DataProviderException(exception);
         }
     }

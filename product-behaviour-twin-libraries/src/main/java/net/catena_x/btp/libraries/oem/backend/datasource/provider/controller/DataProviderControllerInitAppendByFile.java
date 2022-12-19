@@ -23,6 +23,7 @@ public class DataProviderControllerInitAppendByFile {
     @PostMapping(value = "/init/appendbyfile", produces = "application/json")
     @io.swagger.v3.oas.annotations.Operation(
             summary = InitAppendByFileDoc.SUMMARY, description = InitAppendByFileDoc.DESCRIPTION,
+            tags = {"Development"},
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = InitAppendByFileDoc.BODY_DESCRIPTION, required = true,
                     content =  @io.swagger.v3.oas.annotations.media.Content(

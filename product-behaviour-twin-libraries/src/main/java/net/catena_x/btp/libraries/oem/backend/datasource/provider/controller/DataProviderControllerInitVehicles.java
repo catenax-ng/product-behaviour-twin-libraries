@@ -22,6 +22,7 @@ public class DataProviderControllerInitVehicles {
     @GetMapping(value = "/init/vehicles", produces = "application/json")
     @io.swagger.v3.oas.annotations.Operation(
             summary = InitVehiclesDoc.SUMMARY, description = InitVehiclesDoc.DESCRIPTION,
+            tags = {"Initializing"},
             responses = {
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(
                             responseCode = "200",

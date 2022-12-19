@@ -36,7 +36,20 @@ public class DataProviderControllerExportTestData {
 
     @GetMapping(value = "/export/testdata", produces = "application/json")
     @io.swagger.v3.oas.annotations.Operation(
+
             summary = ExportTestDataDoc.SUMMARY, description = ExportTestDataDoc.DESCRIPTION,
+            tags = {"Development"},
+            parameters = @io.swagger.v3.oas.annotations.Parameter(
+                    name = ExportTestDataDoc.LIMIT_NAME,
+                    description = ExportTestDataDoc.LIMIT_DESCRIPTION, required = false,
+                    examples = {
+                            @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    name = ExportTestDataDoc.LIMIT_EXAMPLE_1_NAME,
+                                    description = ExportTestDataDoc.LIMIT_EXAMPLE_1_DESCRIPTION,
+                                    value = ExportTestDataDoc.LIMIT_EXAMPLE_1_VALUE
+                            )
+                    }
+            ),
             responses = {
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(
                             responseCode = "200",
@@ -85,7 +98,7 @@ public class DataProviderControllerExportTestData {
 
             return apiHelper.ok("Test data exported.");
         }
-        catch(final DataProviderException exception) {
+        catch(final Exception exception) {
             return apiHelper.failed(exception.toString());
         } finally {
             testDataManager.unlock();

@@ -23,6 +23,7 @@ public class DataProviderControllerInitReinitByFile {
     @PostMapping(value = "/init/reinitbyfile", produces = "application/json")
     @io.swagger.v3.oas.annotations.Operation(
             summary = InitReinitByFileDoc.SUMMARY, description = InitReinitByFileDoc.DESCRIPTION,
+            tags = {"Development"},
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = InitReinitByFileDoc.BODY_DESCRIPTION, required = true,
                     content =  @io.swagger.v3.oas.annotations.media.Content(

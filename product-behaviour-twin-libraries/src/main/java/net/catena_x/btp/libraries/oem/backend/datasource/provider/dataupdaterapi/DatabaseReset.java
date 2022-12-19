@@ -26,13 +26,13 @@ public class DatabaseReset {
 
         dataUpdaterApi.addAuthorizationHeaders(headers);
 
-        final ResponseEntity<DefaultApiResult> response = restTemplate.exchange(
+        try {
+            final ResponseEntity<DefaultApiResult> response = restTemplate.exchange(
                 requestUrl.toString(), HttpMethod.GET,
                 new HttpEntity<>(headers), DefaultApiResult.class);
 
-        try {
             ResponseChecker.checkResponse(response);
-        } catch (final BtpException exception) {
+        } catch (final Exception exception) {
             throw new DataProviderException(exception);
         }
     }
