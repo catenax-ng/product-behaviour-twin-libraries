@@ -35,6 +35,7 @@
 						<version>2.7.5</version>
 						<configuration>
 							<mainClass>net.catena_x.btp.libraries.oem.backend.datasource.provider.OemDataProviderApplication</mainClass>
+							<fork>false</fork>
 						</configuration>
 					</plugin>
 				</plugins>
@@ -50,6 +51,7 @@
 						<version>2.7.5</version>
 						<configuration>
 							<mainClass>net.catena_x.btp.libraries.oem.backend.datasource.updater.OemDataUpdaterApplication</mainClass>
+							<fork>false</fork>
 						</configuration>
 					</plugin>
 				</plugins>
