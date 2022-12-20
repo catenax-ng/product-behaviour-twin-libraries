@@ -7,7 +7,8 @@ Uploads a file with digital twin definitions. There have to be corresponding veh
 There can be more than one sets in the file. The internally stored digital twins are reset and the new digital twins
 are stored internally as new test data.
 All testdata must be initialized before registering vehicles and telematics data. """;
-    public static final String BODY_DESCRIPTION = "TODO: DESCRIPTION.";
+
+    public static final String BODY_DESCRIPTION = "Sample test data (list of digital twins).";
 
     public static final String BODY_EXAMPLE_1_NAME = "Sample vehicle and gearbox";
     public static final String BODY_EXAMPLE_1_DESCRIPTION = "A sample set of a vehicle and a gearbox.";
