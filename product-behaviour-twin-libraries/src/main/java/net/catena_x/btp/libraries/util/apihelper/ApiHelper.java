@@ -1,6 +1,5 @@
 package net.catena_x.btp.libraries.util.apihelper;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResultWithValue;
 import net.catena_x.btp.libraries.util.apihelper.preparation.ApiResponse;
@@ -29,8 +28,8 @@ public class ApiHelper {
         return apiResponse.toObject(ApiResult.ok(value));
     }
 
-    public <T> ResponseEntity<String> okAsString(@NotNull final T value) {
-        return apiResponse.toString(ApiResult.ok(value), DefaultApiResult.class);
+    public <T> ResponseEntity<String> okAsString(@NotNull final T value, @NotNull final Class<?> typeOfT) {
+        return apiResponse.toString(ApiResult.ok(value), typeOfT);
     }
 
     public <T> ResponseEntity<DefaultApiResultWithValue<T>> okWithValue(@Nullable final String message,
