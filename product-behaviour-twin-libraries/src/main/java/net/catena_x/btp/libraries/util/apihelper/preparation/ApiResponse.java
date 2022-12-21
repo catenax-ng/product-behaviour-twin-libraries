@@ -1,9 +1,7 @@
 package net.catena_x.btp.libraries.util.apihelper.preparation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -12,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 @Component
 public final class ApiResponse {
-    @Autowired ObjectMapper objectMapper;
+    @Autowired private ObjectMapper objectMapper;
 
     public <T> ResponseEntity<String> toString(@NotNull final ApiResult<T> apiResult,
                                                @NotNull final Class<?> typeOfT) {

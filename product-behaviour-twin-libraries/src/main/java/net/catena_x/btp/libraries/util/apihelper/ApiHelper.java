@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 
 @Component
 public class ApiHelper {
-    @Autowired ApiResponse apiResponse;
+    @Autowired private ApiResponse apiResponse;
 
     public ResponseEntity<DefaultApiResult> ok(@NotNull final String message) {
         return apiResponse.toObject(ApiResult.ok(message));

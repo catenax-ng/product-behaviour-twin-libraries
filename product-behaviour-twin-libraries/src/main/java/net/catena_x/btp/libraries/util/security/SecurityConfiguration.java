@@ -1,6 +1,5 @@
 package net.catena_x.btp.libraries.util.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,15 +21,13 @@ public class SecurityConfiguration {
     @Value("${security.api.endpoints.hidatareceiver.notifyresult.noauth:false}")
     private boolean hiDataReceiverNotifyresultNoAuth;
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth)
-            throws Exception {
+    public void configureGlobal(final AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication().withUser(username)
                 .password(passwordEncoder().encode(password)).roles("USER");
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
         if(hiDataReceiverNotifyresultNoAuth) {
             http.csrf().disable().authorizeRequests()
                     .antMatchers(HttpMethod.POST, "/hidatareceiver/notifyresult")

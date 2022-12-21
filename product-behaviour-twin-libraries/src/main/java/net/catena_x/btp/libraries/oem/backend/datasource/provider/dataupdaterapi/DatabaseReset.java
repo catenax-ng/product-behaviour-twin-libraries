@@ -3,7 +3,6 @@ package net.catena_x.btp.libraries.oem.backend.datasource.provider.dataupdaterap
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import net.catena_x.btp.libraries.util.apihelper.ResponseChecker;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
-import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import okhttp3.HttpUrl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
