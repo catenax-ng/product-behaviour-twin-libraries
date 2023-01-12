@@ -2,13 +2,10 @@ package net.catena_x.btp.libraries.oem.backend.cloud;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.minio.*;
-import io.minio.errors.MinioException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import io.minio.errors.*;
+import io.minio.messages.DeleteObject;
+import org.hibernate.sql.Delete;
+import org.springframework.boot.jta.atomikos.AtomikosDependsOnBeanFactoryPostProcessor;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -17,28 +14,38 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
-@Component
-@Scope("singleton")
+/*
+Plan for Upload Module:
+
+One instance iof S3Handler is associated with exactly one bucket, which it can freely manage
+The main S3Handler is a simple Java Class, Spring Interactions are managed separately.
+
+[x] upload - Only uploads a file (given as string) to a existing bucket
+[x] createBucket - Creates the bucket (if it doesn't exist)
+[x] uploadAndCreate - Creates bucket (if it doesn't exist) and uploads
+[x] deleteBucket - Deletes the bucket
+[ ] deleteKey - deletes a key inside the bucket
+[ ] Spring Wrapper - See S3SpringWrapper.java
+ */
+
 public class S3Handler {
-    @Autowired
-    @Qualifier("defaultMinio") private MinioClient client;
-    @Value("cloud.bucket") private String bucket;
+    private MinioClient client;
+    private String bucket;
 
-    @Bean("defaultMinio")
-    private static MinioClient generateClient(
-        @Value("cloud.endpoint") URL endpoint,
-        @Value("cloud.accessKey") String accessKey,
-        @Value("cloud.secretKey") String secretKey,
-        @Value("cloud.region") String region,
-        @Value("cloud.bucket") String bucket) {
+    public S3Handler(URL endpoint, String accessKey, String secretKey,
+        String region, String bucket) {
 
-        return MinioClient.builder()
+        this.bucket = bucket;
+        client = MinioClient.builder()
                 .endpoint(endpoint)
                 .credentials(accessKey, secretKey)
                 .region(region)
                 .build();
-     }
+    }
+
 
     /**
      * this should be used inside of a try...with-block
@@ -48,7 +55,7 @@ public class S3Handler {
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeyException
      */
-    public InputStream streamFileFromCloud(String key) throws IOException, MinioException,
+    public InputStream streamFileFromS3(String key) throws IOException, MinioException,
             NoSuchAlgorithmException, InvalidKeyException {
         return client.getObject(
                 GetObjectArgs.builder()
@@ -71,7 +78,7 @@ public class S3Handler {
     public <T> T parseJsonFromS3(String bucketName, String key, Class<T> resultType) throws IOException, MinioException,
             NoSuchAlgorithmException, InvalidKeyException {
         ObjectMapper om = new ObjectMapper();
-        return om.readValue(streamFileFromCloud(key), resultType);
+        return om.readValue(streamFileFromS3(key), resultType);
     }
 
     public void uploadFileToS3(String resultJson, String key) throws IOException, MinioException,
@@ -97,12 +104,29 @@ public class S3Handler {
 
     public void createBucket() throws IOException, MinioException,
             NoSuchAlgorithmException, InvalidKeyException {
-        boolean found = client.bucketExists(BucketExistsArgs.builder().bucket("asiatrip").build());
+        boolean found = checkBucketExists();
         if (!found) {
-            // Make a new bucket called 'asiatrip'.
             client.makeBucket(MakeBucketArgs.builder().bucket(bucket).build());
         } else {
             System.out.println("Bucket " + bucket + " already exists.");
         }
+    }
+
+    public boolean checkBucketExists() throws IOException, MinioException,
+            NoSuchAlgorithmException, InvalidKeyException {
+        return client.bucketExists(BucketExistsArgs.builder().bucket(bucket).build());
+    }
+
+    public void deleteBucket(boolean allowNonEmpty) throws IOException, MinioException,
+            NoSuchAlgorithmException, InvalidKeyException {
+        if(allowNonEmpty) {
+            List<DeleteObject> keys = new ArrayList<>();
+            for(var e: client.listObjects(ListObjectsArgs.builder().bucket(bucket).build())) {
+                keys.add(new DeleteObject(e.get().objectName()));
+            }
+            // the deletion is lazily evaluated, so as long as the result is not iterated, nothing is deleted...
+            for(var e: client.removeObjects(RemoveObjectsArgs.builder().bucket(bucket).objects(keys).build())) {}
+        }
+        client.removeBucket(RemoveBucketArgs.builder().bucket(bucket).build());
     }
 }
