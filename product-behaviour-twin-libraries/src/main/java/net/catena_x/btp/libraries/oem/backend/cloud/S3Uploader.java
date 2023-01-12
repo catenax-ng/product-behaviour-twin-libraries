@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.messages.DeleteObject;
-import org.hibernate.sql.Delete;
-import org.springframework.boot.jta.atomikos.AtomikosDependsOnBeanFactoryPostProcessor;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -27,16 +25,17 @@ The main S3Handler is a simple Java Class, Spring Interactions are managed separ
 [x] createBucket - Creates the bucket (if it doesn't exist)
 [x] uploadAndCreate - Creates bucket (if it doesn't exist) and uploads
 [x] deleteBucket - Deletes the bucket
-[ ] deleteKey - deletes a key inside the bucket
+[ ] deleteKey - deletes a key (~file) inside the bucket
 [ ] Spring Wrapper - See S3SpringWrapper.java
+[ ] Generate access key for specific file
  */
 
-public class S3Handler {
+public class S3Uploader {
     private MinioClient client;
     private String bucket;
 
-    public S3Handler(URL endpoint, String accessKey, String secretKey,
-        String region, String bucket) {
+    public S3Uploader(URL endpoint, String accessKey, String secretKey,
+                      String region, String bucket) {
 
         this.bucket = bucket;
         client = MinioClient.builder()
