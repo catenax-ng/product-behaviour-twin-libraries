@@ -1,6 +1,5 @@
 package net.catena_x.btp.libraries.oem.backend.cloud;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.http.Method;
@@ -9,9 +8,13 @@ import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import okhttp3.HttpUrl;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -29,7 +32,7 @@ The main S3Handler is a simple Java Class, Spring Interactions are managed separ
 [x] createBucket - Creates the bucket (if it doesn't exist)
 [x] uploadAndCreate - Creates bucket (if it doesn't exist) and uploads
 [x] deleteBucket - Deletes the bucket
-[ ] deleteKey - deletes a key (~file) inside the bucket
+[x] deleteKey - deletes a key (~file) inside the bucket
 [ ] Spring Wrapper - See S3SpringWrapper.java
 [x] Generate url to download a specific file
 [x] Generate URL to upload a file to a specific bucket
@@ -50,45 +53,6 @@ public class S3Uploader {
                 .build();
     }
 
-
-    /**
-     * this should be used inside of a try...with-block
-     * @param key
-     * @return
-     * @throws BtpException
-     */
-    public InputStream streamFileFromS3(String key) throws BtpException {
-        try {
-            return client.getObject(
-                    GetObjectArgs.builder()
-                            .bucket(bucket)
-                            .object(key)
-                            .build()
-            );
-        } catch (IOException | MinioException | NoSuchAlgorithmException | InvalidKeyException e) {
-            throw new BtpException(e.getMessage(), e.getCause());
-        }
-    }
-
-    /**
-     * Downloads the Json-File, specified by bucketName and key, from S3 (configured via environent variables).
-     * Then, parses the (json)-file into the supplied type result Type
-     * @param bucketName
-     * @param key
-     * @param resultType
-     * @param <T>
-     * @return
-     * @throws IOException
-     */
-    public <T> T parseJsonFromS3(String bucketName, String key, Class<T> resultType) throws BtpException {
-        ObjectMapper om = new ObjectMapper();
-        try {
-            return om.readValue(streamFileFromS3(key), resultType);
-        } catch (IOException e) {
-            throw new BtpException(e.getMessage(), e.getCause());
-        }
-
-    }
 
     public void uploadFileToS3(String resultJson, String key) throws BtpException {
 
@@ -140,7 +104,13 @@ public class S3Uploader {
                     keys.add(new DeleteObject(e.get().objectName()));
                 }
                 // the deletion is lazily evaluated, so as long as the result is not iterated, nothing is deleted...
-                for(var e: client.removeObjects(RemoveObjectsArgs.builder().bucket(bucket).objects(keys).build())) {}
+                var deleteErrors =
+                        client.removeObjects(RemoveObjectsArgs.builder().bucket(bucket).objects(keys).build());
+                for(var e: deleteErrors) {
+                    // However, this iterator seems to be empty as long as everything worked well, so we may as well
+                    // raise an exception here
+                    throw new BtpException("Deletion of elements in bucket failed: " + e.get().toString());
+                }
             }
             client.removeBucket(RemoveBucketArgs.builder().bucket(bucket).build());
         } catch (IOException | MinioException | NoSuchAlgorithmException | InvalidKeyException e) {
@@ -177,6 +147,31 @@ public class S3Uploader {
                                     .expiry(expiry, expiryTimeUnit)
                                     .build()
                     )
+            );
+        } catch (IOException | MinioException | NoSuchAlgorithmException | InvalidKeyException e) {
+            throw new BtpException(e.getMessage(), e.getCause());
+        }
+    }
+
+    public void uploadToForeignS3ViaLink(HttpUrl uploadUrl, InputStream fileContents) throws BtpException {
+        HttpRequest request = HttpRequest.newBuilder().uri(uploadUrl.uri()).PUT(
+            HttpRequest.BodyPublishers.ofInputStream(() -> fileContents)
+        ).build();
+        HttpClient client = HttpClient.newHttpClient();
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException e) {
+            throw new BtpException(e.getMessage(), e.getCause());
+        }
+    }
+
+    public void deleteFileFromS3(String fileName) throws BtpException {
+        try {
+            client.removeObject(
+                    RemoveObjectArgs.builder()
+                            .bucket(bucket)
+                            .object(fileName)
+                            .build()
             );
         } catch (IOException | MinioException | NoSuchAlgorithmException | InvalidKeyException e) {
             throw new BtpException(e.getMessage(), e.getCause());
