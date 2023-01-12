@@ -18,8 +18,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class S3HandlerTest {
 
-    String accessKey = "sYp5emZ5XjJ3SPgO";
-    String secretKey = "ZP9GaUWf7QApzNnqzGNX19yfZ2TwTzKG";
+    String accessKey = System.getenv("MINIO_ACCESS_KEY");
+    String secretKey = System.getenv("MINIO_SECRET_KEY");
 
     // This requires a local minio-instance started seperately
     URL url = HttpUrl.parse("http://172.29.154.185:9000").url();
@@ -42,14 +42,8 @@ class S3HandlerTest {
     }
 
     @Test
-    void uploadFileToS3() throws Exception {
-        String test_json = "{\"hello\": \"world\"}";
-        String key = "hello_world";
-        s3handler.uploadFileToS3(test_json, key);
-    }
-
-    @Test
     void uploadAndCreate() throws Exception {
+        // the simple upload is also covered in this test!
         String test_json = "{\"hello\": \"world\"}";
         String key = "hello_world";
         s3handler.uploadAndCreate(test_json, key);
