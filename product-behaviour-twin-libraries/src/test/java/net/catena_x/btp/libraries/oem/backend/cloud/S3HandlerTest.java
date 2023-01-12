@@ -33,11 +33,11 @@ class S3HandlerTest {
         System.out.println("Deleted bucket successfully!");
     }
 
-    @Test
+    //@Test
     void streamFileFromS3() {
     }
 
-    @Test
+    //@Test
     void parseJsonFromS3() {
     }
 
