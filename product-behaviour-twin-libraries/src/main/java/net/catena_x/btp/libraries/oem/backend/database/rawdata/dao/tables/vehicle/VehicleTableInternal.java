@@ -29,6 +29,7 @@ import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 @Component
 public class VehicleTableInternal extends RawTableBase {
@@ -38,6 +39,16 @@ public class VehicleTableInternal extends RawTableBase {
     @Autowired private TelematicsDataTableInternal telematicsDataTable;
     @Autowired private SyncTableInternal syncTable;
     @Autowired private InputTelematicsDataConverter inputTelematicsDataConverter;
+
+    @RDTransactionSerializableUseExisting
+    public Exception runSerializableExternalTransaction(@NotNull final Supplier<Exception> function) {
+        return function.get();
+    }
+
+    @RDTransactionSerializableCreateNew
+    public Exception runSerializableNewTransaction(@NotNull final Supplier<Exception> function) {
+        return runSerializableExternalTransaction(function);
+    }
 
     @RDTransactionDefaultUseExisting
     public void registerVehicleExternalTransaction(@NotNull final VehicleInfo newVehicleInfo)

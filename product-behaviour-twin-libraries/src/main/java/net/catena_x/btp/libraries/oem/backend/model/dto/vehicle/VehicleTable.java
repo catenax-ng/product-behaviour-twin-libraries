@@ -12,11 +12,20 @@ import org.springframework.stereotype.Component;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
+import java.util.function.Supplier;
 
 @Component
 public class VehicleTable extends RawTableBase {
     @Autowired private VehicleTableInternal internal;
     @Autowired private VehicleConverter vehicleConverter;
+
+    public Exception runSerializableNewTransaction(@NotNull final Supplier<Exception> function) {
+        return internal.runSerializableNewTransaction(function);
+    }
+
+    public Exception runSerializableExternalTransaction(@NotNull final Supplier<Exception> function) {
+        return internal.runSerializableExternalTransaction(function);
+    }
 
     public void registerVehicleNewTransaction(@NotNull final VehicleInfo newVehicleInfo) throws OemDatabaseException {
         internal.registerVehicleNewTransaction(newVehicleInfo);

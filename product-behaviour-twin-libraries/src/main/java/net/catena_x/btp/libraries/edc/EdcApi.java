@@ -15,8 +15,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.constraints.NotNull;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @Component
@@ -81,24 +84,28 @@ public class EdcApi {
         return response;
     }
 
-    private HttpUrl buildApiWrapperUrl(@NotNull final HttpUrl partnerUrl, @NotNull final String asset) {
-        return HttpUrl.parse(this.apiWrapperUrl).newBuilder()
-                .addPathSegments(submodelPath)
-                .addPathSegment(asset)
-                .addPathSegment(submodel)
-                .addQueryParameter(providerEdcUrlKey, partnerUrl.toString())
-                .build();
+    private HttpUrl buildApiWrapperUrl(@NotNull final HttpUrl partnerUrl, @NotNull final String asset)
+            throws EdcException{
+        try {
+            return HttpUrl.parse(this.apiWrapperUrl).newBuilder()
+                    .addPathSegments(submodelPath)
+                    .addPathSegment(URLEncoder.encode(asset, StandardCharsets.UTF_8.toString()))
+                    .addPathSegment(submodel)
+                    .addQueryParameter(providerEdcUrlKey, partnerUrl.toString())
+                    .build();
+        } catch (final UnsupportedEncodingException exception) {
+            throw new EdcException(exception);
+        }
     }
 
-    private void addAuthorizationHeaders(HttpHeaders headers) {
-        headers.add("Authorization",getAuthString());
+    private void addAuthorizationHeaders(final HttpHeaders headers) {
+        headers.add("Authorization", getAuthString());
     }
 
     private String getAuthString() {
         StringBuilder sb = new StringBuilder();
 
-        String authStr = sb.append(apiWrapperUsername).append(":")
-                .append(apiWrapperPassword).toString();
+        String authStr = sb.append(apiWrapperUsername).append(":").append(apiWrapperPassword).toString();
         sb.setLength(0);
         sb.append("Basic ").append(Base64.getEncoder().encodeToString(authStr.getBytes()));
         return sb.toString();

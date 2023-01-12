@@ -20,6 +20,7 @@ import javax.persistence.PersistenceContext;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
+import java.util.function.Supplier;
 
 @Component
 public class TelematicsDataTableInternal extends RawTableBase {
@@ -28,6 +29,16 @@ public class TelematicsDataTableInternal extends RawTableBase {
     @Autowired private TelematicsDataRepository telematicsDataRepository;
     @Autowired private InputTelematicsDataConverter inputTelematicsDataConverter;
     @Autowired private SyncTableInternal syncTable;
+
+    @RDTransactionSerializableUseExisting
+    public Exception runSerializableExternalTransaction(@NotNull final Supplier<Exception> function) {
+        return function.get();
+    }
+
+    @RDTransactionSerializableCreateNew
+    public Exception runSerializableNewTransaction(@NotNull final Supplier<Exception> function) {
+        return runSerializableExternalTransaction(function);
+    }
 
     @RDTransactionSerializableCreateNew
     public void adjust(@NotNull final boolean isPostgreSQL) {

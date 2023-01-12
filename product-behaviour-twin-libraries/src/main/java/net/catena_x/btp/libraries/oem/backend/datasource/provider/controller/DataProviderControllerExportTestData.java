@@ -1,5 +1,6 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.provider.controller;
 
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.TestDataExporter;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.controller.swagger.ExportTestDataDoc;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
@@ -40,7 +41,7 @@ public class DataProviderControllerExportTestData {
             summary = ExportTestDataDoc.SUMMARY, description = ExportTestDataDoc.DESCRIPTION,
             tags = {"Development"},
             parameters = @io.swagger.v3.oas.annotations.Parameter(
-                    name = ExportTestDataDoc.LIMIT_NAME,
+                    in = ParameterIn.QUERY, name = ExportTestDataDoc.LIMIT_NAME,
                     description = ExportTestDataDoc.LIMIT_DESCRIPTION, required = false,
                     examples = {
                             @io.swagger.v3.oas.annotations.media.ExampleObject(
