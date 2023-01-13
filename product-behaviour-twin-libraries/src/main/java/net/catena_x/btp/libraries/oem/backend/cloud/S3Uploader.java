@@ -1,14 +1,13 @@
 package net.catena_x.btp.libraries.oem.backend.cloud;
 
 import io.minio.*;
-import io.minio.errors.*;
+import io.minio.errors.MinioException;
 import io.minio.http.Method;
 import io.minio.messages.DeleteObject;
-import net.catena_x.btp.libraries.util.exceptions.BtpException;
+import net.catena_x.btp.libraries.util.exceptions.S3Exception;
 import okhttp3.HttpUrl;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -36,15 +35,24 @@ The main S3Handler is a simple Java Class, Spring Interactions are managed separ
 [ ] Spring Wrapper - See S3SpringWrapper.java
 [x] Generate url to download a specific file
 [x] Generate URL to upload a file to a specific bucket
+[ ] Javadoc
+[ ] Confluence / Ark42
  */
 
 public class S3Uploader {
-    private MinioClient client;
-    private String bucket;
+    private final MinioClient client;
+    private final String bucket;
 
-    public S3Uploader(URL endpoint, String accessKey, String secretKey,
-                      String region, String bucket) {
-
+    /**
+     * Constructs Object that handles uploads to a fixed S3 (or MinIO) instance
+     * @param endpoint URl to the S3 instance
+     * @param accessKey AccessKey for the S3 instance
+     * @param secretKey SecretKey for the S3 instance
+     * @param region Region, used by AmazonS3 to select the nearest node. Not important for non-distributed instances
+     * @param bucket Name of the bucket to be managed. Can (but doesn't need to) already exist.
+     */
+    public S3Uploader(final HttpUrl endpoint, final String accessKey, final String secretKey,
+                      final String region, final String bucket) {
         this.bucket = bucket;
         client = MinioClient.builder()
                 .endpoint(endpoint)
@@ -53,12 +61,41 @@ public class S3Uploader {
                 .build();
     }
 
+    /**
+     * Constructs Object that handles uploads to a fixed S3 (or MinIO) instance
+     * @param endpoint URl to the S3 instance
+     * @param accessKey AccessKey for the S3 instance
+     * @param secretKey SecretKey for the S3 instance
+     * @param bucket Name of the bucket to be managed. Can (but doesn't need to) already exist.
+     */
+    public S3Uploader(final HttpUrl endpoint, final String accessKey, final String secretKey, final String bucket) {
+        this.bucket = bucket;
+        client = MinioClient.builder()
+                .endpoint(endpoint)
+                .credentials(accessKey, secretKey)
+                .build();
+    }
 
-    public void uploadFileToS3(String resultJson, String key) throws BtpException {
-
+    /**
+     * Upload the string given by resultJson into a json file with the name given by key into an existing bucket
+     * @param resultJson File contents
+     * @param key Desired file name inside the bucket
+     * @throws S3Exception if anything goes wrong during the upload
+     */
+    public void uploadFileToS3(final String resultJson, final String key) throws S3Exception {
         // Maybe this method should optionally also set retention - i.e. not be deletable for a set interval of time
-
         var stream = new ByteArrayInputStream(resultJson.getBytes(StandardCharsets.UTF_8));
+        uploadFileToS3(stream, key);
+    }
+
+    /**
+     * Upload the content given by stream into a file with the name given by key into an existing bucket
+     * @param stream Stream with input data
+     * @param key desired file name inside the bucket
+     * @throws S3Exception if anything goes wrong during the upload
+     */
+    public void uploadFileToS3(final InputStream stream, final String key) throws S3Exception {
+        // Maybe this method should optionally also set retention - i.e. not be deletable for a set interval of time
         try {
             client.putObject(PutObjectArgs.builder()
                     .bucket(bucket)
@@ -67,36 +104,64 @@ public class S3Uploader {
                     .contentType("application/json")
                     .build());
         } catch (IOException | MinioException | NoSuchAlgorithmException | InvalidKeyException e) {
-            throw new BtpException(e.getMessage(), e.getCause());
+            throw new S3Exception(e.getMessage(), e.getCause());
         }
-
     }
 
-    public void uploadAndCreate(String resultJson, String key) throws BtpException {
+    /**
+     * Upload the string given by resultJson into a json file with the name given by key,
+     * creating the corresponding bucket
+     * @param resultJson File contents
+     * @param key Desired file name inside the bucket
+     * @throws S3Exception if anything goes wrong during the upload
+     */
+    public void uploadAndCreate(final String resultJson, final String key) throws S3Exception {
         createBucket();
-
         uploadFileToS3(resultJson, key);
     }
 
-    public void createBucket() throws BtpException {
+    /**
+     * Upload the content given by stream into a file with the name given by key into an existing bucket,
+     * creating the bucket
+     * @param key desired file name inside the bucket
+     * @throws S3Exception if anything goes wrong during the upload
+     */
+    public void uploadAndCreate(final InputStream stream, final String key) throws S3Exception {
+        createBucket();
+        uploadFileToS3(stream, key);
+    }
+
+    /**
+     * Create the bucket associated with this instance of S3Uploader
+     * @throws S3Exception if anything goes wrong, e.g. the bucket already exists
+     */
+    public void createBucket() throws S3Exception {
         try {
-            boolean found = checkBucketExists();
-            if (!found) {
-                client.makeBucket(MakeBucketArgs.builder().bucket(bucket).build());
-            } else {
-                System.out.println("Bucket " + bucket + " already exists.");
-            }
+            client.makeBucket(MakeBucketArgs.builder().bucket(bucket).build());
         } catch (IOException | MinioException | NoSuchAlgorithmException | InvalidKeyException e) {
-            throw new BtpException(e.getMessage(), e.getCause());
+            throw new S3Exception(e.getMessage(), e.getCause());
         }
     }
 
-    public boolean checkBucketExists() throws IOException, MinioException,
-            NoSuchAlgorithmException, InvalidKeyException {
-        return client.bucketExists(BucketExistsArgs.builder().bucket(bucket).build());
+    /**
+     * Check if the bucket associated with this instance of S3Uploader exists
+     * @return true if the bucket exists, false if not
+     * @throws S3Exception if anything goes wrong during the connection
+     */
+    public boolean checkBucketExists() throws S3Exception{
+        try {
+            return client.bucketExists(BucketExistsArgs.builder().bucket(bucket).build());
+        } catch (IOException | MinioException | NoSuchAlgorithmException | InvalidKeyException e) {
+            throw new S3Exception(e.getMessage(), e.getCause());
+        }
     }
 
-    public void deleteBucket(boolean allowNonEmpty) throws BtpException {
+    /**
+     * Delete the bucket associated with this instance of S3Uploader
+     * @param allowNonEmpty if set to true, will also delete non-empty buckets (therefore deleting all included files)
+     * @throws S3Exception if anything goes wrong during the connection
+     */
+    public void deleteBucket(final boolean allowNonEmpty) throws S3Exception {
         try {
             if(allowNonEmpty) {
                 List<DeleteObject> keys = new ArrayList<>();
@@ -109,17 +174,25 @@ public class S3Uploader {
                 for(var e: deleteErrors) {
                     // However, this iterator seems to be empty as long as everything worked well, so we may as well
                     // raise an exception here
-                    throw new BtpException("Deletion of elements in bucket failed: " + e.get().toString());
+                    throw new S3Exception("Deletion of elements in bucket failed: " + e.get().toString());
                 }
             }
             client.removeBucket(RemoveBucketArgs.builder().bucket(bucket).build());
         } catch (IOException | MinioException | NoSuchAlgorithmException | InvalidKeyException e) {
-            throw new BtpException(e.getMessage(), e.getCause());
+            throw new S3Exception(e.getMessage(), e.getCause());
         }
     }
 
-    // Whats the best way to forward the expiry time?
-    public HttpUrl getDownloadURL(String fileName, int expiry, TimeUnit expiryTimeUnit) throws BtpException {
+    /**
+     *
+     * @param fileName
+     * @param expiry
+     * @param expiryTimeUnit
+     * @return
+     * @throws S3Exception
+     */
+    public HttpUrl getDownloadURL(final String fileName, final int expiry, TimeUnit expiryTimeUnit)
+            throws S3Exception {
         try {
             return HttpUrl.parse(
                     client.getPresignedObjectUrl(
@@ -132,11 +205,12 @@ public class S3Uploader {
                     )
             );
         } catch (IOException | MinioException | NoSuchAlgorithmException | InvalidKeyException e) {
-            throw new BtpException(e.getMessage(), e.getCause());
+            throw new S3Exception(e.getMessage(), e.getCause());
         }
     }
 
-    public HttpUrl getUploadURL(String fileName, int expiry, TimeUnit expiryTimeUnit) throws BtpException {
+    public HttpUrl getUploadURL(final String fileName, final int expiry, final TimeUnit expiryTimeUnit)
+            throws S3Exception {
         try {
             return HttpUrl.parse(
                     client.getPresignedObjectUrl(
@@ -149,11 +223,11 @@ public class S3Uploader {
                     )
             );
         } catch (IOException | MinioException | NoSuchAlgorithmException | InvalidKeyException e) {
-            throw new BtpException(e.getMessage(), e.getCause());
+            throw new S3Exception(e.getMessage(), e.getCause());
         }
     }
 
-    public void uploadToForeignS3ViaLink(HttpUrl uploadUrl, InputStream fileContents) throws BtpException {
+    public void uploadToForeignS3ViaLink(final HttpUrl uploadUrl, final InputStream fileContents) throws S3Exception {
         HttpRequest request = HttpRequest.newBuilder().uri(uploadUrl.uri()).PUT(
             HttpRequest.BodyPublishers.ofInputStream(() -> fileContents)
         ).build();
@@ -161,11 +235,11 @@ public class S3Uploader {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
-            throw new BtpException(e.getMessage(), e.getCause());
+            throw new S3Exception(e.getMessage(), e.getCause());
         }
     }
 
-    public void deleteFileFromS3(String fileName) throws BtpException {
+    public void deleteFileFromS3(final String fileName) throws S3Exception {
         try {
             client.removeObject(
                     RemoveObjectArgs.builder()
@@ -174,7 +248,7 @@ public class S3Uploader {
                             .build()
             );
         } catch (IOException | MinioException | NoSuchAlgorithmException | InvalidKeyException e) {
-            throw new BtpException(e.getMessage(), e.getCause());
+            throw new S3Exception(e.getMessage(), e.getCause());
         }
     }
 }

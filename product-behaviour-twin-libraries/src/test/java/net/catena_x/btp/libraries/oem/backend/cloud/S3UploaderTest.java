@@ -24,7 +24,7 @@ class S3UploaderTest {
     String secretKey = System.getenv("MINIO_SECRET_KEY");
 
     // This requires a local minio-instance started seperately
-    URL url = HttpUrl.parse("https://dlr-minio.dev.demo.catena-x.net").url();
+    HttpUrl url = HttpUrl.parse("https://dlr-minio.dev.demo.catena-x.net");
     String test_json = "{\"hello\": \"world\"}";
 
     private S3Uploader s3Uploader;
