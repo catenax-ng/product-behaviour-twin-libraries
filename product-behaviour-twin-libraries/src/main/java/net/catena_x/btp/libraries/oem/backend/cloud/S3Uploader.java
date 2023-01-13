@@ -35,7 +35,7 @@ The main S3Handler is a simple Java Class, Spring Interactions are managed separ
 [ ] Spring Wrapper - See S3SpringWrapper.java
 [x] Generate url to download a specific file
 [x] Generate URL to upload a file to a specific bucket
-[ ] Javadoc
+[x] Javadoc
 [ ] Confluence / Ark42
  */
 
@@ -184,12 +184,13 @@ public class S3Uploader {
     }
 
     /**
-     *
-     * @param fileName
-     * @param expiry
-     * @param expiryTimeUnit
-     * @return
-     * @throws S3Exception
+     * Generates a download URL (GET) (with included authentication) for a file inside the managed bucket
+     * @param fileName name of the file inside the bucket. Does not need to exist at the moment of link-generation,
+     *                 but will result in a 404 if the download-link is accessed while the file is not present
+     * @param expiry scalar indicating the time until the link will expire
+     * @param expiryTimeUnit unit of the expiry scalar
+     * @return HttpUrl for the download
+     * @throws S3Exception if anything goes wrong during the connection
      */
     public HttpUrl getDownloadURL(final String fileName, final int expiry, TimeUnit expiryTimeUnit)
             throws S3Exception {
@@ -209,8 +210,17 @@ public class S3Uploader {
         }
     }
 
+    /**
+     * Generates an upload URL (PUT) (with included authentication) for a file inside the managed bucket
+     * @param fileName name of the file inside the bucket.
+     * @param expiry scalar indicating the time until the link will expire
+     * @param expiryTimeUnit unit of the expiry scalar
+     * @return HttpUrl for the upload
+     * @throws S3Exception if anything goes wrong during the connection
+     */
     public HttpUrl getUploadURL(final String fileName, final int expiry, final TimeUnit expiryTimeUnit)
             throws S3Exception {
+        // TODO do we need to check if such a file already exists?
         try {
             return HttpUrl.parse(
                     client.getPresignedObjectUrl(
@@ -227,6 +237,12 @@ public class S3Uploader {
         }
     }
 
+    /**
+     * Uses a given link to upload a file to a foreign S3 bucket.
+     * @param uploadUrl upload URl, should be generated like in getUploadUrl
+     * @param fileContents stream that gives the file contents
+     * @throws S3Exception if anything goes wrong during the connection
+     */
     public void uploadToForeignS3ViaLink(final HttpUrl uploadUrl, final InputStream fileContents) throws S3Exception {
         HttpRequest request = HttpRequest.newBuilder().uri(uploadUrl.uri()).PUT(
             HttpRequest.BodyPublishers.ofInputStream(() -> fileContents)
@@ -239,6 +255,11 @@ public class S3Uploader {
         }
     }
 
+    /**
+     * Deletes a file from the managed bucket
+     * @param fileName name of the file
+     * @throws S3Exception if anything goes wrong during the connection, or the file does not exist
+     */
     public void deleteFileFromS3(final String fileName) throws S3Exception {
         try {
             client.removeObject(
