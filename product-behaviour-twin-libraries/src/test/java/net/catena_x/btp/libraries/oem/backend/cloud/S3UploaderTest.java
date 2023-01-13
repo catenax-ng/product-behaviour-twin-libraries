@@ -1,6 +1,7 @@
 package net.catena_x.btp.libraries.oem.backend.cloud;
 
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
+import net.catena_x.btp.libraries.util.exceptions.S3Exception;
 import okhttp3.HttpUrl;
 import org.junit.Before;
 import org.junit.jupiter.api.AfterEach;
@@ -95,8 +96,7 @@ class S3UploaderTest {
 
         s3Uploader.deleteFileFromS3(file_name);
 
-        HttpUrl download = s3Uploader.getDownloadURL(file_name, 1, TimeUnit.MINUTES);
-        HttpResponse<String> response = getStringHttpResponse(download);
-        Assertions.assertEquals(404, response.statusCode());
+        Assertions.assertThrows(S3Exception.class,
+                () -> s3Uploader.getDownloadURL(file_name, 1, TimeUnit.MINUTES));
     }
 }

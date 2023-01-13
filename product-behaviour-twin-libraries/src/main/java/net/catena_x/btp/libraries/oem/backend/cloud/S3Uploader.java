@@ -1,11 +1,13 @@
 package net.catena_x.btp.libraries.oem.backend.cloud;
 
 import io.minio.*;
-import io.minio.errors.MinioException;
+import io.minio.errors.*;
 import io.minio.http.Method;
 import io.minio.messages.DeleteObject;
+import io.minio.messages.Item;
 import net.catena_x.btp.libraries.util.exceptions.S3Exception;
 import okhttp3.HttpUrl;
+import org.bouncycastle.util.Iterable;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -19,7 +21,9 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.StreamSupport;
 
 /*
 Plan for Upload Module:
@@ -185,8 +189,7 @@ public class S3Uploader {
 
     /**
      * Generates a download URL (GET) (with included authentication) for a file inside the managed bucket
-     * @param fileName name of the file inside the bucket. Does not need to exist at the moment of link-generation,
-     *                 but will result in a 404 if the download-link is accessed while the file is not present
+     * @param fileName name of the file inside the bucket.
      * @param expiry scalar indicating the time until the link will expire
      * @param expiryTimeUnit unit of the expiry scalar
      * @return HttpUrl for the download
@@ -194,6 +197,9 @@ public class S3Uploader {
      */
     public HttpUrl getDownloadURL(final String fileName, final int expiry, TimeUnit expiryTimeUnit)
             throws S3Exception {
+        if(!checkFileExists(fileName)) {
+            throw new S3Exception("Target object does not exist!");
+        }
         try {
             return HttpUrl.parse(
                     client.getPresignedObjectUrl(
@@ -220,7 +226,9 @@ public class S3Uploader {
      */
     public HttpUrl getUploadURL(final String fileName, final int expiry, final TimeUnit expiryTimeUnit)
             throws S3Exception {
-        // TODO do we need to check if such a file already exists?
+        if(checkFileExists(fileName)) {
+            throw new S3Exception("Target object already exists!");
+        }
         try {
             return HttpUrl.parse(
                     client.getPresignedObjectUrl(
@@ -235,6 +243,18 @@ public class S3Uploader {
         } catch (IOException | MinioException | NoSuchAlgorithmException | InvalidKeyException e) {
             throw new S3Exception(e.getMessage(), e.getCause());
         }
+    }
+
+    public boolean checkFileExists(final String fileName) throws S3Exception {
+        var iterable = client.listObjects(ListObjectsArgs.builder().bucket(bucket).build());
+        var stream = StreamSupport.stream(iterable.spliterator(), false);
+        return stream.anyMatch(e -> {
+            try {
+                return e.get().objectName().equals(fileName);
+            } catch (Exception ex) {
+                return false;
+            }
+        });
     }
 
     /**
