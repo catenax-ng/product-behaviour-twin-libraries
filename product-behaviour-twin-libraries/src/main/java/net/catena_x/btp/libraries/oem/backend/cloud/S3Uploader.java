@@ -248,10 +248,14 @@ public class S3Uploader {
             HttpRequest.BodyPublishers.ofInputStream(() -> fileContents)
         ).build();
         HttpClient client = HttpClient.newHttpClient();
+        HttpResponse<String> response;
         try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
             throw new S3Exception(e.getMessage(), e.getCause());
+        }
+        if(response.statusCode() != 200) {
+            throw new S3Exception("Upload returned status code " + response.statusCode());
         }
     }
 
