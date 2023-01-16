@@ -91,7 +91,7 @@ rulbackend:
       edc.endpoint=https://dlr.dev.demo.catena-x.net
       security.api.role=USER
 
-rawdatadb:
+rawdatadb2:
   fullnameOverride: "rawdatadb"
   image:
     pullPolicy: Always

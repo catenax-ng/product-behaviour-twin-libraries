@@ -11,7 +11,7 @@ dependencies:
   - name: postgresql
     version: ">=12.1.2"
     repository: https://charts.bitnami.com/bitnami
-    alias: rawdatadb
+    alias: rawdatadb2
   - name: postgresql
     version: ">=12.1.2"
     repository: https://charts.bitnami.com/bitnami
