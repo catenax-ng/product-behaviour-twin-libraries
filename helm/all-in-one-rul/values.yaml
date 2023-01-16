@@ -92,7 +92,7 @@ rulbackend:
       security.api.role=USER
 
 rawdatadb2:
-  fullnameOverride: "rawdatadb"
+  fullnameOverride: "rawdatadb2"
   image:
     pullPolicy: Always
   auth:
