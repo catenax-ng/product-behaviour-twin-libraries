@@ -31,6 +31,8 @@ jobs:
             image: ghcr.io/catenax-ng/product-oem-dataprovider
           - dockerfile: ./Dockerfile_updater
             image: ghcr.io/catenax-ng/product-oem-dataupdater
+          - dockerfile: ./Dockerfile_rulbackend
+            image: ghcr.io/catenax-ng/product-oem-rul-backend
     permissions:
       contents: read
       packages: write

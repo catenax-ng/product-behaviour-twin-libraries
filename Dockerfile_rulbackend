@@ -2,7 +2,7 @@
 
 # AS <NAME> to name this stage as maven
 FROM maven:3.8.4-openjdk-17 as maven
-LABEL MAINTAINER="beendikt.franke@dlr.de"
+LABEL MAINTAINER="bendikt.franke@dlr.de"
 
 WORKDIR /usr/src/app
 COPY . /usr/src/app

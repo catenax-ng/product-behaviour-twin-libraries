@@ -1,18 +1,15 @@
 package net.catena_x.btp.libraries.oem.backend.cloud;
 
 import io.minio.*;
-import io.minio.errors.*;
+import io.minio.errors.MinioException;
 import io.minio.http.Method;
 import io.minio.messages.DeleteObject;
-import io.minio.messages.Item;
 import net.catena_x.btp.libraries.util.exceptions.S3Exception;
 import okhttp3.HttpUrl;
-import org.bouncycastle.util.Iterable;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -21,7 +18,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.StreamSupport;
 
