@@ -69,11 +69,12 @@ rulbackend:
       ruldb.show-sql=false
       ruldb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
       ruldb.hibernate.hbm2ddl.auto=update
-      ruldb.url=jdbc:postgresql://ruldb:57999/rul
+      ruldb.url=jdbc:postgresql://ruldb/rul
       rawdatadb.drivername=org.postgresql.Driver
       rawdatadb.show-sql=false
       rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
       rawdatadb.hibernate.hbm2ddl.auto=update
+      rawdatadb.url=jdbc:postgresql://rawdatadb2/rawdata
       server.port=25554
       cloud.endpoint=https://dlr-minio.dev.demo.catena-x.net/
       cloud.region=eu-west-1
