@@ -19,5 +19,3 @@ dependencies:
   - name: oem-rul-backend
     version: "0.0.1"
     repository: file://../rulbackend
-    alias: rulbackend
-

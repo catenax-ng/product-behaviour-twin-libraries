@@ -17,7 +17,7 @@ credentials:
     password: &hiPass <path:behaviour-twin-pilot/data/health-indicator/credentials/healthindicator#password>
 
 
-rulbackend:
+oem-rul-backend:
   ingress:
     enabled: true
     className: ""
