@@ -1,4 +1,3 @@
----
 apiVersion: v2
 name: all-in-one-rul
 description: Deploys postgres, hiapp, updater and provider
@@ -17,7 +16,8 @@ dependencies:
     version: ">=12.1.2"
     repository: https://charts.bitnami.com/bitnami
     alias: ruldb
-  - name: rulbackend
+  - name: oem-rul-backend
     version: "0.0.1"
     repository: file://../rulbackend
+    alias: rulbackend
 
