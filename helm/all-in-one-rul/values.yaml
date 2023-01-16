@@ -31,7 +31,7 @@ oem-rul-backend:
     secret: tls-secret
 
   server:
-    port: &hiPort 25553
+    port: &hiPort 35553
 
   connection:
     endpoints:
