@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.constraints.NotNull;
+import java.util.function.Supplier;
 
 @Component
 public class SyncTableInternal extends RawTableBase {
@@ -21,6 +22,16 @@ public class SyncTableInternal extends RawTableBase {
     @Autowired private SyncRepository syncRepository;
 
     public static final String DEFAULT_ID = "DEFAULT";
+
+    @RDTransactionSerializableUseExisting
+    public Exception runSerializableExternalTransaction(@NotNull final Supplier<Exception> function) {
+        return function.get();
+    }
+
+    @RDTransactionSerializableCreateNew
+    public Exception runSerializableNewTransaction(@NotNull final Supplier<Exception> function) {
+        return runSerializableExternalTransaction(function);
+    }
 
     @RDTransactionDefaultUseExisting
     public void clearExternalTransaction() throws OemDatabaseException {

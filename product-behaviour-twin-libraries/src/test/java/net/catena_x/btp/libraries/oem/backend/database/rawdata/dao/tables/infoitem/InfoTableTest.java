@@ -65,8 +65,8 @@ class InfoTableTest {
 
     private void insertTestData() throws OemDatabaseException {
         infoTable.setInfoItemNewTransaction(InfoKey.DATAVERSION, "DV_0.0.99");
-        infoTable.setInfoItemNewTransaction(InfoKey.ADAPTIONVALUEINFO, "{}");
-        infoTable.setInfoItemNewTransaction(InfoKey.LOADSPECTRUMINFO, "{\"names\" : [ \"AV1\", \"AV2\", \"AV3\", \"AV4\" ]}");
+        infoTable.setInfoItemNewTransaction(InfoKey.LOADSPECTRUMINFO, "{}");
+        infoTable.setInfoItemNewTransaction(InfoKey.ADAPTIONVALUEINFO, "{\"names\" : [ \"AV1\", \"AV2\", \"AV3\", \"AV4\" ]}");
     }
 
     private long queryDatabaseTimestampsDuration() throws OemDatabaseException, InterruptedException {

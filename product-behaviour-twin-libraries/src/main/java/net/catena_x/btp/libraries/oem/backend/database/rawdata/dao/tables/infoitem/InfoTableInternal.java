@@ -13,10 +13,21 @@ import org.springframework.stereotype.Component;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
+import java.util.function.Supplier;
 
 @Component
 public class InfoTableInternal extends RawTableBase {
     @Autowired private InfoItemRepository infoItemRepository;
+
+    @RDTransactionSerializableUseExisting
+    public Exception runSerializableExternalTransaction(@NotNull final Supplier<Exception> function) {
+        return function.get();
+    }
+
+    @RDTransactionSerializableCreateNew
+    public Exception runSerializableNewTransaction(@NotNull final Supplier<Exception> function) {
+        return runSerializableExternalTransaction(function);
+    }
 
     @RDTransactionDefaultUseExisting
     public void setInfoItemExternalTransaction(@NotNull final InfoKey key, @NotNull final String value)
@@ -78,7 +89,12 @@ public class InfoTableInternal extends RawTableBase {
 
     @RDTransactionDefaultUseExisting
     public String getInfoValueExternalTransaction(@NotNull final InfoKey key) throws OemDatabaseException {
-        return getInfoItemExternalTransaction(key).getValue();
+        final InfoItemDAO info = getInfoItemExternalTransaction(key);
+        if(info == null) {
+            return null;
+        }
+
+        return info.getValue();
     }
 
     @RDTransactionDefaultCreateNew
@@ -88,7 +104,12 @@ public class InfoTableInternal extends RawTableBase {
 
     @RDTransactionSerializableUseExisting
     public Instant getCurrentDatabaseTimestampExternalTransaction() throws OemDatabaseException {
-        return getInfoItemExternalTransaction(InfoKey.DATAVERSION).getQueryTimestamp();
+        final InfoItemDAO info = getInfoItemExternalTransaction(InfoKey.DATAVERSION);
+        if(info == null) {
+            return null;
+        }
+
+        return info.getQueryTimestamp();
     }
 
     @RDTransactionSerializableCreateNew

@@ -1,17 +1,25 @@
 package net.catena_x.btp.libraries.edc;
 
 import net.catena_x.btp.libraries.edc.util.exceptions.EdcException;
+import net.catena_x.btp.libraries.util.apihelper.ResponseChecker;
+import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import okhttp3.HttpUrl;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.constraints.NotNull;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @Component
@@ -28,14 +36,19 @@ public class EdcApi {
             @NotNull final HttpUrl partnerUrl, @NotNull final String asset, @NotNull Class<ResponseType> responseClass,
             @Nullable final HttpHeaders headers) throws EdcException {
 
-        HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
+        final HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
 
         addAuthorizationHeaders(headers);
-        HttpEntity<String> request = new HttpEntity<>(headers);
-        ResponseEntity<ResponseType> response = restTemplate.exchange(
+
+        final HttpEntity<String> request = new HttpEntity<>(headers);
+        final ResponseEntity<ResponseType> response = restTemplate.exchange(
                 requestUrl.uri(), HttpMethod.GET, request, responseClass);
 
-        checkResponse(response);
+        try {
+            ResponseChecker.checkResponse(response);
+        } catch (final BtpException exception) {
+            throw new EdcException(exception);
+        }
 
         return response;
     }
@@ -62,43 +75,39 @@ public class EdcApi {
 
         final ResponseEntity<ResponseType> response = restTemplate.postForEntity(url, request, responseClass);
 
-        checkResponse(response);
+        try {
+            ResponseChecker.checkResponse(response);
+        } catch (final BtpException exception) {
+            throw new EdcException(exception);
+        }
 
         return response;
     }
 
-    private HttpUrl buildApiWrapperUrl(@NotNull final HttpUrl partnerUrl, @NotNull final String asset) {
-        return HttpUrl.parse(this.apiWrapperUrl).newBuilder()
-                .addPathSegments(submodelPath)
-                .addPathSegment(asset)
-                .addPathSegment(submodel)
-                .addQueryParameter(providerEdcUrlKey, partnerUrl.toString())
-                .build();
+    private HttpUrl buildApiWrapperUrl(@NotNull final HttpUrl partnerUrl, @NotNull final String asset)
+            throws EdcException{
+        try {
+            return HttpUrl.parse(this.apiWrapperUrl).newBuilder()
+                    .addPathSegments(submodelPath)
+                    .addPathSegment(URLEncoder.encode(asset, StandardCharsets.UTF_8.toString()))
+                    .addPathSegment(submodel)
+                    .addQueryParameter(providerEdcUrlKey, partnerUrl.toString())
+                    .build();
+        } catch (final UnsupportedEncodingException exception) {
+            throw new EdcException(exception);
+        }
     }
 
-    private void addAuthorizationHeaders(HttpHeaders headers) {
-        headers.add("Authorization",getAuthString());
+    private void addAuthorizationHeaders(final HttpHeaders headers) {
+        headers.add("Authorization", getAuthString());
     }
 
     private String getAuthString() {
         StringBuilder sb = new StringBuilder();
 
-        String authStr = sb.append(apiWrapperUsername).append(":")
-                .append(apiWrapperPassword).toString();
+        String authStr = sb.append(apiWrapperUsername).append(":").append(apiWrapperPassword).toString();
         sb.setLength(0);
         sb.append("Basic ").append(Base64.getEncoder().encodeToString(authStr.getBytes()));
         return sb.toString();
-    }
-
-    private <ResponseType> void checkResponse(@Nullable ResponseEntity<ResponseType> response)
-            throws EdcException {
-        if(response == null) {
-            throw new EdcException("Internal error using edc api!");
-        }
-        else if( response.getStatusCode() != HttpStatus.OK
-                && response.getStatusCode() != HttpStatus.CREATED
-                && response.getStatusCode() != HttpStatus.ACCEPTED) {
-            throw new EdcException("Http status not ok, created or accepted while using edc api!");
-        }
     }
 }

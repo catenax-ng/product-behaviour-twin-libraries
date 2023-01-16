@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
+import java.util.function.Supplier;
 
 @Component
 public class SyncTable extends RawTableBase {
@@ -14,6 +15,14 @@ public class SyncTable extends RawTableBase {
     @Autowired private SyncConverter syncConverter;
 
     final String ID_DEFAULT = "DEFAULT";
+
+    public Exception runSerializableNewTransaction(@NotNull final Supplier<Exception> function) {
+        return internal.runSerializableNewTransaction(function);
+    }
+
+    public Exception runSerializableExternalTransaction(@NotNull final Supplier<Exception> function) {
+        return internal.runSerializableExternalTransaction(function);
+    }
 
     public void clearNewTransaction() throws OemDatabaseException {
         internal.clearNewTransaction();

@@ -165,20 +165,20 @@ connection:
 
 credentials:
   cloud:
-    accessKey: zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
-    secretKey: someSecret
+    accessKey: xxxxxxx
+    secretKey: xxxxxxx
   apiwrapper:
-    username: user
-    password: pass
+    username: xxxxxxx
+    password: xxxxxxx
   api:
-    username: user
-    password: pass
+    username: xxxxxxx
+    password: xxxxxxx
   rawdata:
-    username: rawdata_user
-    password: rawdata_pass
+    username: xxxxxxx
+    password: xxxxxxx
   healthindicator:
-    username: healthindicator_user
-    password: healthindicator_pass
+    username: xxxxxxx
+    password: xxxxxxx
 
 configuration:
   properties: |-

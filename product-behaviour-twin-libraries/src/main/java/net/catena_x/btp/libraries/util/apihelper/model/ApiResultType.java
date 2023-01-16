@@ -1,4 +1,4 @@
-package net.catena_x.btp.libraries.oem.backend.datasource.model.api;
+package net.catena_x.btp.libraries.util.apihelper.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

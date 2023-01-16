@@ -15,16 +15,17 @@ import java.time.Instant;
 public class ObjectMapperFactoryBtp {
     public static final String EXTENDED_OBJECT_MAPPER = "extended";
 
+    @Primary
     @Bean(name = EXTENDED_OBJECT_MAPPER)
     public static ObjectMapper createObjectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
+        final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
-        SimpleModule timestampSerializerModule = new SimpleModule();
+        final SimpleModule timestampSerializerModule = new SimpleModule();
         timestampSerializerModule.addSerializer(Instant.class, new TimeStampSerializer());
         objectMapper.registerModule(timestampSerializerModule);
 
-        SimpleModule timestampDeserializerModule = new SimpleModule();
+        final SimpleModule timestampDeserializerModule = new SimpleModule();
         timestampDeserializerModule.addDeserializer(Instant.class, new TimeStampDeserializer());
         objectMapper.registerModule(timestampDeserializerModule);
 

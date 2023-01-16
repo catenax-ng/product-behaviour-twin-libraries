@@ -29,6 +29,7 @@ import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 @Component
 public class VehicleTableInternal extends RawTableBase {
@@ -38,6 +39,16 @@ public class VehicleTableInternal extends RawTableBase {
     @Autowired private TelematicsDataTableInternal telematicsDataTable;
     @Autowired private SyncTableInternal syncTable;
     @Autowired private InputTelematicsDataConverter inputTelematicsDataConverter;
+
+    @RDTransactionSerializableUseExisting
+    public Exception runSerializableExternalTransaction(@NotNull final Supplier<Exception> function) {
+        return function.get();
+    }
+
+    @RDTransactionSerializableCreateNew
+    public Exception runSerializableNewTransaction(@NotNull final Supplier<Exception> function) {
+        return runSerializableExternalTransaction(function);
+    }
 
     @RDTransactionDefaultUseExisting
     public void registerVehicleExternalTransaction(@NotNull final VehicleInfo newVehicleInfo)
@@ -74,8 +85,14 @@ public class VehicleTableInternal extends RawTableBase {
     @RDTransactionSerializableUseExisting
     public void appendTelematicsDataExternalTransaction(@NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
-        appendTelematicsData(getByIdWithTelematicsDataExternalTransaction(newTelematicsData.vehicleId()),
-                newTelematicsData);
+        final VehicleWithTelematicsDataDAO vehicle =
+                getByIdWithTelematicsDataExternalTransaction(newTelematicsData.vehicleId());
+
+        if(vehicle == null) {
+            throw new OemDatabaseException("Vehicle " + newTelematicsData.vehicleId() + " does not exist!");
+        }
+
+        appendTelematicsData(vehicle, newTelematicsData);
     }
 
     @RDTransactionSerializableCreateNew
@@ -88,7 +105,7 @@ public class VehicleTableInternal extends RawTableBase {
                                       @NotNull final InputTelematicsData newTelematicsData)
             throws OemDatabaseException {
 
-        InputTelematicsData telematicsDatatoAdd = telematicsDataIfNewer(newTelematicsData, vehicle.telematicsData());
+        final InputTelematicsData telematicsDatatoAdd = telematicsDataIfNewer(newTelematicsData, vehicle.telematicsData());
 
         if(telematicsDatatoAdd != null) {
             final String newTelematicsId = telematicsDataTable.updateTelematicsDataGetIdExternalTransaction(
@@ -112,7 +129,7 @@ public class VehicleTableInternal extends RawTableBase {
             return newTelematicsData;
         }
 
-        InputTelematicsData existingTelematicsData = inputTelematicsDataConverter.toDTO(telematicsData);
+        final InputTelematicsData existingTelematicsData = inputTelematicsDataConverter.toDTO(telematicsData);
 
         assertCompatible(existingTelematicsData, newTelematicsData);
 
@@ -123,7 +140,7 @@ public class VehicleTableInternal extends RawTableBase {
                 (item) -> { return  ((AdaptionValues)item).getStatus().getDate(); });
 
             return newer? newTelematicsData : null;
-        }
+    }
 
     private <T> boolean replaceNewer(@NotNull final List<T> existingData, @NotNull final List<T> newData,
                                      @NotNull final StatusFromBammFunction getStatus) {
@@ -131,8 +148,8 @@ public class VehicleTableInternal extends RawTableBase {
 
         int size = existingData.size();
         for (int i = 0; i < size; i++) {
-            T existingItem = existingData.get(i);
-            T newItem = newData.get(i);
+            final T existingItem = existingData.get(i);
+            final T newItem = newData.get(i);
 
             if(getStatus.getTimestamp(newItem).isAfter(getStatus.getTimestamp(existingItem))) {
                 newer = true;

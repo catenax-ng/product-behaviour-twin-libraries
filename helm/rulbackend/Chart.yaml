@@ -1,0 +1,9 @@
+---
+apiVersion: v2
+name: oem-rul-backend
+description: oem-rul-backend
+home: https://github.com/catenax-ng/product-behaviour-twin-libraries
+type: application
+appVersion: "0.0.1"
+version: 0.0.1
+maintainers: []

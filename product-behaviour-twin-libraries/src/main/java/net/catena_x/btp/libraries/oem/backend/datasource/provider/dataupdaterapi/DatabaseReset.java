@@ -1,7 +1,8 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.provider.dataupdaterapi;
 
-import net.catena_x.btp.libraries.oem.backend.datasource.model.api.ApiResult;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
+import net.catena_x.btp.libraries.util.apihelper.ResponseChecker;
+import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import okhttp3.HttpUrl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -24,10 +25,14 @@ public class DatabaseReset {
 
         dataUpdaterApi.addAuthorizationHeaders(headers);
 
-        final ResponseEntity<ApiResult> response = restTemplate.exchange(
+        try {
+            final ResponseEntity<DefaultApiResult> response = restTemplate.exchange(
                 requestUrl.toString(), HttpMethod.GET,
-                new HttpEntity<>(headers), ApiResult.class);
+                new HttpEntity<>(headers), DefaultApiResult.class);
 
-        dataUpdaterApi.checkResponse(response);
+            ResponseChecker.checkResponse(response);
+        } catch (final Exception exception) {
+            throw new DataProviderException(exception);
+        }
     }
 }
