@@ -75,7 +75,6 @@ oem-rul-backend:
       rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
       rawdatadb.hibernate.hbm2ddl.auto=update
       rawdatadb.url=jdbc:postgresql://rawdatadb2/rawdata
-      server.port=25554
       cloud.endpoint=https://dlr-minio.dev.demo.catena-x.net/
       cloud.region=eu-west-1
       cloud.bucket=test
@@ -91,6 +90,7 @@ oem-rul-backend:
       edc.bpn=BPN0000OEM
       edc.endpoint=https://dlr.dev.demo.catena-x.net
       security.api.role=USER
+      spring.config.import=
 
 rawdatadb2:
   fullnameOverride: "rawdatadb2"
