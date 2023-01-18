@@ -19,7 +19,8 @@ import javax.validation.constraints.NotNull;
 @ComponentScan(basePackages = {"net.catena_x.btp.libraries.oem.backend.datasource.provider",
 		"net.catena_x.btp.libraries.oem.backend.datasource.util",
 		"net.catena_x.btp.libraries.oem.backend.datasource.model",
-		"net.catena_x.btp.libraries.util"})
+		"net.catena_x.btp.libraries.util",
+		"net.catena_x.btp.libraries.bamm"})
 @OpenAPIDefinition(info = @Info(title = "Data provider service", version = "0.0.99"))
 public class OemDataProviderApplication {
 	public static void main(@NotNull final String[] args) {

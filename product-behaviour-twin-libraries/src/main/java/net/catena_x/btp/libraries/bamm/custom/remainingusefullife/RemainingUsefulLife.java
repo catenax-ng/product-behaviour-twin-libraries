@@ -1,6 +1,7 @@
 package net.catena_x.btp.libraries.bamm.custom.remainingusefullife;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import net.catena_x.btp.libraries.bamm.common.BammStatus;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RemainingUsefulLife implements BammBase {
     public final static String BAMM_ID = "urn:bamm:io.catenax.rul:1.0.0##RemainingUsefulLife";
 

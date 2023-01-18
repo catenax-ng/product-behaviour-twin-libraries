@@ -1,6 +1,12 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.provider.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.TestDataExporter;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.controller.swagger.ExportTestDataDoc;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
@@ -36,65 +42,124 @@ public class DataProviderControllerExportTestData {
             DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss").withZone(ZoneId.from(ZoneOffset.UTC));
 
     @GetMapping(value = "/export/testdata", produces = "application/json")
-    @io.swagger.v3.oas.annotations.Operation(
-
+    @Operation(
             summary = ExportTestDataDoc.SUMMARY, description = ExportTestDataDoc.DESCRIPTION,
             tags = {"Development"},
-            parameters = @io.swagger.v3.oas.annotations.Parameter(
-                    in = ParameterIn.QUERY, name = ExportTestDataDoc.LIMIT_NAME,
-                    description = ExportTestDataDoc.LIMIT_DESCRIPTION, required = false,
-                    examples = {
-                            @io.swagger.v3.oas.annotations.media.ExampleObject(
-                                    name = ExportTestDataDoc.LIMIT_EXAMPLE_1_NAME,
-                                    description = ExportTestDataDoc.LIMIT_EXAMPLE_1_DESCRIPTION,
-                                    value = ExportTestDataDoc.LIMIT_EXAMPLE_1_VALUE
-                            )
-                    }
-            ),
+            parameters = {
+                    @Parameter(
+                            in = ParameterIn.QUERY, name = ExportTestDataDoc.LIMIT_NAME,
+                            description = ExportTestDataDoc.LIMIT_DESCRIPTION, required = false,
+                            examples = {
+                                    @ExampleObject(
+                                            name = ExportTestDataDoc.LIMIT_EXAMPLE_1_NAME,
+                                            description = ExportTestDataDoc.LIMIT_EXAMPLE_1_DESCRIPTION,
+                                            value = ExportTestDataDoc.LIMIT_EXAMPLE_1_VALUE
+                                    )
+                            }
+                    ),
+                    @Parameter(
+                            in = ParameterIn.QUERY, name = ExportTestDataDoc.USEOLDBAMMVERSION_NAME,
+                            description = ExportTestDataDoc.USEOLDBAMMVERSION_DESCRIPTION, required = false,
+                            examples = {
+                                    @ExampleObject(
+                                            name = ExportTestDataDoc.USEOLDBAMMVERSION_EXAMPLE_1_NAME,
+                                            description = ExportTestDataDoc.USEOLDBAMMVERSION_EXAMPLE_1_DESCRIPTION,
+                                            value = ExportTestDataDoc.USEOLDBAMMVERSION_EXAMPLE_1_VALUE
+                                    ),
+                                    @ExampleObject(
+                                            name = ExportTestDataDoc.USEOLDBAMMVERSION_EXAMPLE_2_NAME,
+                                            description = ExportTestDataDoc.USEOLDBAMMVERSION_EXAMPLE_2_DESCRIPTION,
+                                            value = ExportTestDataDoc.USEOLDBAMMVERSION_EXAMPLE_2_VALUE
+                                    )
+                            }
+                    ),
+                    @Parameter(
+                            in = ParameterIn.QUERY, name = ExportTestDataDoc.ONLYFIRSTLOADSPECTRUMPERTYPE_NAME,
+                            description = ExportTestDataDoc.ONLYFIRSTLOADSPECTRUMPERTYPE_DESCRIPTION, required = false,
+                            examples = {
+                                    @ExampleObject(
+                                            name = ExportTestDataDoc.ONLYFIRSTLOADSPECTRUMPERTYPE_EXAMPLE_1_NAME,
+                                            description = ExportTestDataDoc.ONLYFIRSTLOADSPECTRUMPERTYPE_EXAMPLE_1_DESCRIPTION,
+                                            value = ExportTestDataDoc.ONLYFIRSTLOADSPECTRUMPERTYPE_EXAMPLE_1_VALUE
+                                    ),
+                                    @ExampleObject(
+                                            name = ExportTestDataDoc.ONLYFIRSTLOADSPECTRUMPERTYPE_EXAMPLE_2_NAME,
+                                            description = ExportTestDataDoc.ONLYFIRSTLOADSPECTRUMPERTYPE_EXAMPLE_2_DESCRIPTION,
+                                            value = ExportTestDataDoc.ONLYFIRSTLOADSPECTRUMPERTYPE_EXAMPLE_2_VALUE
+                                    )
+                            }
+                    ),
+                    @Parameter(
+                            in = ParameterIn.QUERY, name = ExportTestDataDoc.EXPORTDAMAGEANDRUL_NAME,
+                            description = ExportTestDataDoc.EXPORTDAMAGEANDRUL_DESCRIPTION, required = false,
+                            examples = {
+                                    @ExampleObject(
+                                            name = ExportTestDataDoc.EXPORTDAMAGEANDRUL_EXAMPLE_1_NAME,
+                                            description = ExportTestDataDoc.EXPORTDAMAGEANDRUL_EXAMPLE_1_DESCRIPTION,
+                                            value = ExportTestDataDoc.EXPORTDAMAGEANDRUL_EXAMPLE_1_VALUE
+                                    ),
+                                    @ExampleObject(
+                                            name = ExportTestDataDoc.EXPORTDAMAGEANDRUL_EXAMPLE_2_NAME,
+                                            description = ExportTestDataDoc.EXPORTDAMAGEANDRUL_EXAMPLE_2_DESCRIPTION,
+                                            value = ExportTestDataDoc.EXPORTDAMAGEANDRUL_EXAMPLE_2_VALUE
+                                    )
+                            }
+                    )
+            },
             responses = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    @ApiResponse(
                             responseCode = "200",
                             description = ExportTestDataDoc.RESPONSE_OK_DESCRIPTION,
-                            content = @io.swagger.v3.oas.annotations.media.Content(
+                            content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                            @ExampleObject(
                                                     value = ExportTestDataDoc .RESPONSE_OK_VALUE
                                             )},
-                                    schema = @io.swagger.v3.oas.annotations.media.Schema(
+                                    schema = @Schema(
                                             implementation = DefaultApiResult.class)
                             )),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    @ApiResponse(
                             responseCode = "500",
                             description = ExportTestDataDoc.RESPONSE_ERROR_DESCRIPTION,
-                            content = @io.swagger.v3.oas.annotations.media.Content(
+                            content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
-                                            @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                            @ExampleObject(
                                                     value = ExportTestDataDoc.RESPONSE_ERROR_VALUE
                                             )},
-                                    schema = @io.swagger.v3.oas.annotations.media.Schema(
+                                    schema = @Schema(
                                             implementation = DefaultApiResult.class)
                             ))
             }
     )
-    public ResponseEntity<DefaultApiResult> exportTestdata(@RequestParam(required = false) @Nullable Integer limitperfile) {
+    public ResponseEntity<DefaultApiResult> exportTestdata(
+            @RequestParam(required = false) @Nullable final Integer limitPerFile,
+            @RequestParam(required = false) @Nullable final Boolean useOldBammVersion,
+            @RequestParam(required = false) @Nullable final Boolean onlyFirstLoadSpectrumPerType,
+            @RequestParam(required = false) @Nullable final Boolean exportDamageAndRul) {
         try {
             testDataManager.lock();
 
-            if(testdataExportPath==null) {
+            if(testdataExportPath == null) {
                 throw new DataProviderException("Export path not set!");
             }
 
-            if(limitperfile != null) {
-                testDataExporter.exportLimited(testDataManager.getTestDataCategorized(null, true), Path.of(
-                                testdataExportPath, "testdata_export_"
-                                        + exportDataFormatter.format(Instant.now())),
-                        "json", limitperfile);
+            final boolean oldBammVersion = (useOldBammVersion != null)? useOldBammVersion : false;
+            final boolean exportOnlyOneLoadSpectrumPerType =
+                    (onlyFirstLoadSpectrumPerType != null)? onlyFirstLoadSpectrumPerType : false;
+            final boolean exportDamageAndRulAspects = (exportDamageAndRul != null)? exportDamageAndRul : true;
+
+            if(limitPerFile != null) {
+                testDataExporter.exportLimited(testDataManager.getTestDataCategorized(null, true),
+                        Path.of(testdataExportPath, "testdata_export_"
+                                        + exportDataFormatter.format(Instant.now())), "json",
+                        limitPerFile, oldBammVersion, exportOnlyOneLoadSpectrumPerType, exportDamageAndRulAspects);
             } else {
                 testDataExporter.export(testDataManager.getTestData(), Path.of(
                         testdataExportPath, "testdata_export_"
-                                + exportDataFormatter.format(Instant.now()) + ".json"));
+                                + exportDataFormatter.format(Instant.now()) + ".json"),
+                        oldBammVersion, exportOnlyOneLoadSpectrumPerType, exportDamageAndRulAspects);
             }
 
             return apiHelper.ok("Test data exported.");
