@@ -30,12 +30,28 @@ public class TestDataExporter {
     @Autowired @Qualifier(ObjectMapperFactoryBtp.EXTENDED_OBJECT_MAPPER) private ObjectMapper objectMapper;
     @Autowired DigitalTwinConverter digitalTwinConverter;
 
-    public void export(@NotNull final TestData testData, @NotNull final Path filename,
+    public void export(@NotNull final TestDataCategorized testDataCategorized, @NotNull final Path filename,
                        @NotNull final boolean useOldBammVersion,
                        @NotNull final boolean onlyfirstLoadSpectrumPerType,
                        @NotNull final boolean exportDamageAndRul) throws DataProviderException {
+        if(DataHelper.isNullOrEmpty(testDataCategorized.getDigitalTwinsVehicles())) {
+            return;
+        }
+
+        final TestDataCategorized testDataCategorizedCopy = getCopy(testDataCategorized);
+
+        final Collection<DigitalTwin> vehicleTwins = testDataCategorizedCopy.getDigitalTwinsVehicles().values();
+        final TestData testDataExport = new TestData();
+        testDataExport.setDigitalTwins(new ArrayList<>(vehicleTwins.size()));
+
+        for (final DigitalTwin vehicleTwin: vehicleTwins) {
+            testDataExport.getDigitalTwins().add(vehicleTwin);
+            testDataExport.getDigitalTwins().add(
+                    testDataCategorizedCopy.getGearboxTwinFromVehicleTwinMustExists(vehicleTwin));
+        }
+
         try {
-            export(testData, filename.toString(), useOldBammVersion,
+            export(testDataExport, filename.toString(), useOldBammVersion,
                     onlyfirstLoadSpectrumPerType, exportDamageAndRul);
         } catch (final IOException exception) {
             throw new DataProviderException(exception);
@@ -118,15 +134,14 @@ public class TestDataExporter {
             removeDamageAndRuLAspects(testData);
         }
 
-        final TestData testDataCopy = getCopy(testData);
-        convertBammVersion(testDataCopy, useOldBammVersion);
+        convertBammVersion(testData, useOldBammVersion);
 
         final File destinationFile = new File(filename);
         if(useOldBammVersion) {
-            exportOldBamm(destinationFile, testDataCopy);
+            exportOldBamm(destinationFile, testData);
         }
         else {
-            exportNewBamm(destinationFile, testDataCopy);
+            exportNewBamm(destinationFile, testData);
         }
     }
 
