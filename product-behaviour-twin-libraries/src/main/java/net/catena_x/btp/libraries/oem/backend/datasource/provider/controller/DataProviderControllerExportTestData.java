@@ -157,9 +157,9 @@ public class DataProviderControllerExportTestData {
                                         + exportDataFormatter.format(Instant.now())), "json",
                         limitPerFile, oldBammVersion, exportOnlyOneLoadSpectrumPerType, exportDamageAndRulAspects);
             } else {
-                testDataExporter.export(testDataManager.getTestData(), Path.of(
-                        testdataExportPath, "testdata_export_"
-                                + exportDataFormatter.format(Instant.now()) + ".json"),
+                testDataExporter.export(testDataManager.getTestDataCategorized(null, true),
+                        Path.of(testdataExportPath, "testdata_export_"
+                                        + exportDataFormatter.format(Instant.now()) + ".json"),
                         oldBammVersion, exportOnlyOneLoadSpectrumPerType, exportDamageAndRulAspects);
             }
 

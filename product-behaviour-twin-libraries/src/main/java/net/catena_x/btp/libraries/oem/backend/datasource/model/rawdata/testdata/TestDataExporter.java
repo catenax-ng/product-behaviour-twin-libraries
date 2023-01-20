@@ -246,7 +246,12 @@ public class TestDataExporter {
         }
 
         try {
-            return objectMapper.readValue(objectMapper.writeValueAsString(testData), TestDataCategorized.class);
+            final TestDataCategorized testDataCategorized =
+                    objectMapper.readValue(objectMapper.writeValueAsString(testData), TestDataCategorized.class);
+
+            testDataCategorized.initAutowiredFrom(testData);
+
+            return testDataCategorized;
         } catch(final JsonProcessingException exception) {
             throw new DataProviderException(exception);
         }

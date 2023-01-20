@@ -48,6 +48,11 @@ public class TestDataCategorized {
         digitalTwinsGearboxes = null;
     }
 
+    public void initAutowiredFrom(@NotNull final TestDataCategorized testDataSource) {
+        digitalTwinCategorizer = testDataSource.digitalTwinCategorizer;
+        vehicleDataLoader = testDataSource.vehicleDataLoader;
+    }
+
     public void initFromTestData(@NotNull final TestData testData) throws DataProviderException {
         initMaps(testData.getDigitalTwins().size());
         fillMaps(testData);
