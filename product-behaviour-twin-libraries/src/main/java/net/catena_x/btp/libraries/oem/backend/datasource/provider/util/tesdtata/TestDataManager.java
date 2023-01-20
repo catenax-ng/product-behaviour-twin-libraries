@@ -1,4 +1,4 @@
-package net.catena_x.btp.libraries.oem.backend.datasource.provider.controller;
+package net.catena_x.btp.libraries.oem.backend.datasource.provider.util.tesdtata;
 
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.TestDataReader;
