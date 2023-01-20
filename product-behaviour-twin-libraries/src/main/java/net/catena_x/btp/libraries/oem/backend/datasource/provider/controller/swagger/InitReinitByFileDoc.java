@@ -75,7 +75,7 @@ All testdata must be initialized before registering vehicles and telematics data
       ],
       "urn:bamm:io.catenax.rul:1.0.0##RemainingUsefulLife": [
         {
-          "remainingOperatingTime": "20000",
+          "remainingOperatingHours": 20000,
           "remainingRunningDistance": 1000000,
           "determinationLoaddataSource": {
             "informationOriginLoadSpectrum": "loggedOEM",
@@ -83,7 +83,7 @@ All testdata must be initialized before registering vehicles and telematics data
           },
           "determinationStatus": {
             "date": null,
-            "operatingTime": "0",
+            "operatingHours": 0,
             "mileage": 0
           },
           "bammId": "urn:bamm:io.catenax.rul:1.0.0##RemainingUsefulLife"
@@ -99,7 +99,7 @@ All testdata must be initialized before registering vehicles and telematics data
           "determinationMethod": "Arrhenius",
           "determinationStatus": {
             "date": null,
-            "operatingTime": "0",
+            "operatingHours": 0,
             "mileage": 0
           },
           "bammId": "urn:bamm:io.catenax.damage:1.0.0#Damage"
@@ -114,7 +114,7 @@ All testdata must be initialized before registering vehicles and telematics data
             "routeDescription": "logged",
             "status": {
               "date": "2022-11-29T09:16:47.450911100Z",
-              "operatingTime": "3213.9",
+              "operatingHours": 3213.9,
               "mileage": 65432
             }
           },
@@ -176,7 +176,7 @@ All testdata must be initialized before registering vehicles and telematics data
             "routeDescription": "logged",
             "status": {
               "date": null,
-              "operatingTime": "3213.9",
+              "operatingHours": 3213.9,
               "mileage": 65432
             }
           },
@@ -236,7 +236,7 @@ All testdata must be initialized before registering vehicles and telematics data
             "routeDescription": "logged",
             "status": {
               "date": null,
-              "operatingTime": "262.6",
+              "operatingHours": 262.6,
               "mileage": 23456
             }
           },
@@ -285,7 +285,7 @@ All testdata must be initialized before registering vehicles and telematics data
         {
           "status": {
             "date": "2022-11-29T09:16:47.450911100Z",
-            "operatingTime": "3213.9",
+            "operatingHours": 3213.9,
             "mileage": 65432
           },
           "values": [

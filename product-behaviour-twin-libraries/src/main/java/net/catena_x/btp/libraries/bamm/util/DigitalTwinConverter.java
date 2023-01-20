@@ -5,6 +5,7 @@ import net.catena_x.btp.libraries.bamm.common.BammStatus;
 import net.catena_x.btp.libraries.bamm.custom.adaptionvalues.AdaptionValues;
 import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.ClassifiedLoadSpectrum;
 import net.catena_x.btp.libraries.bamm.custom.damage.Damage;
+import net.catena_x.btp.libraries.bamm.custom.remainingusefullife.RemainingUsefulLife;
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import org.jetbrains.annotations.Nullable;
@@ -25,6 +26,7 @@ public class DigitalTwinConverter {
 
     private void convert(@NotNull final DigitalTwin digitalTwin, @NotNull final boolean toOldBAMM) throws BtpException {
         convertDamages(digitalTwin.getDamages(), toOldBAMM);
+        convertRemainingUsefulLifes(digitalTwin.getRemainingUsefulLifes(), toOldBAMM);
         convertAdaptionValues(digitalTwin.getAdaptionValues(), toOldBAMM);
         convertClassifiedLoadSpectra(digitalTwin.getClassifiedLoadSpectra(), toOldBAMM);
     }
@@ -37,6 +39,17 @@ public class DigitalTwinConverter {
 
         for (final Damage damage : damages) {
             convertDamage(damage, toOldBAMM);
+        }
+    }
+
+    private void convertRemainingUsefulLifes(@Nullable final List<RemainingUsefulLife> remainingUsefulLifes,
+                                             @NotNull final boolean toOldBAMM) throws BtpException {
+        if (remainingUsefulLifes == null) {
+            return;
+        }
+
+        for (final RemainingUsefulLife rul : remainingUsefulLifes) {
+            convertRemainingUsefulLife(rul, toOldBAMM);
         }
     }
 
@@ -65,6 +78,18 @@ public class DigitalTwinConverter {
     private void convertDamage(@NotNull final Damage damage, @NotNull final boolean toOldBAMM) throws BtpException {
         convertBammLoaddataSource(damage.getDeterminationLoaddataSource(), toOldBAMM);
         convertBammStatus(damage.getDeterminationStatus(), toOldBAMM);
+    }
+
+    private void convertRemainingUsefulLife(@NotNull final RemainingUsefulLife remainingUsefulLife,
+                                            @NotNull final boolean toOldBAMM) throws BtpException {
+        assertEqualOrNotSet(remainingUsefulLife.getRemainingOperatingTime(),
+                            remainingUsefulLife.getRemainingOperatingHours());
+
+        if (toOldBAMM) {
+            convertToOldBAMM(remainingUsefulLife);
+        } else {
+            convertToNewBAMM(remainingUsefulLife);
+        }
     }
 
     private void convertAdaptionValues(@NotNull final AdaptionValues adaptionValues,
@@ -149,6 +174,28 @@ public class DigitalTwinConverter {
                 }
             }
             status.setOperatingTime(null);
+        }
+    }
+
+    private void convertToOldBAMM(@Nullable final RemainingUsefulLife status) throws BtpException {
+        if(status.getRemainingOperatingHours() != null) {
+            if(status.getRemainingOperatingTime() == null) {
+                status.setRemainingOperatingTime(status.getRemainingOperatingHours().toString());
+            }
+            status.setRemainingOperatingHours(null);
+        }
+    }
+
+    private void convertToNewBAMM(@Nullable final RemainingUsefulLife status) throws BtpException {
+        if(status.getRemainingOperatingTime() != null) {
+            if(status.getRemainingOperatingHours() == null) {
+                try {
+                    status.setRemainingOperatingHours(Float.parseFloat(status.getRemainingOperatingTime()));
+                } catch (final Exception exception) {
+                    throw new BtpException(exception);
+                }
+            }
+            status.setRemainingOperatingTime(null);
         }
     }
 

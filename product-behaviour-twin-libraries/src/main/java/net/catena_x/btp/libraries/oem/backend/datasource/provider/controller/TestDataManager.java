@@ -46,6 +46,13 @@ public class TestDataManager {
         return testData;
     }
 
+    public synchronized void reset() {
+        lock();
+        testDataCategorized.reset();
+        testData = null;
+        unlock();
+    }
+
     public synchronized TestDataCategorized getTestDataCategorized(@Nullable final String testDataJson,
                                                                    @NotNull boolean resetTestdata)
             throws DataProviderException {

@@ -19,6 +19,7 @@ import net.catena_x.btp.libraries.bamm.common.BammStatus;
 public class RemainingUsefulLife implements BammBase {
     public final static String BAMM_ID = "urn:bamm:io.catenax.rul:1.0.0##RemainingUsefulLife";
 
+    private Float remainingOperatingHours;
     private String remainingOperatingTime;
     private long remainingRunningDistance;
     private BammLoaddataSource determinationLoaddataSource;

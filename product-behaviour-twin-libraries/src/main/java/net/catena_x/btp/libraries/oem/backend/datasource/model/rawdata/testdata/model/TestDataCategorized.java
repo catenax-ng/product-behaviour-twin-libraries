@@ -147,7 +147,7 @@ public class TestDataCategorized {
             status = new BammStatus();
             status.setMileage(123456L);
             status.setDate(Instant.now());
-            status.setOperatingTime("12.3456");
+            status.setOperatingHours(12.3456f);
         }
 
         if(status.getDate() == null) {
