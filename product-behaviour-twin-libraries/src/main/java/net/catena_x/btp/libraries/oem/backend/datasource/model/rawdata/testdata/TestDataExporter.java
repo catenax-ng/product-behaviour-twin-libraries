@@ -1,5 +1,6 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.ClassifiedLoadSpectrum;
 import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.items.LoadSpectrumType;
@@ -52,8 +53,10 @@ public class TestDataExporter {
             return;
         }
 
+        final TestDataCategorized testDataCategorizedCopy = getCopy(testDataCategorized);
+
         try {
-            final Collection<DigitalTwin> vehicleTwins = testDataCategorized.getDigitalTwinsVehicles().values();
+            final Collection<DigitalTwin> vehicleTwins = testDataCategorizedCopy.getDigitalTwinsVehicles().values();
             final int fileCount = ((vehicleTwins.size() - 1) / maxVehicleCountPerFile) + 1;
 
             final TestData testDataExport = new TestData();
@@ -64,7 +67,7 @@ public class TestDataExporter {
             for (final DigitalTwin vehicleTwin: vehicleTwins) {
                 testDataExport.getDigitalTwins().add(vehicleTwin);
                 testDataExport.getDigitalTwins().add(
-                        testDataCategorized.getGearboxTwinFromVehicleTwinMustExists(vehicleTwin));
+                        testDataCategorizedCopy.getGearboxTwinFromVehicleTwinMustExists(vehicleTwin));
 
                 ++count;
                 if(count >= maxVehicleCountPerFile) {
@@ -115,14 +118,15 @@ public class TestDataExporter {
             removeDamageAndRuLAspects(testData);
         }
 
-        convertBammVersion(testData, useOldBammVersion);
+        final TestData testDataCopy = getCopy(testData);
+        convertBammVersion(testDataCopy, useOldBammVersion);
 
         final File destinationFile = new File(filename);
         if(useOldBammVersion) {
-            exportOldBamm(destinationFile, testData);
+            exportOldBamm(destinationFile, testDataCopy);
         }
         else {
-            exportNewBamm(destinationFile, testData);
+            exportNewBamm(destinationFile, testDataCopy);
         }
     }
 
@@ -206,6 +210,30 @@ public class TestDataExporter {
     private void assertMetadata(@NotNull final ClassifiedLoadSpectrum loadSpectrum) throws DataProviderException {
         if(loadSpectrum.getMetadata() == null) {
             throw new DataProviderException("Metadata in load spectrum is null!");
+        }
+    }
+
+    private TestData getCopy(@NotNull final TestData testData) throws DataProviderException {
+        if(testData == null) {
+                return null;
+        }
+
+        try {
+            return objectMapper.readValue(objectMapper.writeValueAsString(testData), TestData.class);
+        } catch(final JsonProcessingException exception) {
+            throw new DataProviderException(exception);
+        }
+    }
+
+    private TestDataCategorized getCopy(@NotNull final TestDataCategorized testData) throws DataProviderException {
+        if(testData == null) {
+            return null;
+        }
+
+        try {
+            return objectMapper.readValue(objectMapper.writeValueAsString(testData), TestDataCategorized.class);
+        } catch(final JsonProcessingException exception) {
+            throw new DataProviderException(exception);
         }
     }
 }
