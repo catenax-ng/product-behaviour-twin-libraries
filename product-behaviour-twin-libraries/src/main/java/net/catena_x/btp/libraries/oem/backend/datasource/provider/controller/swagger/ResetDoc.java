@@ -22,4 +22,5 @@ Reinitializes all info elements and clears vehicles and telematics data.
   "result": "Error",
   "message": "net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException: org.springframework.web.client.ResourceAccessException: I/O error on GET request for \\"http://localhost:25552/api/rawdata/reset\\": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect"
 }
-""";}
+""";
+}

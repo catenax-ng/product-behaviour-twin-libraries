@@ -1,6 +1,5 @@
----
 apiVersion: v2
-name: all-in-one
+name: all-in-one-rul
 description: Deploys postgres, hiapp, updater and provider
 home: https://github.com/catenax-ng/product-behaviour-twin-libraries
 type: application
@@ -12,12 +11,11 @@ dependencies:
   - name: postgresql
     version: ">=12.1.2"
     repository: https://charts.bitnami.com/bitnami
-    alias: rawdatadb
+    alias: rawdatadb2
   - name: postgresql
     version: ">=12.1.2"
     repository: https://charts.bitnami.com/bitnami
     alias: ruldb
-  - name: rulbackend
+  - name: oem-rul-backend
     version: "0.0.1"
     repository: file://../rulbackend
-

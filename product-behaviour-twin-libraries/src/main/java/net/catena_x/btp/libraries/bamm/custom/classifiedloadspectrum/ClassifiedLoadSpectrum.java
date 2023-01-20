@@ -1,6 +1,7 @@
 package net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.items.CLSMe
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ClassifiedLoadSpectrum implements BammBase {
     public final static String BAMM_ID = "urn:bamm:io.openmanufacturing.digitaltwin:1.0.0#ClassifiedLoadSpectrum";
 

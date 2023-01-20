@@ -1,5 +1,6 @@
 package net.catena_x.btp.libraries.bamm.common;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,8 +12,10 @@ import java.time.Instant;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BammStatus {
     private Instant date;
     private String operatingTime;
+    private Float operatingHours;
     private long mileage;
 }

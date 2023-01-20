@@ -5,6 +5,8 @@ import net.catena_x.btp.libraries.bamm.common.BammStatus;
 import net.catena_x.btp.libraries.bamm.custom.adaptionvalues.AdaptionValues;
 import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.ClassifiedLoadSpectrum;
 import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.items.LoadSpectrumType;
+import net.catena_x.btp.libraries.bamm.custom.damage.Damage;
+import net.catena_x.btp.libraries.bamm.custom.remainingusefullife.RemainingUsefulLife;
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.CatenaXIdToDigitalTwinType;
@@ -12,6 +14,7 @@ import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.DigitalTwinType;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.VehicleDataLoader;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
+import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.UncheckedDataProviderException;
 import net.catena_x.btp.libraries.util.datahelper.DataHelper;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import org.jetbrains.annotations.Nullable;
@@ -45,24 +48,29 @@ public class TestDataCategorized {
         digitalTwinsGearboxes = null;
     }
 
+    public void initAutowiredFrom(@NotNull final TestDataCategorized testDataSource) {
+        digitalTwinCategorizer = testDataSource.digitalTwinCategorizer;
+        vehicleDataLoader = testDataSource.vehicleDataLoader;
+    }
+
     public void initFromTestData(@NotNull final TestData testData) throws DataProviderException {
         initMaps(testData.getDigitalTwins().size());
         fillMaps(testData);
 
         postProcessLoadCollectiveTargetComponentIds();
+        postProcessMoveRuLAndDamage();
 
         initialized = true;
     }
 
     public DigitalTwinType catenaXIdToType(@NotNull final String catenaXId) {
-        if(digitalTwinsVehicles.isEmpty()){
+        if (digitalTwinsVehicles.isEmpty()) {
             return DigitalTwinType.UNKNOWN;
         }
 
-        if(digitalTwinsVehicles.containsKey(catenaXId)) {
+        if (digitalTwinsVehicles.containsKey(catenaXId)) {
             return DigitalTwinType.VEHICLE;
-        }
-        else if(digitalTwinsGearboxes.containsKey(catenaXId)) {
+        } else if (digitalTwinsGearboxes.containsKey(catenaXId)) {
             return DigitalTwinType.GEARBOX;
         }
 
@@ -90,7 +98,7 @@ public class TestDataCategorized {
 
         final DigitalTwin gearboxTwin = getGearboxTwinFromVehicleTwin(vehicleTwin);
 
-        if(gearboxTwin == null) {
+        if (gearboxTwin == null) {
             throw new DataProviderException("No gearbox twin found for vehicle twin "
                     + vehicleTwin.getCatenaXId() + "!");
         }
@@ -100,7 +108,7 @@ public class TestDataCategorized {
 
     private void fillMaps(@NotNull final TestData testData) throws DataProviderException {
         int loadSpectrumVariant = 0;
-        for (final DigitalTwin digitalTwin : testData.getDigitalTwins() ) {
+        for (final DigitalTwin digitalTwin : testData.getDigitalTwins()) {
             switch (digitalTwinCategorizer.categorize(digitalTwin)) {
                 case VEHICLE: {
                     //FA: Append missing adaption values (missing in testdata file).
@@ -137,26 +145,26 @@ public class TestDataCategorized {
 
         BammStatus status = null;
 
-        if(!DataHelper.isNullOrEmpty(digitalTwin.getClassifiedLoadSpectra())) {
-            if(digitalTwin.getClassifiedLoadSpectra().get(0).getMetadata() != null) {
+        if (!DataHelper.isNullOrEmpty(digitalTwin.getClassifiedLoadSpectra())) {
+            if (digitalTwin.getClassifiedLoadSpectra().get(0).getMetadata() != null) {
                 status = digitalTwin.getClassifiedLoadSpectra().get(0).getMetadata().getStatus();
             }
         }
 
-        if(status == null) {
+        if (status == null) {
             status = new BammStatus();
             status.setMileage(123456L);
             status.setDate(Instant.now());
-            status.setOperatingTime("12.3456");
+            status.setOperatingHours(12.3456f);
         }
 
-        if(status.getDate() == null) {
+        if (status.getDate() == null) {
             status.setDate(Instant.now().minus(Duration.ofHours(3L)));
         }
 
         adaptionValues.setStatus(status);
 
-        adaptionValues.setValues(new double[]{0.5, 16554.6, 234.3,323.0});
+        adaptionValues.setValues(new double[]{0.5, 16554.6, 234.3, 323.0});
 
         final List<AdaptionValues> adaptionValueList = new ArrayList<>(1);
         adaptionValueList.add(adaptionValues);
@@ -166,7 +174,7 @@ public class TestDataCategorized {
 
     private void appendMissingClutchLoadSpectrum(@NotNull final DigitalTwin digitalTwin,
                                                  @NotNull final TestData testData, int loadSpectrumVariant)
-                throws DataProviderException {
+            throws DataProviderException {
 
         ensureLoadspectraList(digitalTwin);
 
@@ -175,19 +183,19 @@ public class TestDataCategorized {
 
 
             final ClassifiedLoadSpectrum loadSpectrum = switch (loadSpectrumVariant) {
-                            case 1 -> testData.getClutchLoadSpectrumYellow();
-                            case 2 -> testData.getClutchLoadSpectrumRed();
-                            default -> testData.getClutchLoadSpectrumGreen();
-                        };
+                case 1 -> testData.getClutchLoadSpectrumYellow();
+                case 2 -> testData.getClutchLoadSpectrumRed();
+                default -> testData.getClutchLoadSpectrumGreen();
+            };
 
-            if(loadSpectrum != null) {
+            if (loadSpectrum != null) {
                 digitalTwin.getClassifiedLoadSpectra().add(loadSpectrum);
             }
         }
     }
 
     private static void ensureLoadspectraList(DigitalTwin digitalTwin) {
-        if(digitalTwin.getClassifiedLoadSpectra() == null) {
+        if (digitalTwin.getClassifiedLoadSpectra() == null) {
             digitalTwin.setClassifiedLoadSpectra(new ArrayList<>());
         }
     }
@@ -197,7 +205,7 @@ public class TestDataCategorized {
 
         for (final ClassifiedLoadSpectrum loadSpectrum : loadSpectra) {
             assertComponentDescription(loadSpectrum);
-            if(loadSpectrum.getMetadata().getComponentDescription() == loadSpectrumType) {
+            if (loadSpectrum.getMetadata().getComponentDescription() == loadSpectrumType) {
                 return true;
             }
         }
@@ -207,21 +215,21 @@ public class TestDataCategorized {
 
     private void assertComponentDescription(@NotNull final ClassifiedLoadSpectrum loadSpectrum)
             throws DataProviderException {
-        if(loadSpectrum == null) {
+        if (loadSpectrum == null) {
             throw new DataProviderException("Load spectrum not present!");
         }
 
-        if(loadSpectrum.getMetadata() == null) {
+        if (loadSpectrum.getMetadata() == null) {
             throw new DataProviderException("Metadata not present!");
         }
 
-        if(loadSpectrum.getMetadata().getComponentDescription() == null) {
+        if (loadSpectrum.getMetadata().getComponentDescription() == null) {
             throw new DataProviderException("Component description not present!");
         }
     }
 
     private void postProcessLoadCollectiveTargetComponentIds() {
-        digitalTwinsVehicles.forEach((vehicleId, vehicleTwin)->{
+        digitalTwinsVehicles.forEach((vehicleId, vehicleTwin) -> {
             ensureLoadspectraList(vehicleTwin);
 
             final CatenaXIdToDigitalTwinType idToType =
@@ -233,9 +241,9 @@ public class TestDataCategorized {
             } catch (final BtpException exception) {
                 //ignore
                 return;
-           }
+            }
 
-           for (final ClassifiedLoadSpectrum loadSpectrum : vehicleTwin.getClassifiedLoadSpectra()) {
+            for (final ClassifiedLoadSpectrum loadSpectrum : vehicleTwin.getClassifiedLoadSpectra()) {
                 try {
                     assertComponentDescription(loadSpectrum);
                 } catch (final DataProviderException exception) {
@@ -243,10 +251,49 @@ public class TestDataCategorized {
                     continue;
                 }
 
-                if(loadSpectrum.getMetadata().getComponentDescription() == LoadSpectrumType.CLUTCH) {
+                if (loadSpectrum.getMetadata().getComponentDescription() == LoadSpectrumType.CLUTCH) {
                     loadSpectrum.setTargetComponentID(gearboxId);
                 }
             }
         });
+    }
+
+    private void postProcessMoveRuLAndDamage() throws DataProviderException {
+        try {
+            digitalTwinsVehicles.forEach((vehicleId, vehicleTwin) -> {
+                final DigitalTwin gearboxTwin = getGearboxTwinFromVehicleTwin(vehicleTwin);
+
+                if (gearboxTwin != null) {
+                    try {
+                        assertExistsMaxOnce(vehicleTwin.getDamages(), gearboxTwin.getDamages());
+                        assertExistsMaxOnce(vehicleTwin.getRemainingUsefulLifes(), gearboxTwin.getRemainingUsefulLifes());
+
+                        if (gearboxTwin.getDamages() == null) {
+                            gearboxTwin.setDamages(vehicleTwin.getDamages());
+                            vehicleTwin.setDamages(null);
+                        }
+
+                        if (gearboxTwin.getRemainingUsefulLifes() == null) {
+                            gearboxTwin.setRemainingUsefulLifes(vehicleTwin.getRemainingUsefulLifes());
+                            vehicleTwin.setRemainingUsefulLifes(null);
+                        }
+                    } catch (final DataProviderException exception) {
+                        throw new UncheckedDataProviderException(exception);
+                    }
+                }
+            });
+        } catch (final UncheckedDataProviderException exception) {
+            throw new DataProviderException(exception);
+        }
+    }
+
+    private <T> void assertExistsMaxOnce(@Nullable final List<T> value1, @Nullable final List<T> value2)
+            throws DataProviderException {
+
+        if(value1 == null || value2 == null) {
+            return;
+        }
+
+        throw new DataProviderException("Both values ars set, but different!");
     }
 }

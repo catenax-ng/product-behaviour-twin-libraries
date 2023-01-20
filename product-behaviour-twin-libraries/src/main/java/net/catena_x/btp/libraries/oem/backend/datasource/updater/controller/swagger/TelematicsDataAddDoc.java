@@ -22,7 +22,7 @@ If the given telematics data are not newer than the last uploaded data, the new 
         "routeDescription": "logged",
         "status": {
           "date": "2022-11-29T09:16:47.450911100Z",
-          "operatingTime": "3213.9",
+          "operatingHours": 3213.9,
           "mileage": 65432
         }
       },
@@ -83,7 +83,7 @@ If the given telematics data are not newer than the last uploaded data, the new 
         "routeDescription": "logged",
         "status": {
           "date": "2022-11-29T09:16:47.450911100Z",
-          "operatingTime": "3213.9",
+          "operatingHours": 3213.9,
           "mileage": 65432
         }
       },
@@ -144,7 +144,7 @@ If the given telematics data are not newer than the last uploaded data, the new 
         "routeDescription": "logged",
         "status": {
           "date": "2022-08-21",
-          "operatingTime": "1281.9",
+          "operatingHours": 1281.9,
           "mileage": 76543
         }
       },
@@ -180,7 +180,7 @@ If the given telematics data are not newer than the last uploaded data, the new 
     {
       "status": {
         "date": "2022-11-29T09:16:47.450911100Z",
-        "operatingTime": "3213.9",
+        "operatingHours": 3213.9,
         "mileage": 65432
       },
       "values": [0.3, 45.2, 11.0, 0.4]
