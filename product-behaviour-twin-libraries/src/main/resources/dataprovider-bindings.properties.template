@@ -12,4 +12,3 @@ services.dataupdater.endpoint.authenticationActivated=true
 
 security.api.username=${DATAPROVIDER_API_USER}
 security.api.password=${DATAPROVIDER_API_PASS}
-security.api.role=USER
