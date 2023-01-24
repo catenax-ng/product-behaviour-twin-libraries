@@ -7,8 +7,6 @@ import net.catena_x.btp.libraries.bamm.common.BammStatus;
 import net.catena_x.btp.libraries.bamm.custom.adaptionvalues.AdaptionValues;
 import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.ClassifiedLoadSpectrum;
 import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.items.LoadSpectrumType;
-import net.catena_x.btp.libraries.bamm.custom.damage.Damage;
-import net.catena_x.btp.libraries.bamm.custom.remainingusefullife.RemainingUsefulLife;
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.CatenaXIdToDigitalTwinType;
@@ -32,6 +30,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+
+import static java.lang.Math.min;
 
 @Component
 public class TestDataCategorized {
@@ -146,11 +146,11 @@ public class TestDataCategorized {
         final int modifier = randomGenerator.nextInt(200);
 
         if(modifier % 15 == 0) {
-            return 3;
+            return 2;
         }
 
         if(modifier % 6 == 0) {
-            return 3;
+            return 1;
         }
 
         return 0;
@@ -162,8 +162,8 @@ public class TestDataCategorized {
     }
 
     private void appendRandomAdaptionValues(@Nullable final DigitalTwin digitalTwin, int variant) {
-        if(randomGenerator.nextInt(100) >= 80) {
-            /* Use different variant in 20 % of all cases. */
+        if(randomGenerator.nextInt(100) >= 93) {
+            /* Use different variant in 7 % of all cases. */
             variant = (variant + randomGenerator.nextInt(2) + 1) % 3;
         }
 
@@ -213,12 +213,12 @@ public class TestDataCategorized {
 
         /* Allow some values outside the thresholds. */
         if(variant == 1) {
-            relResult = 0.75 + randomGenerator.nextDouble(0.25);
+            relResult = 0.78 + randomGenerator.nextDouble(0.19);
         } else if(variant == 2) {
-        } else if(variant == 2) {
-            relResult = 0.9 + randomGenerator.nextDouble(0.1);
+            relResult = 0.92 + min(randomGenerator.nextDouble(0.1), 1.0);
         } else {
-            relResult = randomGenerator.nextDouble(0.9);
+            relResult = randomGenerator.nextDouble(1.0);
+            relResult = relResult * relResult;
         }
 
         /* Randum signum. */
