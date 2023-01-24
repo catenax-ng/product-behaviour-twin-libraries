@@ -1,5 +1,7 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import net.catena_x.btp.libraries.bamm.common.BammStatus;
 import net.catena_x.btp.libraries.bamm.custom.adaptionvalues.AdaptionValues;
@@ -17,8 +19,10 @@ import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exception
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.UncheckedDataProviderException;
 import net.catena_x.btp.libraries.util.datahelper.DataHelper;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
+import net.catena_x.btp.libraries.util.json.ObjectMapperFactoryBtp;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
@@ -27,16 +31,19 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 @Component
 public class TestDataCategorized {
     @Autowired private DigitalTwinCategorizer digitalTwinCategorizer;
     @Autowired private VehicleDataLoader vehicleDataLoader;
+    @Autowired @Qualifier(ObjectMapperFactoryBtp.EXTENDED_OBJECT_MAPPER) private ObjectMapper objectMapper;
 
     @Getter private HashMap<String, DigitalTwin> digitalTwinsVehicles = null;
     @Getter private HashMap<String, DigitalTwin> digitalTwinsGearboxes = null;
 
     private boolean initialized = false;
+    private Random randomGenerator = new Random();
 
     public boolean isInitialized() {
         return initialized;
@@ -107,17 +114,10 @@ public class TestDataCategorized {
     }
 
     private void fillMaps(@NotNull final TestData testData) throws DataProviderException {
-        int loadSpectrumVariant = 0;
         for (final DigitalTwin digitalTwin : testData.getDigitalTwins()) {
             switch (digitalTwinCategorizer.categorize(digitalTwin)) {
                 case VEHICLE: {
-                    //FA: Append missing adaption values (missing in testdata file).
-                    appendRandomAdaptionValues(digitalTwin);
-
-                    //FA Append missing clutch load spectrum.
-                    appendMissingClutchLoadSpectrum(digitalTwin, testData, loadSpectrumVariant);
-                    loadSpectrumVariant = (loadSpectrumVariant + 1) % 3;
-
+                    appendMissingData(digitalTwin, testData);
                     digitalTwinsVehicles.put(digitalTwin.getCatenaXId(), digitalTwin);
                     break;
                 }
@@ -135,14 +135,39 @@ public class TestDataCategorized {
         }
     }
 
+    private void appendMissingData(@NotNull final DigitalTwin digitalTwin, @NotNull final TestData testData)
+            throws DataProviderException {
+        final int variant = generateNextVariant();
+        appendMissingClutchLoadSpectrum(digitalTwin, testData, variant);
+        appendRandomAdaptionValues(digitalTwin, variant);
+    }
+
+    private int generateNextVariant() {
+        final int modifier = randomGenerator.nextInt(200);
+
+        if(modifier % 15 == 0) {
+            return 3;
+        }
+
+        if(modifier % 6 == 0) {
+            return 3;
+        }
+
+        return 0;
+    }
+
     private void initMaps(final int intiSize) {
         digitalTwinsVehicles = new HashMap<>(intiSize);
         digitalTwinsGearboxes = new HashMap<>(intiSize);
     }
 
-    private void appendRandomAdaptionValues(@Nullable final DigitalTwin digitalTwin) {
-        AdaptionValues adaptionValues = new AdaptionValues();
+    private void appendRandomAdaptionValues(@Nullable final DigitalTwin digitalTwin, int variant) {
+        if(randomGenerator.nextInt(100) >= 80) {
+            /* Use different variant in 20 % of all cases. */
+            variant = (variant + randomGenerator.nextInt(2) + 1) % 3;
+        }
 
+        AdaptionValues adaptionValues = new AdaptionValues();
         BammStatus status = null;
 
         if (!DataHelper.isNullOrEmpty(digitalTwin.getClassifiedLoadSpectra())) {
@@ -164,7 +189,7 @@ public class TestDataCategorized {
 
         adaptionValues.setStatus(status);
 
-        adaptionValues.setValues(new double[]{0.5, 16554.6, 234.3, 323.0});
+        adaptionValues.setValues(generateRandomAdaptionValues(variant));
 
         final List<AdaptionValues> adaptionValueList = new ArrayList<>(1);
         adaptionValueList.add(adaptionValues);
@@ -172,8 +197,40 @@ public class TestDataCategorized {
         digitalTwin.setAdaptionValues(adaptionValueList);
     }
 
+    private double[] generateRandomAdaptionValues(@NotNull final int variant) {
+        double[] adaptionValues = new double[4];
+        final double[] maxValues = new double[]{100.0, 255.0, 100.0, 255.0};
+
+        for (int i = 0; i < 4; i++) {
+            adaptionValues[i] = generateNextAdaptionValue(maxValues[i], variant);
+        }
+
+        return adaptionValues;
+    }
+
+    private double generateNextAdaptionValue(@NotNull final double maxValue, @NotNull final int variant) {
+        double relResult = 0.0;
+
+        /* Allow some values outside the thresholds. */
+        if(variant == 1) {
+            relResult = 0.75 + randomGenerator.nextDouble(0.25);
+        } else if(variant == 2) {
+        } else if(variant == 2) {
+            relResult = 0.9 + randomGenerator.nextDouble(0.1);
+        } else {
+            relResult = randomGenerator.nextDouble(0.9);
+        }
+
+        /* Randum signum. */
+        if(randomGenerator.nextInt(100) >= 75) {
+            relResult = -relResult;
+        }
+
+        return relResult * maxValue;
+    }
+
     private void appendMissingClutchLoadSpectrum(@NotNull final DigitalTwin digitalTwin,
-                                                 @NotNull final TestData testData, int loadSpectrumVariant)
+                                                 @NotNull final TestData testData, @NotNull int variant)
             throws DataProviderException {
 
         ensureLoadspectraList(digitalTwin);
@@ -181,17 +238,38 @@ public class TestDataCategorized {
         if (!loadSpectraContains(digitalTwin.getClassifiedLoadSpectra(), LoadSpectrumType.CLUTCH)) {
             System.out.println("!!!Adding load spectrum of type clutch, not for productive use!!!");
 
-
-            final ClassifiedLoadSpectrum loadSpectrum = switch (loadSpectrumVariant) {
-                case 1 -> testData.getClutchLoadSpectrumYellow();
-                case 2 -> testData.getClutchLoadSpectrumRed();
-                default -> testData.getClutchLoadSpectrumGreen();
+            final ClassifiedLoadSpectrum loadSpectrum = switch (variant) {
+                case 1 -> generateModifiedLoadSpectrum(testData.getClutchLoadSpectrumYellow());
+                case 2 -> generateModifiedLoadSpectrum(testData.getClutchLoadSpectrumRed());
+                default -> generateModifiedLoadSpectrum(testData.getClutchLoadSpectrumGreen());
             };
 
             if (loadSpectrum != null) {
                 digitalTwin.getClassifiedLoadSpectra().add(loadSpectrum);
             }
         }
+    }
+
+    private ClassifiedLoadSpectrum generateModifiedLoadSpectrum(@NotNull final ClassifiedLoadSpectrum loadSpectrum)
+            throws DataProviderException {
+
+        ClassifiedLoadSpectrum modifiedLoadSpectrum = null;
+
+        try {
+            modifiedLoadSpectrum = objectMapper.readValue(objectMapper.writeValueAsString(loadSpectrum),
+                                                          ClassifiedLoadSpectrum.class);
+        } catch (final JsonProcessingException exception){
+            throw new DataProviderException(exception);
+        }
+
+        final double rel = 0.5 + randomGenerator.nextDouble(1.4);
+
+        int count = modifiedLoadSpectrum.getBody().getCounts().getCountsList().length;
+        for (int i = 0; i < count; i++) {
+            modifiedLoadSpectrum.getBody().getCounts().getCountsList()[i] *= rel;
+        }
+
+        return modifiedLoadSpectrum;
     }
 
     private static void ensureLoadspectraList(DigitalTwin digitalTwin) {
