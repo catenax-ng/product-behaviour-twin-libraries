@@ -16,7 +16,8 @@ import javax.validation.constraints.NotNull;
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class,
 		DataSourceTransactionManagerAutoConfiguration.class,
 		HibernateJpaAutoConfiguration.class})
-@ComponentScan(basePackages = {"net.catena_x.btp.libraries.oem.backend.datasource.provider",
+@ComponentScan(basePackages = {
+		"net.catena_x.btp.libraries.oem.backend.datasource.provider",
 		"net.catena_x.btp.libraries.oem.backend.datasource.util",
 		"net.catena_x.btp.libraries.oem.backend.datasource.model",
 		"net.catena_x.btp.libraries.util",
