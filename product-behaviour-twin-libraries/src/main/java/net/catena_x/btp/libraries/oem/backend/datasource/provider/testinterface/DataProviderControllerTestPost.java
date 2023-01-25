@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotNull;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 @RestController
@@ -33,7 +34,8 @@ public class DataProviderControllerTestPost {
     }
 
     private String convertResult(@NotNull final byte[] result) {
-        final String converted = Arrays.copyOfRange(result, 0, Math.min(10000, result.length)).toString();
+        final String converted = new String(Arrays.copyOfRange(result, 0, Math.min(10000, result.length)),
+                                            StandardCharsets.UTF_8);
         if(result.length > 10000) {
             return "First 10000 characters of your input:\n" + converted + " ...";
         }

@@ -18,8 +18,9 @@ public class DataProviderControllerRegisterPostResult {
     @Autowired ApiHelper apiHelper;
 
     @PostMapping(value = "/registerpostresult", produces = "application/json")
-    public ResponseEntity<DefaultApiResult> registerPostResult(@RequestParam @Nullable String contentType,
-                                                               @RequestBody @NotNull final byte[] result) {
+    public ResponseEntity<DefaultApiResult> registerPostResult(
+            @RequestParam(required = false) @Nullable String contentType,
+            @RequestBody @NotNull final byte[] result) {
         if(contentType == null) {
             contentType = "application/json";
         }

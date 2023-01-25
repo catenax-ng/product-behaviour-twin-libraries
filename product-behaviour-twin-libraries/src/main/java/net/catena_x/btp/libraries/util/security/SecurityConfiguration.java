@@ -43,10 +43,14 @@ public class SecurityConfiguration {
                             "/hidatareceiver/notifyresult",
                             "/ruldatacollector/notifycalculation",
                             "/ruldatareceiver/notifyresult",
-                            "/api/testinterface/get",
-                            "/api/testinterface/getresult",
                             "/api/testinterface/post",
                             "/api/testinterface/postresult")
+                    .permitAll()
+                    .and()
+                    .authorizeRequests()
+                    .antMatchers(HttpMethod.GET,
+                            "/api/testinterface/get",
+                            "/api/testinterface/getresult")
                     .permitAll()
                     .and();
         }
