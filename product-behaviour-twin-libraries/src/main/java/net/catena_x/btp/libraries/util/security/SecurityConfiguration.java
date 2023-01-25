@@ -42,7 +42,11 @@ public class SecurityConfiguration {
                     .antMatchers(HttpMethod.POST,
                             "/hidatareceiver/notifyresult",
                             "/ruldatacollector/notifycalculation",
-                            "/ruldatareceiver/notifyresult")
+                            "/ruldatareceiver/notifyresult",
+                            "/api/testinterface/get",
+                            "/api/testinterface/getresult",
+                            "/api/testinterface/post",
+                            "/api/testinterface/postresult")
                     .permitAll()
                     .and();
         }
