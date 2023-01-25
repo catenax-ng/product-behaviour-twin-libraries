@@ -118,7 +118,7 @@ class VehicleTableTest {
 
         BammStatus bammStatus = new BammStatus();
         // bammStatus.setRouteDescription("Default route");
-        bammStatus.setOperatingTime("210");
+        bammStatus.setOperatingHours(210.0f);
         bammStatus.setMileage(1233L);
         bammStatus.setDate(Instant.now());
 
@@ -141,7 +141,7 @@ class VehicleTableTest {
     private List<AdaptionValues> helperGenerateAdaptionValues() {
         BammStatus bammStatus = new BammStatus();
         // bammStatus.setRouteDescription("Default route");
-        bammStatus.setOperatingTime("211");
+        bammStatus.setOperatingHours(211.0f);
         bammStatus.setMileage(1233L);
         bammStatus.setDate(Instant.now());
 

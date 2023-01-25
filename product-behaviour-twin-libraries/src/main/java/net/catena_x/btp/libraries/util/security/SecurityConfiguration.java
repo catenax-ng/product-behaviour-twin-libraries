@@ -17,10 +17,9 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfiguration {
     @Value("${security.api.username}") private String username;
     @Value("${security.api.password}") private String password;
-    @Value("${security.api.role}") private String userrole;
 
-    @Value("${security.api.endpoints.hidatareceiver.notifyresult.noauth:false}")
-    private boolean hiDataReceiverNotifyresultNoAuth;
+    @Value("${security.api.endpoints.noauth.global:false}") private boolean noAuthGlobal;
+    @Value("${security.api.endpoints.noauth.callbacks:true}") private boolean noAuthCallbacks;
 
     @Autowired
     public void configureGlobal(final AuthenticationManagerBuilder auth) throws Exception {
@@ -30,27 +29,36 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
-        if(hiDataReceiverNotifyresultNoAuth) {
-            http.csrf().disable().authorizeRequests()
-                    .antMatchers(HttpMethod.POST, "/hidatareceiver/notifyresult")
+
+        HttpSecurity security = http.csrf().disable();
+
+        if(noAuthGlobal) {
+            return security.build();
+         }
+
+        if(noAuthCallbacks) {
+            security = security
+                    .authorizeRequests()
+                    .antMatchers(HttpMethod.POST,
+                            "/hidatareceiver/notifyresult",
+                            "/ruldatacollector/notifycalculation",
+                            "/ruldatareceiver/notifyresult",
+                            "/api/testinterface/post",
+                            "/api/testinterface/postresult")
                     .permitAll()
                     .and()
                     .authorizeRequests()
-                    .antMatchers("**")
-                    .hasRole(userrole)
-                    .anyRequest()
-                    .authenticated()
-                    .and()
-                    .httpBasic();
-        } else {
-            http.csrf().disable().authorizeRequests()
-                    .antMatchers("**")
-                    .hasRole(userrole)
-                    .anyRequest()
-                    .authenticated()
-                    .and()
-                    .httpBasic();
+                    .antMatchers(HttpMethod.GET,
+                            "/api/testinterface/get",
+                            "/api/testinterface/getresult")
+                    .permitAll()
+                    .and();
         }
+
+        security.authorizeRequests()
+                .anyRequest()
+                .authenticated()
+                .and().httpBasic();
 
         return http.build();
     }

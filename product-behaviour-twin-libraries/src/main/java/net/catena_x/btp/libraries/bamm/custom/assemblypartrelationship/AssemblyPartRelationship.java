@@ -1,6 +1,7 @@
 package net.catena_x.btp.libraries.bamm.custom.assemblypartrelationship;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AssemblyPartRelationship implements BammBase {
     public final static String BAMM_ID = "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship";
 

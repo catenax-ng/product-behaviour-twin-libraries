@@ -1,4 +1,4 @@
-package net.catena_x.btp.libraries.oem.backend.datasource.provider.controller;
+package net.catena_x.btp.libraries.oem.backend.datasource.provider.util.tesdtata;
 
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.TestDataReader;
@@ -44,6 +44,13 @@ public class TestDataManager {
     public TestData getTestData() throws DataProviderException {
         getTestDataCategorized(null, true);
         return testData;
+    }
+
+    public synchronized void reset() {
+        lock();
+        testDataCategorized.reset();
+        testData = null;
+        unlock();
     }
 
     public synchronized TestDataCategorized getTestDataCategorized(@Nullable final String testDataJson,
