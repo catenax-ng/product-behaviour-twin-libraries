@@ -1,8 +1,8 @@
 server.port=25551
 services.dataupdater.endpoint.baseurl=http:/localhost:25552/api/rawdata
 services.dataprovider.testdata.file=Catena-X_Vehicle_Health_App\\DigitalTwins_CX_RuL_Testdata_v0.0.2_Spectra.json
-services.dataprovider.testdata.clutchSpectrumGreen=Catena-X_Vehicle_Health_App\\LK_ClutchTemp_Land.json
-services.dataprovider.testdata.clutchSpectrumYellow=Catena-X_Vehicle_Health_App\\LK_ClutchTemp_BAB.json
+services.dataprovider.testdata.clutchSpectrumGreen=Catena-X_Vehicle_Health_App\\LK_ClutchTemp_BAB.json
+services.dataprovider.testdata.clutchSpectrumYellow=Catena-X_Vehicle_Health_App\\LK_ClutchTemp_Land.json
 services.dataprovider.testdata.clutchSpectrumRed=Catena-X_Vehicle_Health_App\\LK_ClutchTemp_Stadt.json
 services.dataprovider.testdata.exportPath=Catena-X_Vehicle_Health_App
 
@@ -12,4 +12,3 @@ services.dataupdater.endpoint.authenticationActivated=true
 
 security.api.username=${DATAPROVIDER_API_USER}
 security.api.password=${DATAPROVIDER_API_PASS}
-security.api.role=USER

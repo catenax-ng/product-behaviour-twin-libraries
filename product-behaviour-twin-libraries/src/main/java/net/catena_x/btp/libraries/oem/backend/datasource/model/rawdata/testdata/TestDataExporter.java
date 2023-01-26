@@ -118,8 +118,7 @@ public class TestDataExporter {
 
     private String buildExportFilename(@NotNull final Path baseFilename, @NotNull final String fileextension,
                                        @NotNull final int fileIndex, @NotNull final int fileCount) {
-        return baseFilename.toString() + "_" + String.valueOf(fileIndex)
-                + "_of_" + String.valueOf(fileCount) + "." + fileextension;
+        return baseFilename.toString() + "_" + fileIndex + "_of_" + fileCount + "." + fileextension;
     }
 
     private void export(@NotNull final TestData testData, @NotNull final String filename,
@@ -146,12 +145,12 @@ public class TestDataExporter {
     }
 
     private void exportNewBamm(final File destinationFile, @NotNull final TestData testData) throws IOException {
-        objectMapper.writeValue(destinationFile, testData);
+        objectMapper.writerWithDefaultPrettyPrinter().writeValue(destinationFile, testData);
     }
 
     private void exportOldBamm(final File destinationFile, @NotNull final TestData testData) throws IOException {
         final String testDataAsString =
-                objectMapper.writeValueAsString(testData).replace("Spectrum", "Collective");
+                objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(testData).replace("Spectrum", "Collective");
 
         final FileWriter writer = new FileWriter(destinationFile);
         writer.write(testDataAsString);
@@ -208,8 +207,6 @@ public class TestDataExporter {
                 } else {
                     digitalTwinConverter.convertToNewBAMM(digitalTwin);
                 }
-
-                removeDamageAndRuLAspects(digitalTwin);
             }
         } catch(final BtpException exception) {
             throw new DataProviderException(exception);

@@ -2,4 +2,3 @@ server.port=25552
 
 security.api.username=${DATAUPDATER_API_USER}
 security.api.password=${DATAUPDATER_API_PASS}
-security.api.role=USER

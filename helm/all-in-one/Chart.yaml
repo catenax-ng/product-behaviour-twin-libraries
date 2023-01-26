@@ -29,4 +29,10 @@ dependencies:
   - name: oem-hi-frontend
     version: "0.0.1"
     repository: file://../hifrontend
-
+  - name: postgresql
+    version: ">=12.1.2"
+    repository: https://charts.bitnami.com/bitnami
+    alias: ruldb
+  - name: oem-rul-backend
+    version: "0.0.1"
+    repository: file://../rulbackend
