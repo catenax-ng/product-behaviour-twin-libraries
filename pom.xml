@@ -18,7 +18,7 @@
   
   <groupId>net.catena-x</groupId>
   <artifactId>oem_btp</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.1.0</version>
   <packaging>pom</packaging>
   <name>OEM Behaviour Twin</name>
   <description>Set of libraries and services for OEM frontends and backends</description>
