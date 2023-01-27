@@ -11,19 +11,23 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class S3SpringWrapper {
-    private HttpUrl endpoint;
-    private String accessKey;
-    private String secretKey;
-    private String defaultBucket;
+    private final HttpUrl endpoint;
+    private final String accessKey;
+    private final String secretKey;
+    private final String defaultBucket;
 
     private HashMap<String, S3Uploader> uploaders;
 
     public S3SpringWrapper(
-            @Value("cloud.endpoint") HttpUrl endpoint,
-            @Value("cloud.accessKey") String accessKey,
-            @Value("cloud.secretKey") String secretKey,
-            @Value("cloud.defaultbucket") String defaultBucket
+            @Value("cloud.endpoint") final HttpUrl endpoint,
+            @Value("cloud.accessKey") final String accessKey,
+            @Value("cloud.secretKey") final String secretKey,
+            @Value("cloud.defaultbucket") final String defaultBucket
     ) {
+        this.endpoint = endpoint;
+        this.accessKey = accessKey;
+        this.secretKey = secretKey;
+        this.defaultBucket = defaultBucket;
         resetUploaders();
     }
 
