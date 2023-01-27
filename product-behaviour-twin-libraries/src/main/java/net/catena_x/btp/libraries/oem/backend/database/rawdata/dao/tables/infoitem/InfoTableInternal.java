@@ -7,6 +7,8 @@ import net.catena_x.btp.libraries.oem.backend.database.rawdata.annotations.RDTra
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.RawTableBase;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
 import net.catena_x.btp.libraries.oem.backend.model.enums.InfoKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +20,8 @@ import java.util.function.Supplier;
 @Component
 public class InfoTableInternal extends RawTableBase {
     @Autowired private InfoItemRepository infoItemRepository;
+
+    private final Logger logger = LoggerFactory.getLogger(InfoTableInternal.class);
 
     @RDTransactionSerializableUseExisting
     public Exception runSerializableExternalTransaction(@NotNull final Supplier<Exception> function) {
@@ -35,7 +39,9 @@ public class InfoTableInternal extends RawTableBase {
         try {
             infoItemRepository.insert(key.toString(), value);
         } catch (final Exception exception) {
-            throw failed("Inserting info value failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Inserting info value failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -50,7 +56,9 @@ public class InfoTableInternal extends RawTableBase {
         try {
             return infoItemRepository.queryByKey(key.toString());
         } catch (final Exception exception) {
-            throw failed("Reading info item failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Reading info item failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -64,7 +72,9 @@ public class InfoTableInternal extends RawTableBase {
         try {
             return infoItemRepository.queryAll();
         } catch (final Exception exception) {
-            throw failed("Reading all info items failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Reading all info items failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -78,7 +88,8 @@ public class InfoTableInternal extends RawTableBase {
         try {
             infoItemRepository.deleteAll();
         } catch (final Exception exception) {
-            throw failed("Deleting all info items failed!", exception);
+            exception.printStackTrace();
+            throw failed("Deleting all info items failed! " + exception.getMessage(), exception);
         }
     }
 

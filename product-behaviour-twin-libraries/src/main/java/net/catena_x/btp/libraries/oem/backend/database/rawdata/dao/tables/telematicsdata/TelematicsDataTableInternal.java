@@ -12,6 +12,8 @@ import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDataba
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelematicsData;
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +31,8 @@ public class TelematicsDataTableInternal extends RawTableBase {
     @Autowired private TelematicsDataRepository telematicsDataRepository;
     @Autowired private InputTelematicsDataConverter inputTelematicsDataConverter;
     @Autowired private SyncTableInternal syncTable;
+
+    private final Logger logger = LoggerFactory.getLogger(TelematicsDataTableInternal.class);
 
     @RDTransactionSerializableUseExisting
     public Exception runSerializableExternalTransaction(@NotNull final Supplier<Exception> function) {
@@ -68,7 +72,9 @@ public class TelematicsDataTableInternal extends RawTableBase {
             return newId;
         }
         catch(final Exception exception) {
-            throw failed("Upload telematic data failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Upload telematics data failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -83,7 +89,9 @@ public class TelematicsDataTableInternal extends RawTableBase {
         try {
             telematicsDataRepository.deleteAll();
         } catch(final Exception exception) {
-            throw failed("Deleting all telematics data failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Deleting all telematics data failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -97,7 +105,9 @@ public class TelematicsDataTableInternal extends RawTableBase {
         try {
             telematicsDataRepository.deleteById(id);
         } catch(final Exception exception) {
-            throw failed("Deleting telematics data by id failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Deleting telematics data by id failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -112,7 +122,9 @@ public class TelematicsDataTableInternal extends RawTableBase {
         try {
             telematicsDataRepository.deleteByVehicleId(vehicleId);
         } catch(final Exception exception) {
-            throw failed("Deleting telematics data by vehicle id failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Deleting telematics data by vehicle id failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -126,7 +138,9 @@ public class TelematicsDataTableInternal extends RawTableBase {
         try {
             telematicsDataRepository.deleteStoredUntil(storedUntil);
         } catch(final Exception exception) {
-            throw failed("Deleting telematics data by storage timestamp failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Deleting telematics data by storage timestamp failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -140,7 +154,9 @@ public class TelematicsDataTableInternal extends RawTableBase {
         try {
             telematicsDataRepository.deleteSyncCounterUntil(syncCounter);
         } catch(final Exception exception) {
-            throw failed("Deleting telematics data by sync counter failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Deleting telematics data by sync counter failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -155,7 +171,9 @@ public class TelematicsDataTableInternal extends RawTableBase {
             return telematicsDataRepository.queryById(id);
         }
         catch(final Exception exception) {
-            throw failed("Querying database for telematics data by id failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Querying database for telematics data by id failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -171,7 +189,9 @@ public class TelematicsDataTableInternal extends RawTableBase {
             return telematicsDataRepository.queryByVehicleId(vehicleId);
         }
         catch(final Exception exception) {
-            throw failed("Querying database for telematics data by vehicle id failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Querying database for telematics data by vehicle id failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -188,7 +208,9 @@ public class TelematicsDataTableInternal extends RawTableBase {
             return telematicsDataRepository.queryByVehicleIdOrderBySyncCounter(vehicleId);
         }
         catch(final Exception exception) {
-            throw failed("Querying database for telematics data by vehicle id failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Querying database for telematics data by vehicle id failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -205,7 +227,9 @@ public class TelematicsDataTableInternal extends RawTableBase {
             return telematicsDataRepository.queryByStorageSince(timestamp);
         }
         catch(final Exception exception) {
-            throw failed("Querying database for telematics data by update timestamp failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Querying database for telematics data by update timestamp failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -222,7 +246,9 @@ public class TelematicsDataTableInternal extends RawTableBase {
             return telematicsDataRepository.queryByStorageUntil(timestamp);
         }
         catch(final Exception exception) {
-            throw failed("Querying database for telematics data by update timestamp failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Querying database for telematics data by update timestamp failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -239,7 +265,9 @@ public class TelematicsDataTableInternal extends RawTableBase {
             return telematicsDataRepository.queryBySyncCounterSince(syncCounter);
         }
         catch(final Exception exception) {
-            throw failed("Querying database for telematics data by sync counter failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Querying database for telematics data by sync counter failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -256,7 +284,9 @@ public class TelematicsDataTableInternal extends RawTableBase {
             return telematicsDataRepository.queryBySyncCounterUntil(syncCounter);
         }
         catch(final Exception exception) {
-            throw failed("Querying database for telematics data by sync counter failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Querying database for telematics data by sync counter failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -272,7 +302,9 @@ public class TelematicsDataTableInternal extends RawTableBase {
             return telematicsDataRepository.queryAll();
         }
         catch(final Exception exception) {
-            throw failed("Querying database for all telematics data failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Querying database for all telematics data failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -287,7 +319,9 @@ public class TelematicsDataTableInternal extends RawTableBase {
             return telematicsDataRepository.queryAllOrderByStorageTimestamp();
         }
         catch(final Exception exception) {
-            throw failed("Querying database for all telematics data failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Querying database for all telematics data failed! " + exception.getMessage(), exception);
         }
     }
 
