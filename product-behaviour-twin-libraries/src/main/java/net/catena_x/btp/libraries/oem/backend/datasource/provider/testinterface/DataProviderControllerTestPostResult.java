@@ -13,6 +13,11 @@ public class DataProviderControllerTestPostResult {
     @Autowired TestResultStore testResultStore;
 
     @PostMapping(value = "/postresult")
+    @io.swagger.v3.oas.annotations.Operation(
+            tags = {"Integration tests"},
+            summary = "Test endpoint with post method, returns preregistered content.",
+            description = "Returns the content that was preregistered with the registerpostresult endpoint. The request body is ignored."
+    )
     public ResponseEntity<byte[]> postResult(@RequestBody(required = false) @Nullable final byte[] body) {
         return testResultStore.makePostResponse();
     }

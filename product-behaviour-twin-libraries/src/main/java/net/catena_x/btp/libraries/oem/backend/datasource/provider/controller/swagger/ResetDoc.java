@@ -4,6 +4,7 @@ public final class ResetDoc {
     public static final String SUMMARY = "Calls the data updaters reset endpoint.";
     public static final String DESCRIPTION = """
 Reinitializes all info elements and clears vehicles and telematics data.
+This endpoint must be called after an external database reset or when connecting to a new, empty database.
 """;
 
     public static final String RESPONSE_OK_DESCRIPTION = "OK: Database reinitialized.";

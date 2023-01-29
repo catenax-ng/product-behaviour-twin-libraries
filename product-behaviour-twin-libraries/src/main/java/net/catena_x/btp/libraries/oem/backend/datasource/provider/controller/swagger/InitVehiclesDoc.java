@@ -4,6 +4,7 @@ public final class InitVehiclesDoc {
     public static final String SUMMARY = "Initializes all vehicles from test data file.";
     public static final String DESCRIPTION = """
 The vehicles must not be registered before.
+Before, the reset endpoint must be called the very first the database is used or externally reset.  
 Calls the data updaters vehicle register endpoint for each vehicle in the test data file.  
 """;
 
