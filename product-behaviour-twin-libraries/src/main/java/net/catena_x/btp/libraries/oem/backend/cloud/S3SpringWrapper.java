@@ -19,12 +19,12 @@ public class S3SpringWrapper {
     private HashMap<String, S3Uploader> uploaders;
 
     public S3SpringWrapper(
-            @Value("cloud.endpoint") final HttpUrl endpoint,
-            @Value("cloud.accessKey") final String accessKey,
-            @Value("cloud.secretKey") final String secretKey,
-            @Value("cloud.defaultbucket") final String defaultBucket
+            @Value("${cloud.endpoint}") final String endpoint,
+            @Value("${cloud.accessKey}") final String accessKey,
+            @Value("${cloud.secretKey}") final String secretKey,
+            @Value("${cloud.defaultbucket}") final String defaultBucket
     ) {
-        this.endpoint = endpoint;
+        this.endpoint = HttpUrl.parse(endpoint);
         this.accessKey = accessKey;
         this.secretKey = secretKey;
         this.defaultBucket = defaultBucket;
