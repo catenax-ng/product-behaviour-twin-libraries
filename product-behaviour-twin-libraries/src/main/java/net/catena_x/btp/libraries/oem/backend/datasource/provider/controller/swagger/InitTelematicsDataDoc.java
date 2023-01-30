@@ -4,6 +4,9 @@ public final class InitTelematicsDataDoc {
     public static final String SUMMARY = "Initializes all telemetics data from test data file.";
     public static final String DESCRIPTION = """
 The vehicles must be registered before.
+If the call fails, make sure that the database is initialized properly. The reset endpoint must be called the very first
+the database is used or externally reset. If not, vehicle registration is possible, but the telematics data initializing
+will fail because the sync counter is not initialized.
 Calls the data updaters telematics endpoint for each data set in the test data file.  
 """;
 

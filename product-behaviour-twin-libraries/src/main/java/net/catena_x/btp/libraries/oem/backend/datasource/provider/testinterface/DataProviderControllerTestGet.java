@@ -13,6 +13,11 @@ public class DataProviderControllerTestGet {
     @Autowired ApiHelper apiHelper;
 
     @GetMapping(value = "/get", produces = "application/json")
+    @io.swagger.v3.oas.annotations.Operation(
+            tags = {"Integration tests"},
+            summary = "Test endpoint with get method.",
+            description = "Returns a default JSON object."
+    )
     public ResponseEntity<DefaultApiResult> getResult() {
         return apiHelper.ok("Ok");
     }

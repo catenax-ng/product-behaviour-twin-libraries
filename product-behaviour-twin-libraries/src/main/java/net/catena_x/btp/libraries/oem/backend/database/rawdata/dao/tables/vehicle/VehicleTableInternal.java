@@ -20,6 +20,8 @@ import net.catena_x.btp.libraries.oem.backend.datasource.model.registration.Vehi
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -40,6 +42,8 @@ public class VehicleTableInternal extends RawTableBase {
     @Autowired private SyncTableInternal syncTable;
     @Autowired private InputTelematicsDataConverter inputTelematicsDataConverter;
 
+    private final Logger logger = LoggerFactory.getLogger(VehicleTableInternal.class);
+
     @RDTransactionSerializableUseExisting
     public Exception runSerializableExternalTransaction(@NotNull final Supplier<Exception> function) {
         return function.get();
@@ -59,6 +63,8 @@ public class VehicleTableInternal extends RawTableBase {
                     newVehicleInfo.gearboxId(), newVehicleInfo.productionDate(), 0);
         }
         catch(final Exception exception) {
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
             throw failed("Failed to register vehicle!", exception);
         }
     }
@@ -73,7 +79,9 @@ public class VehicleTableInternal extends RawTableBase {
         try {
             rawVehicleRepository.deleteAll();
         } catch (final Exception exception) {
-            throw failed("Deleting all vehicles failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Deleting all vehicles failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -116,7 +124,9 @@ public class VehicleTableInternal extends RawTableBase {
                 rawVehicleRepository.updateNewestTelematicsIdByVehicleId(vehicle.vehicle().getVehicleId(),
                         newTelematicsId, sync.getSyncCounter());
             } catch (final Exception exception) {
-                throw failed("Appending telematics data failed!", exception);
+                logger.error(exception.getMessage());
+                exception.printStackTrace();
+                throw failed("Appending telematics data failed! " + exception.getMessage(), exception);
             }
         }
     }
@@ -192,7 +202,9 @@ public class VehicleTableInternal extends RawTableBase {
             rawVehicleRepository.deleteByVehilceId(id);
         }
         catch(final Exception exception) {
-            throw failed("Deleting vehicle by id failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Deleting vehicle by id failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -207,7 +219,9 @@ public class VehicleTableInternal extends RawTableBase {
             rawVehicleRepository.deleteByVan(van);
         }
         catch(final Exception exception) {
-            throw failed("Deleting vehicle by van failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Deleting vehicle by van failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -221,7 +235,9 @@ public class VehicleTableInternal extends RawTableBase {
         try {
             return rawVehicleRepository.queryByVehicleId(vehicleId);
         } catch (final Exception exception) {
-            throw failed("Querying vehicle by id failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Querying vehicle by id failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -238,7 +254,9 @@ public class VehicleTableInternal extends RawTableBase {
                     .setParameter("vehicle_id", vehicleId);
             return getSingle(executeQueryVehicleTelematicsData(query));
         } catch(final Exception exception) {
-            throw failed("Querying vehicle by id failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Querying vehicle by id failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -253,7 +271,9 @@ public class VehicleTableInternal extends RawTableBase {
         try {
             return rawVehicleRepository.queryByVan(van);
         } catch(final Exception exception) {
-            throw failed("Querying vehicle by van failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Querying vehicle by van failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -270,7 +290,9 @@ public class VehicleTableInternal extends RawTableBase {
                     .setParameter("van", van);
             return getSingle(executeQueryVehicleTelematicsData(query));
         } catch(final Exception exception) {
-            throw failed("Querying vehicle by van failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Querying vehicle by van failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -285,7 +307,9 @@ public class VehicleTableInternal extends RawTableBase {
         try {
             return rawVehicleRepository.queryByGearboxId(gearboxId);
         } catch(final Exception exception) {
-            throw failed("Querying vehicle by gearbox_id failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Querying vehicle by gearbox_id failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -303,7 +327,9 @@ public class VehicleTableInternal extends RawTableBase {
                     .setParameter("gearbox_id", gearboxId);
             return getSingle(executeQueryVehicleTelematicsData(query));
         } catch(final Exception exception) {
-            throw failed("Querying vehicle by gearbox_id failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Querying vehicle by gearbox_id failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -326,7 +352,7 @@ public class VehicleTableInternal extends RawTableBase {
                     telematicsDataTable.getByIdExternalTransaction(
                             vehicleFromDB.getNewestTelematicsId()));
         } catch(final Exception exception) {
-            throw failed("Querying vehicle by van failed!", exception);
+            throw failed("Querying vehicle by van failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -336,7 +362,7 @@ public class VehicleTableInternal extends RawTableBase {
             return rawVehicleRepository.queryAll();
         }
         catch(final Exception exception) {
-            throw failed("Querying vehicles failed!", exception);
+            throw failed("Querying vehicles failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -352,7 +378,7 @@ public class VehicleTableInternal extends RawTableBase {
             return executeQueryVehicleTelematicsData(query);
         }
         catch(final Exception exception) {
-            throw failed("Querying vehicles failed!", exception);
+            throw failed("Querying vehicles failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -368,7 +394,7 @@ public class VehicleTableInternal extends RawTableBase {
             return rawVehicleRepository.queryUpdatedSince(updatedSince);
         }
         catch(final Exception exception) {
-            throw failed("Querying vehicles failed!", exception);
+            throw failed("Querying vehicles failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -388,7 +414,7 @@ public class VehicleTableInternal extends RawTableBase {
             return executeQueryVehicleTelematicsData(query);
         }
         catch(final Exception exception) {
-            throw failed("Querying vehicles failed!", exception);
+            throw failed("Querying vehicles failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -406,7 +432,7 @@ public class VehicleTableInternal extends RawTableBase {
             return rawVehicleRepository.queryByProductionDate(producedSince, producedUntil);
         }
         catch(final Exception exception) {
-            throw failed("Querying vehicles failed!", exception);
+            throw failed("Querying vehicles failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -428,7 +454,7 @@ public class VehicleTableInternal extends RawTableBase {
             return executeQueryVehicleTelematicsData(query);
         }
         catch(final Exception exception) {
-            throw failed("Querying vehicles failed!", exception);
+            throw failed("Querying vehicles failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -445,7 +471,7 @@ public class VehicleTableInternal extends RawTableBase {
             return rawVehicleRepository.queryUpdatedSinceSyncCounter(syncCounter);
         }
         catch(final Exception exception) {
-            throw failed("Querying vehicles by sync counter failed!", exception);
+            throw failed("Querying vehicles by sync counter failed! " + exception.getMessage(), exception);
         }    }
 
     @RDTransactionSerializableCreateNew
@@ -465,7 +491,7 @@ public class VehicleTableInternal extends RawTableBase {
             return executeQueryVehicleTelematicsData(query);
         }
         catch(final Exception exception) {
-            throw failed("Querying vehicles failed!", exception);
+            throw failed("Querying vehicles failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -487,7 +513,7 @@ public class VehicleTableInternal extends RawTableBase {
 
             return vehicles;
         } catch(final Exception exception) {
-            throw failed("Executing query failed!", exception);
+            throw failed("Executing query failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -512,7 +538,7 @@ public class VehicleTableInternal extends RawTableBase {
             return (NativeQuery<Object[]>)((Session)this.entityManager.getDelegate()).createSQLQuery(query);
         }
         catch(final Exception exception) {
-            throw failed("Initializing query failed!", exception);
+            throw failed("Initializing query failed! " + exception.getMessage(), exception);
         }
     }
 

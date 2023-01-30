@@ -7,6 +7,8 @@ import net.catena_x.btp.libraries.oem.backend.database.rawdata.annotations.RDTra
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.base.RawTableBase;
 import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.config.PersistenceRawDataConfiguration;
 import net.catena_x.btp.libraries.oem.backend.database.util.exceptions.OemDatabaseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,11 +19,13 @@ import java.util.function.Supplier;
 
 @Component
 public class SyncTableInternal extends RawTableBase {
+    public static final String DEFAULT_ID = "DEFAULT";
+
     @PersistenceContext(unitName = PersistenceRawDataConfiguration.UNIT_NAME) EntityManager entityManager;
 
     @Autowired private SyncRepository syncRepository;
 
-    public static final String DEFAULT_ID = "DEFAULT";
+    private final Logger logger = LoggerFactory.getLogger(SyncTableInternal.class);
 
     @RDTransactionSerializableUseExisting
     public Exception runSerializableExternalTransaction(@NotNull final Supplier<Exception> function) {
@@ -39,7 +43,9 @@ public class SyncTableInternal extends RawTableBase {
             syncRepository.deleteAll();
         }
         catch (final Exception exception) {
-            throw failed("Deleting all sync objects failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Deleting all sync objects failed!" + exception.getMessage(), exception);
         }
     }
 
@@ -54,7 +60,9 @@ public class SyncTableInternal extends RawTableBase {
             syncRepository.init(id);
         }
         catch (final Exception exception) {
-            throw failed("Initializing sync object failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Initializing sync object failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -74,7 +82,9 @@ public class SyncTableInternal extends RawTableBase {
             }
         }
         catch (final Exception exception) {
-            throw failed("Reinitializing sync object failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Reinitializing sync object failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -88,7 +98,9 @@ public class SyncTableInternal extends RawTableBase {
         try {
             return syncRepository.getCurrent(id);
         } catch (final Exception exception) {
-            throw failed("Querying sync object failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Querying sync object failed! " + exception.getMessage(), exception);
         }
     }
 
@@ -105,7 +117,9 @@ public class SyncTableInternal extends RawTableBase {
             entityManager.clear();
             return syncRepository.getCurrent(id);
         } catch (final Exception exception) {
-            throw failed("Setting sync object failed!", exception);
+            logger.error(exception.getMessage());
+            exception.printStackTrace();
+            throw failed("Setting sync object failed! " + exception.getMessage(), exception);
         }
     }
 

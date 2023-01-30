@@ -14,6 +14,11 @@ public class DataProviderControllerTestGetResult {
     @Autowired TestResultStore testResultStore;
 
     @GetMapping(value = "/getresult")
+    @io.swagger.v3.oas.annotations.Operation(
+            tags = {"Integration tests"},
+            summary = "Test endpoint with get method, returns preregistered content.",
+            description = "Returns the content that was preregistered with the registergetresult endpoint."
+    )
     public ResponseEntity<byte[]> getResult() {
         return testResultStore.makeGetResponse();
     }

@@ -18,6 +18,10 @@ public class DataProviderControllerRegisterPostResult {
     @Autowired ApiHelper apiHelper;
 
     @PostMapping(value = "/registerpostresult", produces = "application/json")
+    @io.swagger.v3.oas.annotations.Operation(
+            tags = {"Integration tests"},
+            summary = "Registers the result of the postresult endpoint."
+    )
     public ResponseEntity<DefaultApiResult> registerPostResult(
             @RequestParam(required = false) @Nullable String contentType,
             @RequestBody @NotNull final byte[] result) {

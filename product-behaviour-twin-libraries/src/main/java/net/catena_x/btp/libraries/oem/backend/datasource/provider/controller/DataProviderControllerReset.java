@@ -23,7 +23,7 @@ public class DataProviderControllerReset {
     @GetMapping(value = "/reset", produces = "application/json")
     @io.swagger.v3.oas.annotations.Operation(
             summary = ResetDoc.SUMMARY, description = ResetDoc.DESCRIPTION,
-            tags = {"Development"},
+            tags = {"Initializing"},
             responses = {
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(
                             responseCode = "200",
