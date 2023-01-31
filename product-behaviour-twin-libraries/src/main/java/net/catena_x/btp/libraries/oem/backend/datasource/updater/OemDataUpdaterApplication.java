@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 		"net.catena_x.btp.libraries.oem.backend.database.rawdata",
 		"net.catena_x.btp.libraries.util",
 		"net.catena_x.btp.libraries.util.security"})
-@OpenAPIDefinition(info = @Info(title = "Data updater service", version = "0.0.99"))
+@OpenAPIDefinition(info = @Info(title = "Data updater service", version = "0.1.0"))
 public class OemDataUpdaterApplication {
 	public static void main(@NotNull final String[] args) {
 		new SpringApplicationBuilder()
