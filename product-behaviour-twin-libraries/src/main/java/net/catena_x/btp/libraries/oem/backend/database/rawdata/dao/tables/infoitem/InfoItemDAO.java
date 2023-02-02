@@ -1,6 +1,5 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.infoitem;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,7 +34,6 @@ public class InfoItemDAO {
     @Column(name="value", length=20000, nullable=false)
     private String value;
 
-    @JsonInclude()
-    @Transient
+    @Column(name="query_timestamp")
     private Instant queryTimestamp;
 }
