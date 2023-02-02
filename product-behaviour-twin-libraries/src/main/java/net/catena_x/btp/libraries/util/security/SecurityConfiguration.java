@@ -45,7 +45,8 @@ public class SecurityConfiguration {
                             "/ruldatareceiver/notifyresult",
                             "/api/testinterface/post",
                             "/api/testinterface/postresult",
-                            "/api/v1/routine/notification")
+                            "/api/v1/routine/notification",
+                            "/api/testinterface/logpost")
                     .permitAll()
                     .and()
                     .authorizeRequests()
