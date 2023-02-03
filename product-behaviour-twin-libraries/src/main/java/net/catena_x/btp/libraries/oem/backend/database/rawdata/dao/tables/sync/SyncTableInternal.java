@@ -112,7 +112,7 @@ public class SyncTableInternal extends RawTableBase {
     @RDTransactionSerializableUseExisting
     public SyncDAO setCurrentExternalTransaction(@NotNull final String id) throws OemDatabaseException {
         try {
-            syncRepository.setCurrent(id, syncRepository.getCurrent(id).getSyncCounter() + 1);
+            syncRepository.setCurrent(id,  getOrCreateCurrent(id).getSyncCounter() + 1);
             entityManager.flush();
             entityManager.clear();
             return syncRepository.getCurrent(id);
@@ -121,6 +121,15 @@ public class SyncTableInternal extends RawTableBase {
             exception.printStackTrace();
             throw failed("Setting sync object failed! " + exception.getMessage(), exception);
         }
+    }
+
+    private SyncDAO getOrCreateCurrent(@NotNull final String id) {
+        final SyncDAO syncObject = syncRepository.getCurrent(id);
+        if(syncObject != null) {
+            return syncObject;
+        }
+        syncRepository.init(id);
+        return syncRepository.getCurrent(id);
     }
 
     @RDTransactionSerializableCreateNew

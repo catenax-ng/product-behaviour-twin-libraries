@@ -21,6 +21,7 @@ public class NotificationHeader {
     private String senderAddress;
     private String recipientBPN;
     private String recipientAddress;
+    private String respondAssetId;
     private String classification;
     private NFSeverity severity;
     private NFStatus status;
