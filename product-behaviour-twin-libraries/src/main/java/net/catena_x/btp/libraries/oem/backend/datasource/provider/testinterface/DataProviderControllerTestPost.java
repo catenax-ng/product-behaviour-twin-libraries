@@ -21,6 +21,11 @@ public class DataProviderControllerTestPost {
     @Autowired ApiHelper apiHelper;
 
     @PostMapping(value = "/post", produces = "application/json")
+    @io.swagger.v3.oas.annotations.Operation(
+            tags = {"Integration tests"},
+            summary = "Test endpoint with post method, returns embedded post body.",
+            description = "Returns a default JSON object, with embedded request post body."
+    )
     public ResponseEntity<DefaultApiResult> postResult(@RequestBody @Nullable final byte[] result) {
         if(result == null) {
             return apiHelper.ok("Ok, but no body was sent.");

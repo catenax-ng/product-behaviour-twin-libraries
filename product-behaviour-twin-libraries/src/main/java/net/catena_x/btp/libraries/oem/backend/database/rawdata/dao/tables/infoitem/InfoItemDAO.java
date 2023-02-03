@@ -34,6 +34,6 @@ public class InfoItemDAO {
     @Column(name="value", length=20000, nullable=false)
     private String value;
 
-    @Column(name="query_timestamp", length=42)
+    @Column(name="query_timestamp")
     private Instant queryTimestamp;
 }

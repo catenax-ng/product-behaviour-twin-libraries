@@ -23,7 +23,7 @@ import javax.validation.constraints.NotNull;
 		"net.catena_x.btp.libraries.util",
 		"net.catena_x.btp.libraries.bamm",
 		"net.catena_x.btp.libraries.util.security"})
-@OpenAPIDefinition(info = @Info(title = "Data provider service", version = "0.0.99"))
+@OpenAPIDefinition(info = @Info(title = "Data provider service", version = "0.1.0"))
 public class OemDataProviderApplication {
 	public static void main(@NotNull final String[] args) {
 		new SpringApplicationBuilder()

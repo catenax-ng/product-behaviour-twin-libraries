@@ -36,11 +36,11 @@ public class EdcApi {
             @NotNull final HttpUrl partnerUrl, @NotNull final String asset, @NotNull Class<ResponseType> responseClass,
             @Nullable final HttpHeaders headers) throws EdcException {
 
-        final HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
-
         addAuthorizationHeaders(headers);
 
         final HttpEntity<String> request = new HttpEntity<>(headers);
+
+        final HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
         final ResponseEntity<ResponseType> response = restTemplate.exchange(
                 requestUrl.uri(), HttpMethod.GET, request, responseClass);
 
@@ -60,20 +60,12 @@ public class EdcApi {
             @NotNull BodyType body,
             @Nullable HttpHeaders headers) throws EdcException {
 
-        final HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
         addAuthorizationHeaders(headers);
         final HttpEntity<BodyType> request = new HttpEntity<>(body, headers);
 
-        String url = requestUrl.toString();
-
-        // this is a bad fix for API wrapper behaviour
-        if( url.toUpperCase().endsWith("%2F")) {
-            url = url.substring(0, url.length() - 3);
-        }
-
-        url = URLDecoder.decode(url, Charset.defaultCharset());
-
-        final ResponseEntity<ResponseType> response = restTemplate.postForEntity(url, request, responseClass);
+        final HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
+        final ResponseEntity<ResponseType> response = restTemplate.postForEntity(
+                requestUrl.uri(), request, responseClass);
 
         try {
             ResponseChecker.checkResponse(response);
@@ -84,18 +76,13 @@ public class EdcApi {
         return response;
     }
 
-    private HttpUrl buildApiWrapperUrl(@NotNull final HttpUrl partnerUrl, @NotNull final String asset)
-            throws EdcException{
-        try {
-            return HttpUrl.parse(this.apiWrapperUrl).newBuilder()
-                    .addPathSegments(submodelPath)
-                    .addPathSegment(URLEncoder.encode(asset, StandardCharsets.UTF_8.toString()))
-                    .addPathSegment(submodel)
-                    .addQueryParameter(providerEdcUrlKey, partnerUrl.toString())
-                    .build();
-        } catch (final UnsupportedEncodingException exception) {
-            throw new EdcException(exception);
-        }
+    private HttpUrl buildApiWrapperUrl(@NotNull final HttpUrl partnerUrl, @NotNull final String asset) {
+        return HttpUrl.parse(this.apiWrapperUrl).newBuilder()
+                .addPathSegments(submodelPath)
+                .addEncodedPathSegment(asset)
+                .addPathSegment(submodel)
+                .addEncodedQueryParameter(providerEdcUrlKey, partnerUrl.toString())
+                .build();
     }
 
     private void addAuthorizationHeaders(final HttpHeaders headers) {
