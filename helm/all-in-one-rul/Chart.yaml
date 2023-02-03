@@ -3,8 +3,8 @@ name: all-in-one-rul
 description: Deploys postgres, hiapp, updater and provider
 home: https://github.com/catenax-ng/product-behaviour-twin-libraries
 type: application
-appVersion: "0.0.1"
-version: 0.0.1
+appVersion: "0.1.0"
+version: 0.1.0
 maintainers: []
 
 dependencies:
@@ -17,5 +17,5 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     alias: ruldb
   - name: oem-rul-backend
-    version: "0.0.1"
+    version: "0.1.0"
     repository: file://../rulbackend
