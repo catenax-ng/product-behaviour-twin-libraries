@@ -82,11 +82,9 @@ oem-rul-backend:
       cloud.inputFile.bucketName=testbucket
       cloud.inputFile.key=testfile
       edc.apiwrapper.url=https://apiw-dlr.dev.demo.catena-x.net/
-      requester.rulresult.endpoint=http://edc.requester.com/endpoint
-      requester.bpn=BPN0000REQUESTER
-      requester.rulresult.resultAssetName=example
+      requester.rulservice.classification=RemainingUsefulLifeResult
       supplier.rulservice.endpoint=http://edc.supplier.com/endpoint
-      supplier.bpn=BPN0000SUPPLIER
+      supplier.rulservice.bpn=BPN0000SUPPLIER
       supplier.rulservice.inputAssetName=example
       edc.bpn=BPN0000OEM
       edc.endpoint=https://dlr.dev.demo.catena-x.net

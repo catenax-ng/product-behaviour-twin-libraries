@@ -192,8 +192,9 @@ configuration:
     cloud.bucket=test
     cloud.inputFile.bucketName=testbucket
     cloud.inputFile.key=testfile
+    requester.rulservice.classification=RemainingUsefulLifeResult
     supplier.rulservice.endpoint=http://edc.zf.com/endpoint
-    supplier.bpn=BPN0000SUPPLIER
+    supplier.rulservice.bpn=BPN0000SUPPLIER
     supplier.rulservice.inputAssetName=example
     edc.bpn=BPN0000OEM
     edc.endpoint=https://oem.com/edc
