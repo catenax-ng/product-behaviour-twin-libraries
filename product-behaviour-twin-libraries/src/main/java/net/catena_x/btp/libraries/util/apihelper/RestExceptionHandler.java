@@ -2,6 +2,8 @@ package net.catena_x.btp.libraries.util.apihelper;
 
 import net.catena_x.btp.libraries.util.apihelper.preparation.ApiResult;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
@@ -18,30 +20,40 @@ import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.validation.constraints.NotNull;
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
+    private final Logger logger = LoggerFactory.getLogger(RestExceptionHandler.class);
+
     @Override protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
             HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        logger.info("HttpRequestMethodNotSupported: " + ex.getMethod() + " " + ex.getMessage());
+
         super.handleHttpRequestMethodNotSupported(ex, headers, status, request);
         return handle(headers, status, request, "Http request method not supported!");
     }
 
     @Override protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(
             HttpMediaTypeNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        logger.info("HttpMediaTypeNotSupported: " + ex.getContentType() + " " + ex.getMessage());
+
         super.handleHttpMediaTypeNotSupported(ex, headers, status, request);
         return handle(headers, status, request, "Http media type not supported!");
     }
 
     @Override protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(
             HttpMediaTypeNotAcceptableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        logger.info("HttpMediaTypeNotAcceptable: " + ex.getMessage());
         return handle(headers, status, request, "Http media type not acceptable!");
     }
 
@@ -62,6 +74,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override protected ResponseEntity<Object> handleConversionNotSupported(
             ConversionNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        logger.info("ConversionNotSupported: " + ex.getMessage());
+
         return handle(headers, status, request, "Conversion not supported!");
     }
 
@@ -72,6 +86,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override protected ResponseEntity<Object> handleHttpMessageNotReadable(
             HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        final ContentCachingRequestWrapper nativeRequest =
+                (ContentCachingRequestWrapper)((ServletWebRequest)request).getNativeRequest();
+        final String requestEntityAsString = new String(nativeRequest.getContentAsByteArray());
+
+        logger.info("HttpMessageNotReadable: " + ex.getHttpInputMessage() + " " + ex.getMessage() + " \nBody: \n"
+                + requestEntityAsString);
+
         return handle(headers, status, request, "Http message not readable!");
     }
 
