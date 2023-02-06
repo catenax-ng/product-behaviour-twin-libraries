@@ -19,7 +19,7 @@ public class EdcAssetAddress {
     private String connectorUrl;
     private String bpn;
     private String assetId;
-
+ 
     public static <T> EdcAssetAddress replyAddressFromNotification(@NotNull final Notification<T> notification)
             throws BtpException {
         assetNotNull(notification, "notification");
