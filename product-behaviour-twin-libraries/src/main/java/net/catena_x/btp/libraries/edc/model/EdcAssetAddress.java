@@ -29,8 +29,8 @@ public class EdcAssetAddress {
         assetNotNull(notification.getHeader().getRespondAssetId(), "asset id");
 
         return new EdcAssetAddress(notification.getHeader().getSenderAddress(),
-                notification.getHeader().getSenderBPN(),
-                notification.getHeader().getRespondAssetId());
+                                   notification.getHeader().getSenderBPN(),
+                                   notification.getHeader().getRespondAssetId());
     }
 
     public static <T> EdcAssetAddress replyAddressFromNotification(@NotNull final NotificationDAO<T> notification)
@@ -42,8 +42,8 @@ public class EdcAssetAddress {
         assetNotNull(notification.getHeader().getRespondAssetId(), "asset id");
 
         return new EdcAssetAddress(notification.getHeader().getSenderAddress(),
-                notification.getHeader().getSenderBPN(),
-                notification.getHeader().getRespondAssetId());
+                                   notification.getHeader().getSenderBPN(),
+                                   notification.getHeader().getRespondAssetId());
     }
 
     private static <T> void assetNotNull(@Nullable final T value, @Nullable final String element) throws BtpException {

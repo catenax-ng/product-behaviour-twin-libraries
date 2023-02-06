@@ -212,7 +212,7 @@ configuration:
     cloud.inputFile.bucketName=testbucket
     cloud.inputFile.key=testfile
     supplier.hiservice.endpoint=http://edc.zf.com/endpoint
-    supplier.bpn=BPN0000SUPPLIER
+    supplier.hiservice.bpn=BPN0000SUPPLIER
     supplier.hiservice.inputAssetName=example
     edc.bpn=BPN0000OEM
     edc.endpoint=https://oem.com/edc
