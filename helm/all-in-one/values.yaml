@@ -343,15 +343,17 @@ oem-rul-backend:
       cloud.bucket=test
       cloud.inputFile.bucketName=testbucket
       cloud.inputFile.key=testfile
-      edc.apiwrapper.url=https://apiw-dlr.dev.demo.catena-x.net/
-      requester.rulresult.endpoint=http://edc.requester.com/endpoint
-      requester.bpn=BPN0000REQUESTER
-      requester.rulresult.resultAssetName=example
-      supplier.rulservice.endpoint=http://edc.supplier.com/endpoint
-      supplier.bpn=BPN0000SUPPLIER
-      supplier.rulservice.inputAssetName=example
-      edc.bpn=BPN0000OEM
-      edc.endpoint=https://dlr.dev.demo.catena-x.net
+      edc.apiwrapper.url=https://wrapper-bmw.dev.demo.catena-x.net/
+      requester.rulresult.endpoint=https://connector2.cp.int.adac.openresearch.com
+      requester.bpn=BPNL00000002HCQ9
+      requester.rulresult.resultAssetName=urn:pilot:service:RemaigUsefulLifeNotification
+      supplier.rulservice.endpoint=https://edc-ocp0900009.apps.c7von4sy.westeurope.aroapp.io/BPNL00000003B2OM
+      supplier.bpn=BPNL00000003B2OM
+      supplier.rulservice.inputAssetName=urn:uuid:17937c84-000b-4520-9830-ba86934850e3
+      supplier.rulservice.respondAssetId=urn:pilot:service:RemaigUsefulLifeResultNotification
+      supplier.rulservice.classification=RemainingUsefulLifePredictor
+      edc.bpn=BPNL00000003AYRE
+      edc.endpoint=https://bmw-btp-test.dev.demo.catena-x.net
       spring.config.import=
 
 ruldb:
