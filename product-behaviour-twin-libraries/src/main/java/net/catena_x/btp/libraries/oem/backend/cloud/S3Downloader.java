@@ -1,10 +1,8 @@
 package net.catena_x.btp.libraries.oem.backend.cloud;
 
 
-import io.minio.DownloadObjectArgs;
 import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
 import io.minio.errors.MinioException;
 import net.catena_x.btp.libraries.util.exceptions.S3Exception;
 import okhttp3.HttpUrl;

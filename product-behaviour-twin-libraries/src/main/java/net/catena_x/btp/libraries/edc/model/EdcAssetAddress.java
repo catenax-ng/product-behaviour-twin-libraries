@@ -19,7 +19,23 @@ public class EdcAssetAddress {
     private String connectorUrl;
     private String bpn;
     private String assetId;
- 
+
+    public boolean isFullyDefined() {
+        return (connectorUrl!=null) && (bpn!=null) && (assetId!=null);
+    }
+
+    public boolean fillMissingData(@Nullable final EdcAssetAddress other) {
+        if(other != null) {
+            if(connectorUrl == null) {
+                setConnectorUrl(other.getConnectorUrl());
+                setBpn(other.getBpn());
+                setAssetId(other.getAssetId());
+            }
+        }
+
+        return isFullyDefined();
+    }
+
     public static <T> EdcAssetAddress replyAddressFromNotification(@NotNull final Notification<T> notification)
             throws BtpException {
         assetNotNull(notification, "notification");

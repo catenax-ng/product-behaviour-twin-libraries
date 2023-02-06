@@ -5,6 +5,8 @@ import net.catena_x.btp.libraries.util.apihelper.ResponseChecker;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import okhttp3.HttpUrl;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -27,6 +29,8 @@ public class EdcApi {
     @Value("${edc.apiwrapper.username}") private String apiWrapperUsername;
     @Value("${edc.apiwrapper.password}") private String apiWrapperPassword;
 
+    private final Logger logger = LoggerFactory.getLogger(EdcApi.class);
+
     public <ResponseType> ResponseEntity<ResponseType> get(
             @NotNull final HttpUrl partnerUrl, @NotNull final String asset, @NotNull Class<ResponseType> responseClass,
             @Nullable final HttpHeaders headers) throws EdcException {
@@ -36,6 +40,9 @@ public class EdcApi {
         final HttpEntity<String> request = new HttpEntity<>(headers);
 
         final HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
+
+        logger.info("API-WRAPPER request: GET " + requestUrl.toString());
+
         final ResponseEntity<ResponseType> response = restTemplate.exchange(
                 requestUrl.uri(), HttpMethod.GET, request, responseClass);
 
@@ -59,6 +66,9 @@ public class EdcApi {
         final HttpEntity<BodyType> request = new HttpEntity<>(body, headers);
 
         final HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
+
+        logger.info("API-WRAPPER request: POST " + requestUrl.toString());
+
         final ResponseEntity<ResponseType> response = restTemplate.postForEntity(
                 requestUrl.uri(), request, responseClass);
 
@@ -72,12 +82,19 @@ public class EdcApi {
     }
 
     private HttpUrl buildApiWrapperUrl(@NotNull final HttpUrl partnerUrl, @NotNull final String asset) {
-        return HttpUrl.parse(this.apiWrapperUrl).newBuilder()
-                .addPathSegments(submodelPath)
-                .addEncodedPathSegment(asset)
-                .addPathSegment(submodel)
-                .addEncodedQueryParameter(providerEdcUrlKey, partnerUrl.toString())
-                .build();
+        String partnerUrlAsString = partnerUrl.toString();
+        if(partnerUrlAsString.endsWith("/")) {
+            partnerUrlAsString = partnerUrlAsString.substring(0, partnerUrlAsString.length() - 1);
+        }
+
+        final HttpUrl url = HttpUrl.parse(this.apiWrapperUrl).newBuilder()
+                                     .addPathSegments(submodelPath)
+                                     .addEncodedPathSegment(asset)
+                                     .addPathSegment(submodel)
+                                     .addEncodedQueryParameter(providerEdcUrlKey, partnerUrlAsString)
+                                     .build();
+
+        return url;
     }
 
     private void addAuthorizationHeaders(final HttpHeaders headers) {
