@@ -101,7 +101,6 @@ public class S3Uploader {
                     .bucket(bucket)
                     .object(key)
                     .stream(stream, stream.available(), -1)
-                    .contentType("application/json")
                     .build());
         } catch (IOException | MinioException | NoSuchAlgorithmException | InvalidKeyException e) {
             throw new S3Exception(e.getMessage(), e.getCause());
