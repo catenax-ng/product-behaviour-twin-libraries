@@ -17,6 +17,7 @@ public class S3SpringWrapper {
     private final String defaultBucket;
 
     private HashMap<String, S3Uploader> uploaders;
+    private HashMap<String, S3Downloader> downloaders;
 
     public S3SpringWrapper(
             @Value("${cloud.endpoint}") final String endpoint,
@@ -29,11 +30,21 @@ public class S3SpringWrapper {
         this.secretKey = secretKey;
         this.defaultBucket = defaultBucket;
         resetUploaders();
+        resetDownloaders();
     }
 
 
-    public static InputStream downloadFileViaLink(final HttpUrl downloadUrl) throws S3Exception {
+    public InputStream downloadFileViaLink(final HttpUrl downloadUrl) throws S3Exception {
         return S3Downloader.downloadFileViaLink(downloadUrl);
+    }
+
+    public InputStream downloadFileFromS3Default(final String key) throws S3Exception {
+        return downloaders.get(defaultBucket).downloadFileFromS3(key);
+    }
+
+    public InputStream downloadFileFromS3(final String bucketName, final String key) throws S3Exception {
+        constructDownloaderIfNotExists(bucketName);
+        return downloaders.get(bucketName).downloadFileFromS3(key);
     }
 
     /**
@@ -308,9 +319,19 @@ public class S3SpringWrapper {
         uploaders.put(defaultBucket, new S3Uploader(endpoint, accessKey, secretKey, defaultBucket));
     }
 
+    public void resetDownloaders() {
+        downloaders = new HashMap<>();
+        downloaders.put(defaultBucket, new S3Downloader(endpoint, accessKey, secretKey, defaultBucket));
+    }
+
     private void constructUploaderIfNotExists(final String bucketName) {
         if(!uploaders.containsKey(bucketName))
             uploaders.put(bucketName, new S3Uploader(endpoint, accessKey, secretKey, bucketName));
+    }
+
+    private void constructDownloaderIfNotExists(final String bucketName) {
+        if(!downloaders.containsKey(bucketName))
+            downloaders.put(bucketName, new S3Downloader(endpoint, accessKey, secretKey, bucketName));
     }
 
 }

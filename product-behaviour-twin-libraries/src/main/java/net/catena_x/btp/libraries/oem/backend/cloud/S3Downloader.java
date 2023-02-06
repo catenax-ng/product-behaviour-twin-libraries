@@ -40,6 +40,15 @@ public class S3Downloader {
                 .build();
     }
 
+    public S3Downloader(final HttpUrl endpoint, final String accessKey, final String secretKey,
+                        final String bucket) {
+        this.bucket = bucket;
+        client = MinioClient.builder()
+                .endpoint(endpoint)
+                .credentials(accessKey, secretKey)
+                .build();
+    }
+
     /**
      * Upload the content given by stream into a file with the name given by key into an existing bucket
      * @param key file name inside the bucket
