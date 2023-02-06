@@ -74,7 +74,7 @@ oem-hi-app:
       cloud.inputFile.key=testfile
       supplier.hiservice.endpoint=https://edc-ocp0900009.apps.c7von4sy.westeurope.aroapp.io/BPNL00000003B2OM
       supplier.hiservice.bpn=BPNL00000003B2OM
-      supplier.hiservice.inputAssetName=urn:uuid:17937c84-000b-4520-9830-ba86934850e3
+      supplier.hiservice.inputAssetId=urn:uuid:17937c84-000b-4520-9830-ba86934850e3
       edc.bpn=BPNL000000002YWC
       edc.endpoint=https://dlr.dev.demo.catena-x.net
       edc.apiwrapper.url=https://apiw-dlr.dev.demo.catena-x.net
@@ -347,7 +347,8 @@ oem-rul-backend:
       requester.rulservice.classification=RemainingUsefulLifeResult
       supplier.rulservice.endpoint=https://edc-ocp0900009.apps.c7von4sy.westeurope.aroapp.io/BPNL00000003B2OM
       supplier.rulservice.bpn=BPNL00000003B2OM
-      supplier.rulservice.inputAssetName=urn:uuid:17937c84-000b-4520-9830-ba86934850e3
+      supplier.rulservice.inputAssetId=urn:uuid:17937c84-000b-4520-9830-ba86934850e3
+      supplier.rulservice.respondAssetId=urn:pilot:service:RemaigUsefulLifeResultNotification
       supplier.rulservice.classification=RemainingUsefulLifePredictor
       edc.bpn=BPNL00000003AYRE
       edc.endpoint=https://bmw-btp-test.dev.demo.catena-x.net
