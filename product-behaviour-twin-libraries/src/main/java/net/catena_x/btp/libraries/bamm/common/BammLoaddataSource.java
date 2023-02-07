@@ -14,4 +14,5 @@ import lombok.Setter;
 public class BammLoaddataSource {
     private String informationOriginLoadSpectrum;
     private String informationLoadSpectrum;
+    private String sourceLoadSpectrum;
 }
