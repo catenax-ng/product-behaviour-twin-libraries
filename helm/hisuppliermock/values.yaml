@@ -169,7 +169,16 @@ credentials:
   cloud:
     accessKey: xxxxxxx
     secretKey: xxxxxxx
+  apiwrapper:
+    username: xxxxxxx
+    password: xxxxxxx
   api:
+    username: xxxxxxx
+    password: xxxxxxx
+  rawdata:
+    username: xxxxxxx
+    password: xxxxxxx
+  healthindicator:
     username: xxxxxxx
     password: xxxxxxx
 
