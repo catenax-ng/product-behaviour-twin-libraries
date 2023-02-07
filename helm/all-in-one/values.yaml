@@ -368,3 +368,12 @@ ruldb:
 
   # initdbUsername: *psqlUsername
   # initdbPassword: *psqlPassword
+
+hisuppliermock:
+  credentials:
+    cloud:
+      accessKey: *cloudKey
+      secretKey: *cloudSecret
+    api:
+      username: *apiUser
+      password: *apiPass

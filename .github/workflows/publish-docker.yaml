@@ -27,6 +27,8 @@ jobs:
             image: ghcr.io/catenax-ng/product-oem-hi-app-frontend
           - dockerfile: ./Dockerfile_hibackend
             image: ghcr.io/catenax-ng/product-oem-hi-app
+          - dockerfile: ./Dockerfile_hisuppliermock
+            image: ghcr.io/catenax-ng/product-hi-supplier-service
           - dockerfile: ./Dockerfile_provider
             image: ghcr.io/catenax-ng/product-oem-dataprovider
           - dockerfile: ./Dockerfile_updater

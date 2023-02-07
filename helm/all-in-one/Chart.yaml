@@ -20,6 +20,9 @@ dependencies:
   - name: oem-hi-app
     version: "0.1.0"
     repository: file://../hiapp
+  - name: hisuppliermock
+    version: "0.1.0"
+    repository: file://../hisuppliermock
   - name: provider
     version: "0.1.0"
     repository: file://../provider

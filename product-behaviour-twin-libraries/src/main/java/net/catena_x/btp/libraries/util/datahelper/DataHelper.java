@@ -45,4 +45,24 @@ public final class DataHelper {
 
         return collection.iterator().next();
     }
+
+    public static <T> T getFirstItem(@Nullable final Collection<T> collection) throws BtpException {
+        if (collection == null) {
+            throw new BtpException("Collection was empty!");
+        }
+
+        return getFirstItemNotEmpty(collection);
+    }
+
+    public static <T> T getFirstItemAllowNull(@Nullable final Collection<T> collection) {
+        if (collection == null) {
+            return null;
+        }
+
+        return getFirstItemNotEmpty(collection);
+    }
+
+    public static <T> T getFirstItemNotEmpty(@NotNull final Collection<T> collection) {
+        return collection.iterator().next();
+    }
 }
