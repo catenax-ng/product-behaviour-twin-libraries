@@ -36,7 +36,7 @@ The main S3Handler is a simple Java Class, Spring Interactions are managed separ
 [x] Generate url to download a specific file
 [x] Generate URL to upload a file to a specific bucket
 [x] Javadoc
-[ ] Confluence / Ark42
+[x] Confluence / Ark42
  */
 
 public class S3Uploader {
@@ -101,7 +101,6 @@ public class S3Uploader {
                     .bucket(bucket)
                     .object(key)
                     .stream(stream, stream.available(), -1)
-                    .contentType("application/json")
                     .build());
         } catch (IOException | MinioException | NoSuchAlgorithmException | InvalidKeyException e) {
             throw new S3Exception(e.getMessage(), e.getCause());

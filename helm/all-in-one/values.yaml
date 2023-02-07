@@ -15,6 +15,9 @@ credentials:
   healthindicator:
     username: &hiUser <path:behaviour-twin-pilot/data/health-indicator/credentials/healthindicator#username>
     password: &hiPass <path:behaviour-twin-pilot/data/health-indicator/credentials/healthindicator#password>
+  rul:
+    username: *hiUser
+    password: *hiPass
 
 
 oem-hi-app:
@@ -70,13 +73,13 @@ oem-hi-app:
       cloud.inputFile.bucketName=testbucket
       cloud.inputFile.key=testfile
       supplier.hiservice.endpoint=https://edc-ocp0900009.apps.c7von4sy.westeurope.aroapp.io/BPNL00000003B2OM
-      supplier.bpn=BPNL00000003B2OM
-      supplier.hiservice.inputAssetName=urn:uuid:17937c84-000b-4520-9830-ba86934850e3
+      supplier.hiservice.bpn=BPNL00000003B2OM
+      supplier.hiservice.inputAssetId=urn:uuid:17937c84-000b-4520-9830-ba86934850e3
       edc.bpn=BPNL000000002YWC
       edc.endpoint=https://dlr.dev.demo.catena-x.net
       edc.apiwrapper.url=https://apiw-dlr.dev.demo.catena-x.net
-      security.api.role=USER
-      security.api.endpoints.hidatareceiver.notifyresult.noauth=true
+      security.api.endpoints.noauth.global=false
+      security.api.endpoints.noauth.callbacks=true
       rawdatadb.drivername=org.postgresql.Driver
       rawdatadb.show-sql=false
       rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
@@ -134,9 +137,9 @@ oem-hi-frontend:
     properties: |-
       spring.application.name=hifrontend
       spring.jpa.open-in-view=false
-      security.api.role=USER
       healthindicatordb.url=jdbc:postgresql://healthindicatordb/healthindicator
-      security.api.endpoints.hidatareceiver.notifyresult.noauth=true
+      security.api.endpoints.noauth.global=false
+      security.api.endpoints.noauth.callbacks=true
       hifrontend.adaptionsvalues.thresholds.greenYellow=0.8
       hifrontend.adaptionsvalues.thresholds.yellowRed=1.0
       spring.config.import=
@@ -187,7 +190,6 @@ provider:
       services.dataupdater.endpoint.baseurl=https://bmw-updater.dev.demo.catena-x.net/api/rawdata
       services.dataprovider.testdata.file=testdata.json
       services.dataupdater.endpoint.authenticationActivated=true
-      security.api.role=USER
       spring.config.import=
 
 updater:
@@ -234,7 +236,6 @@ updater:
     properties: |-
       spring.application.name=dataupdater
       spring.jpa.open-in-view=false
-      security.api.role=USER
       rawdatadb.drivername=org.postgresql.Driver
       rawdatadb.show-sql=false
       rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
@@ -276,3 +277,103 @@ healthindicatordb:
 
   # initdbUsername: *psqlUsername
   # initdbPassword: *psqlPassword
+
+
+oem-rul-backend:
+  ingress:
+    enabled: true
+    className: ""
+    tls: true
+    certManager:
+      issuer: ""
+      clusterIssuer: ""
+
+    annotations: { }
+    hostname: "bmw-rul-backend.dev.demo.catena-x.net"
+    secret: tls-secret
+
+  server:
+    port: &hiPort 35553
+
+  connection:
+    endpoints:
+      default:
+        port: *hiPort
+        path: /
+        ingress: True
+
+  credentials:
+    cloud:
+      accessKey: *cloudKey
+      secretKey: *cloudSecret
+    apiwrapper:
+      username: *apiwrapperUser
+      password: *apiwrapperPass
+    api:
+      username: *apiUser
+      password: *apiPass
+    rawdata:
+      username: *rawdataUser
+      password: *rawdataPass
+    rul:
+      username: *hiUser
+      password: *hiPass
+
+  configuration:
+    properties: |-
+      spring.application.name=rulbackendservice
+      spring.jpa.open-in-view=false
+      edc.apiwrapper.submodelPath=api/service
+      edc.apiwrapper.submodel=submodel
+      edc.apiwrapper.providerEdcUrlKey=provider-connector-url
+      security.api.endpoints.noauth.global=false
+      security.api.endpoints.noauth.callbacks=true
+      ruldb.drivername=org.postgresql.Driver
+      ruldb.show-sql=false
+      ruldb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+      ruldb.hibernate.hbm2ddl.auto=update
+      ruldb.url=jdbc:postgresql://ruldb/rul
+      rawdatadb.drivername=org.postgresql.Driver
+      rawdatadb.show-sql=false
+      rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+      rawdatadb.hibernate.hbm2ddl.auto=update
+      rawdatadb.url=jdbc:postgresql://rawdatadb/rawdata
+      cloud.endpoint=https://dlr-minio.dev.demo.catena-x.net/
+      cloud.region=eu-west-1
+      cloud.bucket=test
+      cloud.inputFile.bucketName=testbucket
+      cloud.inputFile.key=testfile
+      edc.apiwrapper.url=https://wrapper-bmw.dev.demo.catena-x.net/
+      requester.rulservice.classification=RemainingUsefulLifeResult
+      supplier.rulservice.endpoint=https://edc-ocp0900009.apps.c7von4sy.westeurope.aroapp.io/BPNL00000003B2OM
+      supplier.rulservice.bpn=BPNL00000003B2OM
+      supplier.rulservice.inputAssetId=urn:uuid:17937c84-000b-4520-9830-ba86934850e3
+      supplier.rulservice.respondAssetId=urn:pilot:service:RemaigUsefulLifeResultNotification
+      supplier.rulservice.classification=RemainingUsefulLifePredictor
+      edc.bpn=BPNL00000003AYRE
+      edc.endpoint=https://bmw-btp-test.dev.demo.catena-x.net
+      spring.config.import=
+
+ruldb:
+  fullnameOverride: "ruldb"
+  image:
+    pullPolicy: Always
+  auth:
+    database: &psqlDatabase "rul"
+    username: *hiUser
+    password: *hiPass
+
+  persistence:
+    enabled: false
+
+  # initdbUsername: *psqlUsername
+  # initdbPassword: *psqlPassword
+
+product-hi-supplier-service:
+  credentials:
+    cloud:
+      accessKey: *cloudKey
+      secretKey: *cloudSecret
+    api:
+      username: *apiUser
+      password: *apiPass

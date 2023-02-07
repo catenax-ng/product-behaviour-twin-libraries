@@ -184,9 +184,9 @@ configuration:
   properties: |-
     spring.application.name=hifrontend
     spring.jpa.open-in-view=false
-    security.api.role=USER
     healthindicatordb.url=jdbc:postgresql://rawdatadb/healthindicator
-    security.api.endpoints.hidatareceiver.notifyresult.noauth=true
+    security.api.endpoints.noauth.global=false
+    security.api.endpoints.noauth.callbacks=true
     hifrontend.adaptionsvalues.thresholds.greenYellow=0.8
     hifrontend.adaptionsvalues.thresholds.yellowRed=1.0
     spring.config.import=

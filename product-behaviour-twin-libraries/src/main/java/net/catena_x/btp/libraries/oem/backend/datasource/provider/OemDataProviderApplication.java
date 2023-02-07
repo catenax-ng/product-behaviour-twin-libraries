@@ -16,12 +16,14 @@ import javax.validation.constraints.NotNull;
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class,
 		DataSourceTransactionManagerAutoConfiguration.class,
 		HibernateJpaAutoConfiguration.class})
-@ComponentScan(basePackages = {"net.catena_x.btp.libraries.oem.backend.datasource.provider",
+@ComponentScan(basePackages = {
+		"net.catena_x.btp.libraries.oem.backend.datasource.provider",
 		"net.catena_x.btp.libraries.oem.backend.datasource.util",
 		"net.catena_x.btp.libraries.oem.backend.datasource.model",
 		"net.catena_x.btp.libraries.util",
-		"net.catena_x.btp.libraries.bamm"})
-@OpenAPIDefinition(info = @Info(title = "Data provider service", version = "0.0.99"))
+		"net.catena_x.btp.libraries.bamm",
+		"net.catena_x.btp.libraries.util.security"})
+@OpenAPIDefinition(info = @Info(title = "Data provider service", version = "0.1.0"))
 public class OemDataProviderApplication {
 	public static void main(@NotNull final String[] args) {
 		new SpringApplicationBuilder()

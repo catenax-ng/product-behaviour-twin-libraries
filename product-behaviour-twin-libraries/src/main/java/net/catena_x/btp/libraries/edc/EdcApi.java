@@ -5,6 +5,8 @@ import net.catena_x.btp.libraries.util.apihelper.ResponseChecker;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import okhttp3.HttpUrl;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -15,32 +17,32 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.constraints.NotNull;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @Component
 public class EdcApi {
     @Autowired private RestTemplate restTemplate;
     @Value("${edc.apiwrapper.url}") private String apiWrapperUrl;
-    @Value("${edc.apiwrapper.submodelPath}") private String submodelPath; //"api/service"
-    @Value("${edc.apiwrapper.submodel}") private String submodel; //"submodel"
-    @Value("${edc.apiwrapper.providerEdcUrlKey}") private String providerEdcUrlKey; //"provider-connector-url"
+    @Value("${edc.apiwrapper.submodelPath}") private String submodelPath;            //"api/service"
+    @Value("${edc.apiwrapper.submodel}") private String submodel;                    //"submodel"
+    @Value("${edc.apiwrapper.providerEdcUrlKey}") private String providerEdcUrlKey;  //"provider-connector-url"
     @Value("${edc.apiwrapper.username}") private String apiWrapperUsername;
     @Value("${edc.apiwrapper.password}") private String apiWrapperPassword;
+
+    private final Logger logger = LoggerFactory.getLogger(EdcApi.class);
 
     public <ResponseType> ResponseEntity<ResponseType> get(
             @NotNull final HttpUrl partnerUrl, @NotNull final String asset, @NotNull Class<ResponseType> responseClass,
             @Nullable final HttpHeaders headers) throws EdcException {
 
-        final HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
-
         addAuthorizationHeaders(headers);
 
         final HttpEntity<String> request = new HttpEntity<>(headers);
+
+        final HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
+
+        logger.info("API-WRAPPER request: GET " + requestUrl.toString());
+
         final ResponseEntity<ResponseType> response = restTemplate.exchange(
                 requestUrl.uri(), HttpMethod.GET, request, responseClass);
 
@@ -60,20 +62,15 @@ public class EdcApi {
             @NotNull BodyType body,
             @Nullable HttpHeaders headers) throws EdcException {
 
-        final HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
         addAuthorizationHeaders(headers);
         final HttpEntity<BodyType> request = new HttpEntity<>(body, headers);
 
-        String url = requestUrl.toString();
+        final HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
 
-        // this is a bad fix for API wrapper behaviour
-        if( url.toUpperCase().endsWith("%2F")) {
-            url = url.substring(0, url.length() - 3);
-        }
+        logger.info("API-WRAPPER request: POST " + requestUrl.toString());
 
-        url = URLDecoder.decode(url, Charset.defaultCharset());
-
-        final ResponseEntity<ResponseType> response = restTemplate.postForEntity(url, request, responseClass);
+        final ResponseEntity<ResponseType> response = restTemplate.postForEntity(
+                requestUrl.uri(), request, responseClass);
 
         try {
             ResponseChecker.checkResponse(response);
@@ -84,18 +81,20 @@ public class EdcApi {
         return response;
     }
 
-    private HttpUrl buildApiWrapperUrl(@NotNull final HttpUrl partnerUrl, @NotNull final String asset)
-            throws EdcException{
-        try {
-            return HttpUrl.parse(this.apiWrapperUrl).newBuilder()
-                    .addPathSegments(submodelPath)
-                    .addPathSegment(URLEncoder.encode(asset, StandardCharsets.UTF_8.toString()))
-                    .addPathSegment(submodel)
-                    .addQueryParameter(providerEdcUrlKey, partnerUrl.toString())
-                    .build();
-        } catch (final UnsupportedEncodingException exception) {
-            throw new EdcException(exception);
+    private HttpUrl buildApiWrapperUrl(@NotNull final HttpUrl partnerUrl, @NotNull final String asset) {
+        String partnerUrlAsString = partnerUrl.toString();
+        if(partnerUrlAsString.endsWith("/")) {
+            partnerUrlAsString = partnerUrlAsString.substring(0, partnerUrlAsString.length() - 1);
         }
+
+        final HttpUrl url = HttpUrl.parse(this.apiWrapperUrl).newBuilder()
+                                     .addPathSegments(submodelPath)
+                                     .addEncodedPathSegment(asset)
+                                     .addPathSegment(submodel)
+                                     .addEncodedQueryParameter(providerEdcUrlKey, partnerUrlAsString)
+                                     .build();
+
+        return url;
     }
 
     private void addAuthorizationHeaders(final HttpHeaders headers) {

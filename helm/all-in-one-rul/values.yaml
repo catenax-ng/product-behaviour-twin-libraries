@@ -64,7 +64,8 @@ oem-rul-backend:
       edc.apiwrapper.submodelPath=api/service
       edc.apiwrapper.submodel=submodel
       edc.apiwrapper.providerEdcUrlKey=provider-connector-url
-      security.api.endpoints.ruldatareceiver.notifyresult.noauth=true
+      security.api.endpoints.noauth.global=false
+      security.api.endpoints.noauth.callbacks=true
       ruldb.drivername=org.postgresql.Driver
       ruldb.show-sql=false
       ruldb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
@@ -81,15 +82,13 @@ oem-rul-backend:
       cloud.inputFile.bucketName=testbucket
       cloud.inputFile.key=testfile
       edc.apiwrapper.url=https://apiw-dlr.dev.demo.catena-x.net/
-      requester.rulresult.endpoint=http://edc.requester.com/endpoint
-      requester.bpn=BPN0000REQUESTER
-      requester.rulresult.resultAssetName=urn:example:id
+      requester.rulservice.classification=RemainingUsefulLifeResult
       supplier.rulservice.endpoint=http://edc.supplier.com/endpoint
-      supplier.bpn=BPN0000SUPPLIER
-      supplier.rulservice.inputAssetName=urn:example:id
+      supplier.rulservice.bpn=BPN0000SUPPLIER
+      supplier.rulservice.inputAssetId=example
+      supplier.rulservice.respondAssetId=test
       edc.bpn=BPN0000OEM
       edc.endpoint=https://dlr.dev.demo.catena-x.net
-      security.api.role=USER
       spring.config.import=
 
 rawdatadb2:

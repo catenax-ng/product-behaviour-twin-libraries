@@ -193,12 +193,11 @@ configuration:
     cloud.inputFile.bucketName=testbucket
     cloud.inputFile.key=testfile
     supplier.hiservice.endpoint=http://edc.zf.com/endpoint
-    supplier.bpn=BPN0000SUPPLIER
-    supplier.hiservice.inputAssetName=urn:example:id
+    supplier.hiservice.bpn=BPN0000SUPPLIER
+    supplier.hiservice.inputAssetId=example
     edc.bpn=BPN0000OEM
     edc.endpoint=https://oem.com/edc
     edc.apiwrapper.url=http://myapiwrapper.url
-    security.api.role=USER
     rawdatadb.drivername=org.postgresql.Driver
     rawdatadb.show-sql=false
     rawdatadb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
@@ -209,6 +208,7 @@ configuration:
     rawdatadb.hibernate.hbm2ddl.auto=update
     rawdatadb.url=jdbc:postgresql://localhost:64321/rawdata
     healthindicatordb.url=jdbc:postgresql://rawdatadb/healthindicator
-    security.api.endpoints.hidatareceiver.notifyresult.noauth=true
+    security.api.endpoints.noauth.global=false
+    security.api.endpoints.noauth.callbacks=true
     spring.config.import=
     
