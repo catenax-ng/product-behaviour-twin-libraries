@@ -23,9 +23,9 @@ import java.util.Base64;
 public class EdcApi {
     @Autowired private RestTemplate restTemplate;
     @Value("${edc.apiwrapper.url}") private String apiWrapperUrl;
-    @Value("${edc.apiwrapper.submodelPath}") private String submodelPath;            //"api/service"
-    @Value("${edc.apiwrapper.submodel}") private String submodel;                    //"submodel"
-    @Value("${edc.apiwrapper.providerEdcUrlKey}") private String providerEdcUrlKey;  //"provider-connector-url"
+    @Value("${edc.apiwrapper.submodelPath}") private String submodelPath;           //"api/service"
+    @Value("${edc.apiwrapper.submodel}") private String submodel;                   //"submodel"
+    @Value("${edc.apiwrapper.providerEdcUrlKey}") private String providerEdcUrlKey; //"provider-connector-url"
     @Value("${edc.apiwrapper.username}") private String apiWrapperUsername;
     @Value("${edc.apiwrapper.password}") private String apiWrapperPassword;
 
