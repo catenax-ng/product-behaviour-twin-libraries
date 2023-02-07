@@ -72,15 +72,15 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - name: configuration
-              mountPath: /opt/app/application-dataupdater.properties
-              subPath: application-dataupdater.properties
+              mountPath: /opt/app/application-hisupplierservice.properties
+              subPath: application-hisupplierservice.properties
       volumes:
         - name: configuration
           configMap:
             name: {{ include "helper.fullname" . }}-configmap
             items:
-              - key: application-dataupdater.properties
-                path: application-dataupdater.properties
+              - key: application-hisupplierservice.properties
+                path: application-hisupplierservice.properties
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
