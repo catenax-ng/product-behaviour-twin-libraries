@@ -1,10 +1,13 @@
 package net.catena_x.btp.libraries.util.apihelper;
 
+import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.infoitem.InfoTableInternal;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResultWithValue;
 import net.catena_x.btp.libraries.util.apihelper.preparation.ApiResponse;
 import net.catena_x.btp.libraries.util.apihelper.preparation.ApiResult;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +18,8 @@ import javax.validation.constraints.NotNull;
 @Component
 public class ApiHelper {
     @Autowired private ApiResponse apiResponse;
+
+    private final Logger logger = LoggerFactory.getLogger(InfoTableInternal.class);
 
     public ResponseEntity<DefaultApiResult> ok(@NotNull final String message) {
         return apiResponse.toObject(ApiResult.ok(message));
@@ -69,10 +74,12 @@ public class ApiHelper {
     }
 
     public ResponseEntity<DefaultApiResult> failed(@NotNull final String error) {
+        logger.error("Responding with: " + error);
         return apiResponse.toObject(ApiResult.failed(error));
     }
 
     public ResponseEntity<String> failedAsString(@NotNull final String error) {
+        logger.error("Responding with: " + error);
         return apiResponse.toString(ApiResult.failed(error), DefaultApiResult.class);
     }
 
@@ -81,16 +88,21 @@ public class ApiHelper {
     }
 
     public <T> ResponseEntity<String> failedAsString(@NotNull final T errorValue) {
-        return apiResponse.toString(ApiResult.failed(errorValue), DefaultApiResult.class);
+        final ResponseEntity<String> errorResponse =
+                apiResponse.toString(ApiResult.failed(errorValue), DefaultApiResult.class);
+        logger.error("Responding with: " + errorResponse.getBody().toString());
+        return errorResponse;
     }
 
     public <T> ResponseEntity<DefaultApiResultWithValue<T>> failedWithValue(@Nullable final String error,
                                                                             @Nullable final T errorValue) {
+        logger.error("Responding with: " + error);
         return apiResponse.toObject(ApiResult.failedWithValue(error, errorValue));
     }
 
     public <T> ResponseEntity<String> failedWithValueAsString(@Nullable final String error,
                                                               @Nullable final T errorValue) {
+        logger.error("Responding with: " + error);
         return apiResponse.toString(ApiResult.failedWithValue(error, errorValue), DefaultApiResultWithValue.class);
     }
 
