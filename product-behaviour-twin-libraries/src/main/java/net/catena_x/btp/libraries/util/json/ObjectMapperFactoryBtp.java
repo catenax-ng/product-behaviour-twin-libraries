@@ -32,6 +32,7 @@ public class ObjectMapperFactoryBtp {
         return objectMapper;
     }
 
+    @Primary
     @Bean(name = EXTENDED_OBJECT_MAPPER)
     public static MappingJackson2HttpMessageConverter createMessageConverter() {
         final MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
