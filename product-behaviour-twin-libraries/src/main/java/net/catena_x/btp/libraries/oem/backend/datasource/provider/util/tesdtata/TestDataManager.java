@@ -1,8 +1,9 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.provider.util.tesdtata;
 
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.TestDataReader;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.model.TestDataCategorized;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.TestdataConfig;
+import net.catena_x.btp.libraries.oem.backend.datasource.testdata.TestDataReader;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.TestdataCategorized;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Component
 public class TestDataManager {
     @Autowired private TestDataReader testDataReader;
-    @Autowired private TestDataCategorized testDataCategorized;
+    @Autowired private TestdataCategorized testDataCategorized;
 
     @Value("${services.dataprovider.testdata.file}")
     private String testDataFile;
@@ -42,7 +43,7 @@ public class TestDataManager {
     }
 
     public TestData getTestData() throws DataProviderException {
-        getTestDataCategorized(null, true);
+        getTestDataCategorized();
         return testData;
     }
 
@@ -53,12 +54,37 @@ public class TestDataManager {
         unlock();
     }
 
-    public synchronized TestDataCategorized getTestDataCategorized(@Nullable final String testDataJson,
+    public synchronized TestdataCategorized getTestDataCategorized()
+            throws DataProviderException {
+
+        if(!testDataCategorized.isInitialized()) {
+            initTestDataCategorized();
+        }
+
+        return testDataCategorized;
+    }
+
+    public synchronized TestdataCategorized getTestDataCategorized(@Nullable final String testDataJson,
                                                                    @NotNull boolean resetTestdata)
             throws DataProviderException {
 
         if(testDataJson != null) {
             return getDataCategorizedFromJson(testDataJson, resetTestdata);
+        }
+
+        if(!testDataCategorized.isInitialized()) {
+            initTestDataCategorized();
+        }
+
+        return testDataCategorized;
+    }
+
+    public synchronized TestdataCategorized getTestDataCategorized(@Nullable final TestdataConfig config,
+                                                                   @NotNull boolean resetTestdata)
+            throws DataProviderException {
+
+        if(config != null) {
+            return getDataCategorizedFromConfig(config, resetTestdata);
         }
 
         if(!testDataCategorized.isInitialized()) {
@@ -75,13 +101,27 @@ public class TestDataManager {
         testDataCategorized.initFromTestData(testData);
     }
 
-    private TestDataCategorized getDataCategorizedFromJson(
+    private TestdataCategorized getDataCategorizedFromJson(
             @NotNull final String testDataJson, @NotNull final boolean resetTestdata) throws DataProviderException {
 
         if(resetTestdata || testData == null) {
             testData = testDataReader.loadFromJson(testDataJson);
         } else {
             testDataReader.appendFromJson(testData, testDataJson);
+        }
+
+        testDataCategorized.reset();
+        testDataCategorized.initFromTestData(testData);
+        return testDataCategorized;
+    }
+
+    private TestdataCategorized getDataCategorizedFromConfig(
+            @NotNull final TestdataConfig config, @NotNull final boolean resetTestdata) throws DataProviderException {
+
+        if(resetTestdata || testData == null) {
+            testData = testDataReader.loadFromConfig(config);
+        } else {
+            testDataReader.appendFromConfig(testData, config);
         }
 
         testDataCategorized.reset();

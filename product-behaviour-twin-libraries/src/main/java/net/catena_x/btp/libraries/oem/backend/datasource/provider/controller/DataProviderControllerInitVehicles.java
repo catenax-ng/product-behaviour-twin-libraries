@@ -54,8 +54,7 @@ public class DataProviderControllerInitVehicles {
     public ResponseEntity<DefaultApiResult> initVehicles() {
         try {
             testDataManager.lock();
-            vehicleRegistration.registerFromTestDataCetegorized(testDataManager.getTestDataCategorized(
-                    null, true));
+            vehicleRegistration.registerFromTestDataCetegorized(testDataManager.getTestDataCategorized());
             return apiHelper.ok("Vehicles registered.");
         }
         catch(final DataProviderException exception) {

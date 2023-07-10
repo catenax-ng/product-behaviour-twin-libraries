@@ -3,7 +3,7 @@ package net.catena_x.btp.libraries.oem.backend.datasource.provider.dataupdaterap
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.InputTelematicsData;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.model.TestDataCategorized;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.TestdataCategorized;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.UncheckedDataProviderException;
 import net.catena_x.btp.libraries.util.apihelper.ResponseChecker;
@@ -25,14 +25,14 @@ import java.util.HashMap;
 public class TelematicsDataUpdater {
     @Autowired private RestTemplate restTemplate;
     @Autowired private DataUpdaterApi dataUpdaterApi;
-    @Autowired private TestDataCategorized testDataCategorized;
+    @Autowired private TestdataCategorized testDataCategorized;
 
     public void updateFromTestData(@NotNull TestData testData) throws DataProviderException {
         testDataCategorized.initFromTestData(testData);
         updateFromTestDataCetegorized(testDataCategorized);
     }
 
-    public void updateFromTestDataCetegorized(@NotNull TestDataCategorized testDataCategorized)
+    public void updateFromTestDataCetegorized(@NotNull TestdataCategorized testDataCategorized)
             throws DataProviderException {
         final HashMap<String, DigitalTwin> vehicles = testDataCategorized.getDigitalTwinsVehicles();
 

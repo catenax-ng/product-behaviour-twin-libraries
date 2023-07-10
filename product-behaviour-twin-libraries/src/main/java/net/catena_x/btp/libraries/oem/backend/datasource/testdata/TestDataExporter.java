@@ -1,4 +1,4 @@
-package net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata;
+package net.catena_x.btp.libraries.oem.backend.datasource.testdata;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,7 +7,7 @@ import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.items.LoadS
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
 import net.catena_x.btp.libraries.bamm.util.DigitalTwinConverter;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.model.TestDataCategorized;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.TestdataCategorized;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import net.catena_x.btp.libraries.util.datahelper.DataHelper;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
@@ -30,7 +30,7 @@ public class TestDataExporter {
     @Autowired @Qualifier(ObjectMapperFactoryBtp.EXTENDED_OBJECT_MAPPER) private ObjectMapper objectMapper;
     @Autowired DigitalTwinConverter digitalTwinConverter;
 
-    public void export(@NotNull final TestDataCategorized testDataCategorized, @NotNull final Path filename,
+    public void export(@NotNull final TestdataCategorized testDataCategorized, @NotNull final Path filename,
                        @NotNull final boolean useOldBammVersion,
                        @NotNull final boolean onlyfirstLoadSpectrumPerType,
                        @NotNull final boolean exportDamageAndRul) throws DataProviderException {
@@ -38,16 +38,16 @@ public class TestDataExporter {
             return;
         }
 
-        final TestDataCategorized testDataCategorizedCopy = getCopy(testDataCategorized);
+        final TestdataCategorized testdataCategorizedCopy = getCopy(testDataCategorized);
 
-        final Collection<DigitalTwin> vehicleTwins = testDataCategorizedCopy.getDigitalTwinsVehicles().values();
+        final Collection<DigitalTwin> vehicleTwins = testdataCategorizedCopy.getDigitalTwinsVehicles().values();
         final TestData testDataExport = new TestData();
         testDataExport.setDigitalTwins(new ArrayList<>(vehicleTwins.size()));
 
         for (final DigitalTwin vehicleTwin: vehicleTwins) {
             testDataExport.getDigitalTwins().add(vehicleTwin);
             testDataExport.getDigitalTwins().add(
-                    testDataCategorizedCopy.getGearboxTwinFromVehicleTwinMustExists(vehicleTwin));
+                    testdataCategorizedCopy.getGearboxTwinFromVehicleTwinMustExists(vehicleTwin));
         }
 
         try {
@@ -58,7 +58,7 @@ public class TestDataExporter {
         }
     }
 
-    public void exportLimited(@NotNull final TestDataCategorized testDataCategorized,
+    public void exportLimited(@NotNull final TestdataCategorized testDataCategorized,
                               @NotNull final Path baseFilename,
                               @NotNull final String fileextension,
                               @NotNull final int maxVehicleCountPerFile,
@@ -69,10 +69,10 @@ public class TestDataExporter {
             return;
         }
 
-        final TestDataCategorized testDataCategorizedCopy = getCopy(testDataCategorized);
+        final TestdataCategorized testdataCategorizedCopy = getCopy(testDataCategorized);
 
         try {
-            final Collection<DigitalTwin> vehicleTwins = testDataCategorizedCopy.getDigitalTwinsVehicles().values();
+            final Collection<DigitalTwin> vehicleTwins = testdataCategorizedCopy.getDigitalTwinsVehicles().values();
             final int fileCount = ((vehicleTwins.size() - 1) / maxVehicleCountPerFile) + 1;
 
             final TestData testDataExport = new TestData();
@@ -83,7 +83,7 @@ public class TestDataExporter {
             for (final DigitalTwin vehicleTwin: vehicleTwins) {
                 testDataExport.getDigitalTwins().add(vehicleTwin);
                 testDataExport.getDigitalTwins().add(
-                        testDataCategorizedCopy.getGearboxTwinFromVehicleTwinMustExists(vehicleTwin));
+                        testdataCategorizedCopy.getGearboxTwinFromVehicleTwinMustExists(vehicleTwin));
 
                 ++count;
                 if(count >= maxVehicleCountPerFile) {
@@ -237,14 +237,14 @@ public class TestDataExporter {
         }
     }
 
-    private TestDataCategorized getCopy(@NotNull final TestDataCategorized testData) throws DataProviderException {
+    private TestdataCategorized getCopy(@NotNull final TestdataCategorized testData) throws DataProviderException {
         if(testData == null) {
             return null;
         }
 
         try {
-            final TestDataCategorized testDataCategorized =
-                    objectMapper.readValue(objectMapper.writeValueAsString(testData), TestDataCategorized.class);
+            final TestdataCategorized testDataCategorized =
+                    objectMapper.readValue(objectMapper.writeValueAsString(testData), TestdataCategorized.class);
 
             testDataCategorized.initAutowiredFrom(testData);
 
