@@ -190,7 +190,6 @@ configuration:
     edc.apiwrapper.submodel=submodel
     edc.apiwrapper.providerEdcUrlKey=provider-connector-url
     supplier.hiservice.inputAssetIdTestPredefined=predefined
-    spring.config.import=hisupplierservice-bindings.properties
     security.api.endpoints.noauth.global=false
     security.api.endpoints.noauth.callbacks=true
     server.port=25555
