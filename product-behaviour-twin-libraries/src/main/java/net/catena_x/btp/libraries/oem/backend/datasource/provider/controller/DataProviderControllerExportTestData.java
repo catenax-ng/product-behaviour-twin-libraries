@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.TestDataExporter;
+import net.catena_x.btp.libraries.oem.backend.datasource.testdata.TestDataExporter;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.controller.swagger.ExportTestDataDoc;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.tesdtata.TestDataManager;
@@ -152,12 +152,12 @@ public class DataProviderControllerExportTestData {
             final boolean exportDamageAndRulAspects = (exportDamageAndRul != null)? exportDamageAndRul : true;
 
             if(limitPerFile != null) {
-                testDataExporter.exportLimited(testDataManager.getTestDataCategorized(null, true),
+                testDataExporter.exportLimited(testDataManager.getTestDataCategorized(),
                         Path.of(testdataExportPath, "testdata_export_"
                                         + exportDataFormatter.format(Instant.now())), "json",
                         limitPerFile, oldBammVersion, exportOnlyOneLoadSpectrumPerType, exportDamageAndRulAspects);
             } else {
-                testDataExporter.export(testDataManager.getTestDataCategorized(null, true),
+                testDataExporter.export(testDataManager.getTestDataCategorized(),
                         Path.of(testdataExportPath, "testdata_export_"
                                         + exportDataFormatter.format(Instant.now()) + ".json"),
                         oldBammVersion, exportOnlyOneLoadSpectrumPerType, exportDamageAndRulAspects);

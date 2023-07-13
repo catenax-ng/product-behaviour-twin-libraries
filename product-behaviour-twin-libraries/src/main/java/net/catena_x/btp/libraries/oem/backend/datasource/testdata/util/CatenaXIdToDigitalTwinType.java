@@ -1,4 +1,4 @@
-package net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util;
+package net.catena_x.btp.libraries.oem.backend.datasource.testdata.util;
 
 import javax.validation.constraints.NotNull;
 

@@ -2,9 +2,9 @@ package net.catena_x.btp.libraries.oem.backend.datasource.provider.dataupdaterap
 
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.model.TestDataCategorized;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.CatenaXIdToDigitalTwinType;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.VehicleDataLoader;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.TestdataCategorized;
+import net.catena_x.btp.libraries.oem.backend.datasource.testdata.util.CatenaXIdToDigitalTwinType;
+import net.catena_x.btp.libraries.oem.backend.datasource.testdata.util.VehicleDataLoader;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.registration.VehicleInfo;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.UncheckedDataProviderException;
@@ -26,7 +26,7 @@ import java.util.HashMap;
 public class VehicleRegistration {
     @Autowired private DataUpdaterApi dataUpdaterApi;
     @Autowired private VehicleDataLoader vehicleDataLoader;
-    @Autowired private TestDataCategorized testDataCategorized;
+    @Autowired private TestdataCategorized testDataCategorized;
     @Autowired private RestTemplate restTemplate;
 
     public void registerFromTestData(@NotNull TestData testData) throws DataProviderException {
@@ -34,7 +34,7 @@ public class VehicleRegistration {
         registerFromTestDataCetegorized(testDataCategorized);
     }
 
-    public void registerFromTestDataCetegorized(@NotNull TestDataCategorized testDataCategorized)
+    public void registerFromTestDataCetegorized(@NotNull TestdataCategorized testDataCategorized)
             throws DataProviderException {
 
         try {

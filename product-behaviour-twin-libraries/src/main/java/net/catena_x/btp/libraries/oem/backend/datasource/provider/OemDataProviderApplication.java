@@ -20,6 +20,7 @@ import javax.validation.constraints.NotNull;
 		"net.catena_x.btp.libraries.oem.backend.datasource.provider",
 		"net.catena_x.btp.libraries.oem.backend.datasource.util",
 		"net.catena_x.btp.libraries.oem.backend.datasource.model",
+		"net.catena_x.btp.libraries.oem.backend.datasource.testdata",
 		"net.catena_x.btp.libraries.util",
 		"net.catena_x.btp.libraries.bamm",
 		"net.catena_x.btp.libraries.util.security"})

@@ -1,4 +1,4 @@
-package net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.model;
+package net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,10 +9,10 @@ import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.ClassifiedL
 import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.items.LoadSpectrumType;
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.CatenaXIdToDigitalTwinType;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.DigitalTwinCategorizer;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.DigitalTwinType;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.VehicleDataLoader;
+import net.catena_x.btp.libraries.oem.backend.datasource.testdata.util.CatenaXIdToDigitalTwinType;
+import net.catena_x.btp.libraries.oem.backend.datasource.testdata.util.DigitalTwinCategorizer;
+import net.catena_x.btp.libraries.oem.backend.datasource.testdata.util.DigitalTwinType;
+import net.catena_x.btp.libraries.oem.backend.datasource.testdata.util.VehicleDataLoader;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.UncheckedDataProviderException;
 import net.catena_x.btp.libraries.util.datahelper.DataHelper;
@@ -34,7 +34,7 @@ import java.util.Random;
 import static java.lang.Math.min;
 
 @Component
-public class TestDataCategorized {
+public class TestdataCategorized {
     @Autowired private DigitalTwinCategorizer digitalTwinCategorizer;
     @Autowired private VehicleDataLoader vehicleDataLoader;
     @Autowired @Qualifier(ObjectMapperFactoryBtp.EXTENDED_OBJECT_MAPPER) private ObjectMapper objectMapper;
@@ -55,7 +55,7 @@ public class TestDataCategorized {
         digitalTwinsGearboxes = null;
     }
 
-    public void initAutowiredFrom(@NotNull final TestDataCategorized testDataSource) {
+    public void initAutowiredFrom(@NotNull final TestdataCategorized testDataSource) {
         digitalTwinCategorizer = testDataSource.digitalTwinCategorizer;
         vehicleDataLoader = testDataSource.vehicleDataLoader;
     }
@@ -252,6 +252,10 @@ public class TestDataCategorized {
 
     private ClassifiedLoadSpectrum generateModifiedLoadSpectrum(@NotNull final ClassifiedLoadSpectrum loadSpectrum)
             throws DataProviderException {
+
+        if(loadSpectrum == null) {
+            return null;
+        }
 
         ClassifiedLoadSpectrum modifiedLoadSpectrum = null;
 

@@ -1,9 +1,9 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.provider.testdata.model;
 
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.TestDataReader;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.model.TestDataCategorized;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.util.DigitalTwinType;
+import net.catena_x.btp.libraries.oem.backend.datasource.testdata.TestDataReader;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.TestdataCategorized;
+import net.catena_x.btp.libraries.oem.backend.datasource.testdata.util.DigitalTwinType;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -31,12 +31,13 @@ import java.nio.file.Path;
         HibernateJpaAutoConfiguration.class})
 @ComponentScan(basePackages = {"net.catena_x.btp.libraries.oem.backend.datasource.provider",
         "net.catena_x.btp.libraries.oem.backend.datasource.model",
+        "net.catena_x.btp.libraries.oem.backend.datasource.testdata",
         "net.catena_x.btp.libraries.bamm.testdata"})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestPropertySource(locations = {"classpath:test-dataprovider.properties"})
 class TestDataCategorizedTest {
     @Autowired private TestDataReader testDataReader;
-    @Autowired private TestDataCategorized testDataCategorized;
+    @Autowired private TestdataCategorized testDataCategorized;
 
     @Value("${services.dataprovider.test.testdata.file}")
     private String testDataFile;
