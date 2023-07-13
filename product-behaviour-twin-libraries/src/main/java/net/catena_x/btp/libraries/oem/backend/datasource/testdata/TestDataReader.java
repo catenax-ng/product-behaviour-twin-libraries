@@ -1,5 +1,6 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.testdata;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.catena_x.btp.libraries.bamm.common.BammMeasurementUnit;
@@ -22,6 +23,8 @@ import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exception
 import net.catena_x.btp.libraries.util.json.ObjectMapperFactoryBtp;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -31,10 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -43,7 +43,8 @@ import java.util.stream.Stream;
 public class TestDataReader {
     @Autowired @Qualifier(ObjectMapperFactoryBtp.EXTENDED_OBJECT_MAPPER) private ObjectMapper objectMapper;
 
-    private Random rand = new Random();
+    private final Random rand = new Random();
+    private final Logger logger = LoggerFactory.getLogger(TestDataReader.class);
 
     public TestData loadFromFile(@NotNull final Path filename) throws DataProviderException {
         return loadFromFiles(filename, null, null, null);
@@ -95,6 +96,14 @@ public class TestDataReader {
             testData.setDigitalTwins(new ArrayList<>());
 
             for (final RuLTestdataInputElement testdataInputElement: testDataConfig.rulTestDataFiles()) {
+                logger.info("Reading file \"" + testdataInputElement.filename() + "\"");
+
+                logger.info(String.format("New relation: VIN: %s, VAN: %s, CX-Id: %s, gearbox-Id: %s",
+                        testdataInputElement.vehicle().vin(),
+                        testdataInputElement.vehicle().van(),
+                        testdataInputElement.vehicle().catenaxId(),
+                        testdataInputElement.gearbox().catenaxId()));
+
                 final String data = replacePlaceholders(Files.readString(testdataInputElement.filename()));
                 NotificationDAO<DefaultRuLNotificationToSupplierContentDAO> testDataElement = objectMapper.readValue(
                         data, new TypeReference<NotificationDAO<DefaultRuLNotificationToSupplierContentDAO>>() {});
@@ -115,23 +124,37 @@ public class TestDataReader {
                 if(input.getClassifiedLoadSpectrumGearSet() != null) {
                     input.getClassifiedLoadSpectrumGearSet().setTargetComponentID(gearboxTwin.getCatenaXId());
                     loadSpectra.add(input.getClassifiedLoadSpectrumGearSet());
+
+                    logger.info(String.format("Load spectrum GearSet: %s",
+                            loadSpectrumToString(input.getClassifiedLoadSpectrumGearSet())));
                 }
 
                 if(input.getClassifiedLoadSpectrumGearOil() != null) {
                     input.getClassifiedLoadSpectrumGearOil().setTargetComponentID(gearboxTwin.getCatenaXId());
                     loadSpectra.add(input.getClassifiedLoadSpectrumGearOil());
+
+                    logger.info(String.format("Load spectrum GearOil: %s",
+                            loadSpectrumToString(input.getClassifiedLoadSpectrumGearOil())));
                 }
 
                 vehicleTwin.setClassifiedLoadSpectra(loadSpectra);
 
                 testData.getDigitalTwins().add(vehicleTwin);
                 testData.getDigitalTwins().add(gearboxTwin);
-
-                // Add VIN-CX-Relation
             }
             return testData;
         } catch (final IOException exception) {
-            throw new DataProviderException("Error while reading testdata -from config file!", exception);
+            throw new DataProviderException("Error while reading testdata from config file!", exception);
+        }
+    }
+
+    private String loadSpectrumToString(@NotNull final ClassifiedLoadSpectrum profile) {
+        final double sum = Arrays.stream(profile.getBody().getCounts().getCountsList()).sum();
+        try {
+            return String.format("Sum: %.3f, Status:\n%s", sum,
+                objectMapper.writeValueAsString(profile.getMetadata().getStatus()));
+        } catch(final JsonProcessingException exception) {
+            return String.format("Sum: %.3f, Status not readable.", sum);
         }
     }
 
