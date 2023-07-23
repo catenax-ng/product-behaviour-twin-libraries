@@ -96,17 +96,17 @@ public class TestDataReader {
             testData.setDigitalTwins(new ArrayList<>());
 
             for (final RuLTestdataInputElement testdataInputElement: testDataConfig.rulTestDataFiles()) {
-                logger.info("Reading file \"" + testdataInputElement.filename() + "\"");
+                if(testdataInputElement.filename() != null) {
+                    logger.info("Reading file \"" + testdataInputElement.filename() + "\".");
+                } else {
+                    logger.info("Reading vehicle with no data.");
+                }
 
                 logger.info(String.format("New relation: VIN: %s, VAN: %s, CX-Id: %s, gearbox-Id: %s",
                         testdataInputElement.vehicle().vin(),
                         testdataInputElement.vehicle().van(),
                         testdataInputElement.vehicle().catenaxId(),
                         testdataInputElement.gearbox().catenaxId()));
-
-                final String data = replacePlaceholders(Files.readString(testdataInputElement.filename()));
-                NotificationDAO<DefaultRuLNotificationToSupplierContentDAO> testDataElement = objectMapper.readValue(
-                        data, new TypeReference<NotificationDAO<DefaultRuLNotificationToSupplierContentDAO>>() {});
 
                 final DigitalTwin gearboxTwin = new DigitalTwin();
                 gearboxTwin.setCatenaXId(testdataInputElement.gearbox().catenaxId());
@@ -118,26 +118,33 @@ public class TestDataReader {
                 addSerialPartTypizationVehicle(vehicleTwin, testdataInputElement);
                 addAssemblyPartRelationshipVehicle(vehicleTwin, testdataInputElement);
 
-                final ArrayList<ClassifiedLoadSpectrum> loadSpectra = new ArrayList<>();
+                if(testdataInputElement.filename() != null) {
+                    final String data = replacePlaceholders(Files.readString(testdataInputElement.filename()));
+                    NotificationDAO<DefaultRuLNotificationToSupplierContentDAO> testDataElement =
+                            objectMapper.readValue(data,
+                                    new TypeReference<NotificationDAO<DefaultRuLNotificationToSupplierContentDAO>>() {});
 
-                final DefaultRuLInputDAO input = testDataElement.getContent().getEndurancePredictorInputs().get(0);
-                if(input.getClassifiedLoadSpectrumGearSet() != null) {
-                    input.getClassifiedLoadSpectrumGearSet().setTargetComponentID(gearboxTwin.getCatenaXId());
-                    loadSpectra.add(input.getClassifiedLoadSpectrumGearSet());
+                    final ArrayList<ClassifiedLoadSpectrum> loadSpectra = new ArrayList<>();
 
-                    logger.info(String.format("Load spectrum GearSet: %s",
-                            loadSpectrumToString(input.getClassifiedLoadSpectrumGearSet())));
+                    final DefaultRuLInputDAO input = testDataElement.getContent().getEndurancePredictorInputs().get(0);
+                    if(input.getClassifiedLoadSpectrumGearSet() != null) {
+                        input.getClassifiedLoadSpectrumGearSet().setTargetComponentID(gearboxTwin.getCatenaXId());
+                        loadSpectra.add(input.getClassifiedLoadSpectrumGearSet());
+
+                        logger.info(String.format("Load spectrum GearSet: %s",
+                                loadSpectrumToString(input.getClassifiedLoadSpectrumGearSet())));
+                    }
+
+                    if(input.getClassifiedLoadSpectrumGearOil() != null) {
+                        input.getClassifiedLoadSpectrumGearOil().setTargetComponentID(gearboxTwin.getCatenaXId());
+                        loadSpectra.add(input.getClassifiedLoadSpectrumGearOil());
+
+                        logger.info(String.format("Load spectrum GearOil: %s",
+                                loadSpectrumToString(input.getClassifiedLoadSpectrumGearOil())));
+                    }
+
+                    vehicleTwin.setClassifiedLoadSpectra(loadSpectra);
                 }
-
-                if(input.getClassifiedLoadSpectrumGearOil() != null) {
-                    input.getClassifiedLoadSpectrumGearOil().setTargetComponentID(gearboxTwin.getCatenaXId());
-                    loadSpectra.add(input.getClassifiedLoadSpectrumGearOil());
-
-                    logger.info(String.format("Load spectrum GearOil: %s",
-                            loadSpectrumToString(input.getClassifiedLoadSpectrumGearOil())));
-                }
-
-                vehicleTwin.setClassifiedLoadSpectra(loadSpectra);
 
                 testData.getDigitalTwins().add(vehicleTwin);
                 testData.getDigitalTwins().add(gearboxTwin);

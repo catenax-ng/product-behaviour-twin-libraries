@@ -9,3 +9,4 @@
 /oem_btp.ipr
 /oem_btp.iws
 /.vscode/settings.json
+/product-behaviour-twin-libraries/src/main/resources/hidb-bindings.properties

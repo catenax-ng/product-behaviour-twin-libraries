@@ -35,7 +35,6 @@ import static java.lang.Math.min;
 
 @Component
 public class TestdataCategorized {
-    @Autowired private DigitalTwinCategorizer digitalTwinCategorizer;
     @Autowired private VehicleDataLoader vehicleDataLoader;
     @Autowired @Qualifier(ObjectMapperFactoryBtp.EXTENDED_OBJECT_MAPPER) private ObjectMapper objectMapper;
 
@@ -56,7 +55,6 @@ public class TestdataCategorized {
     }
 
     public void initAutowiredFrom(@NotNull final TestdataCategorized testDataSource) {
-        digitalTwinCategorizer = testDataSource.digitalTwinCategorizer;
         vehicleDataLoader = testDataSource.vehicleDataLoader;
     }
 
@@ -115,7 +113,7 @@ public class TestdataCategorized {
 
     private void fillMaps(@NotNull final TestData testData) throws DataProviderException {
         for (final DigitalTwin digitalTwin : testData.getDigitalTwins()) {
-            switch (digitalTwinCategorizer.categorize(digitalTwin)) {
+            switch (DigitalTwinCategorizer.categorize(digitalTwin)) {
                 case VEHICLE: {
                     appendMissingData(digitalTwin, testData);
                     digitalTwinsVehicles.put(digitalTwin.getCatenaXId(), digitalTwin);

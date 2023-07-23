@@ -11,9 +11,8 @@ import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
 
-@Component
 public class DigitalTwinCategorizer {
-    public DigitalTwinType categorize(@NotNull final DigitalTwin digitalTwin) throws DataProviderException {
+    public static DigitalTwinType categorize(@NotNull final DigitalTwin digitalTwin) throws DataProviderException {
         String nameAtManufacturer = getNameAtManufacturer(digitalTwin);
 
         if (nameAtManufacturer == null) {
@@ -23,7 +22,7 @@ public class DigitalTwinCategorizer {
         return categorizeFromNameAtManufacturer(nameAtManufacturer);
     }
 
-    private DigitalTwinType categorizeFromNameAtManufacturer(@NotNull final String nameAtManufacturer) {
+    private static DigitalTwinType categorizeFromNameAtManufacturer(@NotNull final String nameAtManufacturer) {
         switch(nameAtManufacturer) {
             case "Vehicle Combustion": {
                 return DigitalTwinType.VEHICLE;
@@ -37,7 +36,7 @@ public class DigitalTwinCategorizer {
         }
     }
 
-    private String getNameAtManufacturer(@NotNull final DigitalTwin digitalTwin) throws DataProviderException {
+    private static String getNameAtManufacturer(@NotNull final DigitalTwin digitalTwin) throws DataProviderException {
         // Breaking the law of demeter but want to avoid getting business logic within pure data classes.
         // The data classes are standardized so there won't be frequent changes.
         try {
@@ -49,7 +48,7 @@ public class DigitalTwinCategorizer {
 
     }
 
-    private String getNameAtManufacturerFromSerialPartTypization(
+    private static String getNameAtManufacturerFromSerialPartTypization(
             @Nullable final SerialPartTypization serialPartTypization) {
         if (serialPartTypization == null) {
             return null;
@@ -58,7 +57,7 @@ public class DigitalTwinCategorizer {
         return getNameAtManufacturerFromPartTypeInformation(serialPartTypization.getPartTypeInformation());
     }
 
-    private String getNameAtManufacturerFromPartTypeInformation(
+    private static String getNameAtManufacturerFromPartTypeInformation(
             @Nullable final SPTPartTypeInformation partTypeInformation) {
         if(partTypeInformation == null) {
             return null;
