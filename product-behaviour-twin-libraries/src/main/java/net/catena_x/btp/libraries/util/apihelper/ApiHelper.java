@@ -33,6 +33,10 @@ public class ApiHelper {
         return apiResponse.toObject(ApiResult.ok(value));
     }
 
+    public ResponseEntity<String> okSql(@NotNull final String sqlString) {
+        return apiResponse.sql(sqlString);
+    }
+
     public <T> ResponseEntity<String> okAsString(@NotNull final T value, @NotNull final Class<?> typeOfT) {
         return apiResponse.toString(ApiResult.ok(value), typeOfT);
     }

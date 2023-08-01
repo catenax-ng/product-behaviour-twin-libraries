@@ -118,7 +118,7 @@ public class TestDataManager {
     private TestdataCategorized getDataCategorizedFromConfig(
             @NotNull final TestdataConfig config, @NotNull final boolean resetTestdata) throws DataProviderException {
 
-        if(resetTestdata || testData == null) {
+        if (resetTestdata || testData == null) {
             testData = testDataReader.loadFromConfig(config);
         } else {
             testDataReader.appendFromConfig(testData, config);
