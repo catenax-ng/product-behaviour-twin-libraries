@@ -41,3 +41,8 @@ build/
 /src/main/resources/templates/tmp_index.html
 /.vscode/settings.json
 /src/main/resources/hidb-bindings.properties
+/src/main/resources/healthindicatordb-bindings.properties
+/src/main/resources/hibackendservice-bindings.properties
+/src/main/resources/hifrontend-bindings.properties
+/src/main/resources/rulbackendservice-bindings.properties
+/src/main/resources/ruldb-bindings.properties

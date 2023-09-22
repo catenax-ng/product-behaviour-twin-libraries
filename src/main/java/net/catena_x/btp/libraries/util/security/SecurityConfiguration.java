@@ -38,8 +38,8 @@ public class SecurityConfiguration {
 
         if(noAuthCallbacks) {
             security = security
-                    .authorizeRequests()
-                    .antMatchers(HttpMethod.POST,
+                    .authorizeRequests().requestMatchers(
+                            HttpMethod.POST,
                             "/hidatareceiver/notifyresult",
                             "/ruldatacollector/notifycalculation",
                             "/ruldatareceiver/notifyresult",
@@ -50,7 +50,7 @@ public class SecurityConfiguration {
                     .permitAll()
                     .and()
                     .authorizeRequests()
-                    .antMatchers(HttpMethod.GET,
+                    .requestMatchers(HttpMethod.GET,
                             "/api/testinterface/get",
                             "/api/testinterface/getresult")
                     .permitAll()

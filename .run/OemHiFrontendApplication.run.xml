@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="OemHiFrontendApplication" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="net.catena_x.btp.hi.oem.frontend.OemHiFrontendApplication" />
-    <module name="product-oem-hi-app" />
+    <module name="product-behaviour-twin-libraries" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="net.catena_x.btp.hi.oem.frontend.*" />

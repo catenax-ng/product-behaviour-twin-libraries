@@ -20,8 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -466,7 +466,7 @@ public class HIVehicleTableInternal extends HITableBase {
 
     private NativeQuery<Object[]> createQuery(@NotNull final String query) throws OemHIException {
         try {
-            return (NativeQuery<Object[]>)((Session)this.entityManager.getDelegate()).createSQLQuery(query);
+            return ((Session)this.entityManager.getDelegate()).createNativeQuery(query, Object[].class);
         }
         catch(final Exception exception) {
             throw failed("Initializing query failed! " + exception.getMessage(), exception);

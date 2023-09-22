@@ -17,8 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
@@ -50,7 +50,9 @@ public class TelematicsDataTableInternal extends RawTableBase {
                 "ALTER TABLE telematics_data ALTER COLUMN load_spectra TYPE TEXT" :
                 "ALTER TABLE telematics_data ALTER COLUMN load_spectra VARCHAR(2147483640)";
 
-        final NativeQuery query = (NativeQuery)((Session)entityManager.getDelegate()).createSQLQuery(queryString);
+        //ToDo: Check return type "NativeQuery.class".
+        final NativeQuery query =
+                ((Session)entityManager.getDelegate()).createNativeQuery(queryString, NativeQuery.class);
         query.executeUpdate();
     }
 

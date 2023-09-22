@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="OemRulBackendServiceApplication" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="net.catena_x.btp.rul.oem.backend.rul_service.OemRulBackendServiceApplication" />
-    <module name="product-oem-rul-backend" />
+    <module name="product-behaviour-twin-libraries" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="net.catena_x.btp.rul.oem.backend.rul_service.*" />
