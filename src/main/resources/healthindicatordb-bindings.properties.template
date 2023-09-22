@@ -1,0 +1,3 @@
+healthindicatordb.url=jdbc:postgresql://localhost:${HEALTHINDICATOR_DB_PORT}/healthindicator
+healthindicatordb.username=${HEALTHINDICATOR_DB_USER}
+healthindicatordb.password=${HEALTHINDICATOR_DB_PASS}

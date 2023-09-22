@@ -1,0 +1,3 @@
+ruldb.url=jdbc:postgresql://localhost:${RUL_DB_PORT}/rul
+ruldb.username=${RUL_DB_USER}
+ruldb.password=${RUL_DB_PASS}

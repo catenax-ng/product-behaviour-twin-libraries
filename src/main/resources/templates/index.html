@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/cx-header :: head"> Error!! </div>
+<div th:replace="fragments/cx-header :: header"> Error!! </div>
+<body data-page="1" data-layout="0" class="scrolling">
+      <script src="https://cdn.plot.ly/plotly-2.16.3.min.js"></script>
+      <main id="content">
+         <a id="query"></a>
+         <section id="c9" class="frame frame-default frame-type-catena_faq frame-layout-0">
+            <div class="ce-main">
+               <div class="faq">
+                  <div class="container-outer">
+                     <div class="faq-header row">
+                        <div class="offset-sm-1 offset-md-2 col-sm-10 col-lg-6">
+                           <header class="ce-header">
+                              <h2 id="query_headline" class="ce-headline ">
+                                 Catena-X OEM Health Indicators App
+                              </h2>
+                           </header>
+                        </div>
+                     </div>
+
+                     <div class="faq-items row" id="faq9">
+                        <div class="offset-sm-1 offset-md-2 col-16 col-sm-14 col-md-12">
+                           <ol class="list-unstyled">
+                              <li class="faq-item">
+                                 <div class="faq-answer collapse show" id="data_body_0" aria-labelledby="data_header_0" data-parent="#faq9">
+                                 
+                                          <div id="plot-hi"></div>
+                                          <script th:inline="javascript">
+                                             var data_hi = /*[[${hiVehicles}]]*/ null;
+                                             // map data_hi to only contain the list of first health indicators
+                                             const elements = ["GREEN", "YELLOW", "RED", "CALCULATION_PENDING"];
+                                             var counts_l = [0, 0, 0, 0];
+                                             var counts_a = [0, 0, 0, 0];
+                                             const colors = ['rgba(52, 235, 98, 0.8)', 'rgba(235, 210, 52, 0.8)', 'rgba(235, 88, 52, 0.8)', 'rgba(204,204,204,1)'];
+                                             const names = ['Green', 'Yellow', 'Red', 'Calculation Pending'];
+                                             const text = ["Good Health (Green)", "Medium Health (Yellow)", "Poor Health (Red)", "Calculation Pending"];
+
+                                             for(const element of data_hi) {
+                                                if(element.healthStateLoadSpectra == "GREEN") counts_l[0] += 1;
+                                                else if(element.healthStateLoadSpectra == "YELLOW") counts_l[1] += 1;
+                                                else if(element.healthStateLoadSpectra == "RED") counts_l[2] += 1;
+                                                else counts_l[3] += 1;
+
+                                                if(element.healthStateAdaptionValues == "GREEN") counts_a[0] += 1;
+                                                else if(element.healthStateAdaptionValues == "YELLOW") counts_a[1] += 1;
+                                                else if(element.healthStateAdaptionValues == "RED") counts_a[2] += 1;
+                                                else counts_a[3] += 1;
+                                             }
+                                             var trace1 = {
+                                                x: names,
+                                                y: counts_l,
+                                                marker:{
+                                                  color: colors
+                                                },
+                                                type: 'bar',
+                                                hovertemplate: '<i>Health Indicator</i>: Load Spectra' +
+                                                               '<br><b>Status</b>: %{x}<br>' +
+                                                               '<br><b>Amount</b>: %{y}<br>'+
+                                                               '<extra></extra>',
+                                              };
+                                              var trace2 = {
+                                                x: names,
+                                                y: counts_a,
+                                                marker:{
+                                                  color: colors
+                                                },
+                                                type: 'bar',
+                                                xaxis: 'x2',
+                                                yaxis: 'y2',
+                                                hovertemplate: '<i>Health Indicator</i>: Adaption Values' +
+                                                               '<br><b>Status</b>: %{x}<br>'+
+                                                               '<br><b>Amount</b>: %{y}<br>'+
+                                                               '<extra></extra>',
+                                              };
+                                              var data = [trace1, trace2];
+                                              var layout = {
+                                                title: 'Distribution of Health States',
+                                                grid: {rows: 1, columns: 2, pattern: 'independent'},
+                                                showlegend: false,
+                                                xaxis: { 
+                                                   domain: [0,0.48]
+                                                 },
+                                                 xaxis2: {
+                                                   domain: [0.52, 1],
+                                                   anchor: "y2"
+                                                 },
+                                                 annotations: [
+                                                   {
+                                                      text: "Load Spectra",
+                                                      showarrow: false,
+                                                      x: 0,
+                                                      xref: "x domain",
+                                                      y: 1.1,
+                                                      yref: "y domain"
+                                                   },
+                                                   {
+                                                      text: "Adaption Values",
+                                                      showarrow: false,
+                                                      x: 0,
+                                                      xref: "x2 domain",
+                                                      y: 1.1,
+                                                      yref: "y2 domain"
+                                                   }
+                                                ]
+                                              };
+                                              Plotly.newPlot('plot-hi', data, layout);
+                                          </script>
+
+                                    <div class="faq-answer-body" id="table-div">
+                                       <table sytle="border-collapse: separate; border-spacing: 5px 0;">
+                                          <thead>
+                                             <tr>
+                                                <th>HI L</th>
+                                                <th>HI A</th>
+                                                <th>Vehicle ID</th>
+                                                <th>Gearbox ID</th>
+                                                <th>Vehicle Production Date</th>
+                                                <th>Calculation Date</th>
+                                             </tr>
+                                          </thead>
+                                          <tbody>
+                                             <tr th:each="hiVehicle: ${hiVehicles}">
+                                                <td th:switch="${hiVehicle.healthStateLoadSpectra}">
+                                                   <img th:case="${T(net.catena_x.btp.hi.oem.frontend.model.enums.HIFHealthState).CALCULATION_PENDING}" class="tlimage" src="/tlgrey.png" alt="A greyed-out traffic light"/>
+                                                   <img th:case="${T(net.catena_x.btp.hi.oem.frontend.model.enums.HIFHealthState).RED}" class="tlimage" src="/tlred.png" alt="A red traffic light"/>
+                                                   <img th:case="${T(net.catena_x.btp.hi.oem.frontend.model.enums.HIFHealthState).YELLOW}" class="tlimage" src="/tlyellow.png" alt="A yellow traffic light"/>
+                                                   <img th:case="${T(net.catena_x.btp.hi.oem.frontend.model.enums.HIFHealthState).GREEN}" class="tlimage" src="/tlgreen.png" alt="A green traffic light"/>
+                                                </td>
+                                                <td th:switch="${hiVehicle.healthStateAdaptionValues}">
+                                                   <img th:case="${T(net.catena_x.btp.hi.oem.frontend.model.enums.HIFHealthState).CALCULATION_PENDING}" class="tlimage" src="/tlgrey.png" alt="A greyed-out traffic light"/>
+                                                   <img th:case="${T(net.catena_x.btp.hi.oem.frontend.model.enums.HIFHealthState).RED}" class="tlimage" src="/tlred.png" alt="A red traffic light"/>
+                                                   <img th:case="${T(net.catena_x.btp.hi.oem.frontend.model.enums.HIFHealthState).YELLOW}" class="tlimage" src="/tlyellow.png" alt="A yellow traffic light"/>
+                                                   <img th:case="${T(net.catena_x.btp.hi.oem.frontend.model.enums.HIFHealthState).GREEN}" class="tlimage" src="/tlgreen.png" alt="A green traffic light"/>
+                                                </td>
+                                                <td><a th:href="@{/vehicle.html(id=${hiVehicle.vehicleId})}">[[${hiVehicle.vehicleId}]]</a></td>
+                                                <td><span th:text="${hiVehicle.gearboxId}"></span></td>
+                                                <td><span th:text="${hiVehicle.productionDate}"></span></td>
+                                                <td><span th:text="${hiVehicle.updateTimestamp}"></span></td>
+                                             </tr>
+                                          </tbody>
+                                       </table>
+                                    </div>
+                                 </div>
+                              </li>
+                           </ol>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </section>
+      </main>
+   </div>
+   <div th:replace="fragments/cx-footer :: footer"> Error!! </div>
+   <!--<script src="queries.js"></script> This script does not seem to exist -->
+   <script th:src="@{merged-9dfaf80662c2d8b32c41551c3d577705-34e00f9ce05b956f9668a.js}"></script>
+</body>
+</html>

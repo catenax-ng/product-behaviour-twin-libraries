@@ -1,12 +1,43 @@
-/oem_btp.iml
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
 /.idea
 /target
-/product-behaviour-twin-libraries/src/main/resources/test-dataprovider.properties
-/product-behaviour-twin-libraries/src/main/resources/dataprovider-bindings.properties
-/product-behaviour-twin-libraries/src/main/resources/dataupdater-bindings.properties
-/product-behaviour-twin-libraries/src/main/resources/rawdatadb-bindings.properties
-/product-oem-hi-app/src/main/resources/templates/tmp_index.html
-/oem_btp.ipr
-/oem_btp.iws
+/src/main/resources/test-dataprovider.properties
+/src/main/resources/dataprovider-bindings.properties
+/src/main/resources/dataupdater-bindings.properties
+/src/main/resources/rawdatadb-bindings.properties
+/src/main/resources/templates/tmp_index.html
 /.vscode/settings.json
-/product-behaviour-twin-libraries/src/main/resources/hidb-bindings.properties
+/src/main/resources/hidb-bindings.properties

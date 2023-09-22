@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <defs>
+    <clipPath id="clip-path">
+      <rect width="32" height="32" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="Backward_arrow" data-name="Backward arrow" clip-path="url(#clip-path)">
+    <path id="Pfad_10" data-name="Pfad 10" d="M16,0,13.091,2.909,24.1,13.922H0v4.156H24.1L13.091,29.091,16,32,32,16Z" transform="translate(32 32) rotate(180)" fill="#fff"/>
+  </g>
+</svg>
