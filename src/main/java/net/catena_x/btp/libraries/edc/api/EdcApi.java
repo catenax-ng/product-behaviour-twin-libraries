@@ -1,12 +1,9 @@
-package net.catena_x.btp.libraries.edc;
+package net.catena_x.btp.libraries.edc.api;
 
+import net.catena_x.btp.libraries.edc.model.CatalogRequest;
 import net.catena_x.btp.libraries.edc.util.exceptions.EdcException;
-import net.catena_x.btp.libraries.util.apihelper.ResponseChecker;
-import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import okhttp3.HttpUrl;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -17,8 +14,59 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.constraints.NotNull;
-import java.util.Base64;
 
+@Component
+public class EdcApi {
+    private final static String CATALOG_REQUEST_PATH = "v2/catalog/request";
+    private final static String API_KEY_KEY = "X-Api-Key";
+
+    @Autowired private RestTemplate restTemplate;
+
+    @Value("${edc.api.management.url}") private String managementUrl;
+    @Value("${edc.api.management.apikey}") private String apiKey;
+
+    public ResponseEntity<String> requestCatalog(@NotNull final CatalogRequest catalogRequest) {
+        final HttpHeaders headers = getNewManagementApiHeaders();
+        final HttpEntity<CatalogRequest> request = new HttpEntity<>(catalogRequest, headers);
+        final HttpUrl requestUrl = getCatalogRequestUrl();
+        final ResponseEntity<String> response = restTemplate.exchange(
+                requestUrl.uri(), HttpMethod.POST, request, String.class);
+        return response;
+    }
+
+    private HttpUrl getCatalogRequestUrl() {
+        return HttpUrl.parse(managementUrl).newBuilder()
+                .addPathSegments(CATALOG_REQUEST_PATH).build();
+    }
+
+    private HttpHeaders getNewManagementApiHeaders() {
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(API_KEY_KEY, apiKey);
+        return headers;
+    }
+
+
+
+
+
+
+
+
+    /* Keep old API (temp). */
+    public <ResponseType> ResponseEntity<ResponseType> get(
+            @NotNull final HttpUrl partnerUrl, @NotNull final String asset, @NotNull Class<ResponseType> responseClass,
+            @Nullable final HttpHeaders headers) throws EdcException {
+        throw new EdcException("Not implemented!");
+    }
+
+    public <BodyType, ResponseType> ResponseEntity<ResponseType> post(
+            @NotNull final HttpUrl partnerUrl, @NotNull final String asset, @NotNull Class<ResponseType> responseClass,
+            @NotNull BodyType body, @Nullable HttpHeaders headers) throws EdcException {
+        throw new EdcException("Not implemented!");
+    }
+}
+
+/*
 @Component
 public class EdcApi {
     @Autowired private RestTemplate restTemplate;
@@ -110,3 +158,4 @@ public class EdcApi {
         return sb.toString();
     }
 }
+*/

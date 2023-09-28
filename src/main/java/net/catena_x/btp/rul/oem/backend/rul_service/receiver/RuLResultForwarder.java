@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.catena_x.btp.libraries.bamm.custom.remainingusefullife.RemainingUsefulLife;
-import net.catena_x.btp.libraries.edc.EdcApi;
+import net.catena_x.btp.libraries.edc.api.EdcApi;
 import net.catena_x.btp.libraries.edc.model.EdcAssetAddress;
 import net.catena_x.btp.libraries.edc.util.exceptions.EdcException;
 import net.catena_x.btp.libraries.notification.dto.Notification;

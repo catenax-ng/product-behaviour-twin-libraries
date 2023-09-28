@@ -1,6 +1,6 @@
 package net.catena_x.btp.hi.oem.backend.hi_service.util;
 
-import net.catena_x.btp.libraries.edc.EdcApi;
+import net.catena_x.btp.libraries.edc.api.EdcApi;
 import net.catena_x.btp.libraries.edc.util.exceptions.EdcException;
 import okhttp3.HttpUrl;
 import org.springframework.beans.factory.annotation.Autowired;

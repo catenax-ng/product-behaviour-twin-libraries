@@ -1,5 +1,6 @@
 package net.catena_x.btp.libraries.edc.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,10 +16,11 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EdcAssetAddress {
-    private String connectorUrl;
-    private String bpn;
-    private String assetId;
+    private String connectorUrl = null;
+    private String bpn = null;
+    private String assetId = null;
 
     public boolean isFullyDefined() {
         return (connectorUrl!=null) && (bpn!=null) && (assetId!=null);

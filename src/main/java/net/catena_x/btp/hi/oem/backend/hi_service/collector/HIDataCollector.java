@@ -13,7 +13,7 @@ import net.catena_x.btp.hi.oem.common.model.dto.calculation.HICalculationTable;
 import net.catena_x.btp.hi.oem.common.model.dto.knowledgeagent.HIKAInputs;
 import net.catena_x.btp.hi.oem.common.model.enums.HICalculationStatus;
 import net.catena_x.btp.hi.oem.util.exceptions.OemHIException;
-import net.catena_x.btp.libraries.edc.EdcApi;
+import net.catena_x.btp.libraries.edc.api.EdcApi;
 import net.catena_x.btp.libraries.edc.util.exceptions.EdcException;
 import net.catena_x.btp.libraries.notification.dto.Notification;
 import net.catena_x.btp.libraries.oem.backend.model.dto.infoitem.InfoTable;
