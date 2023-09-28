@@ -1,8 +1,5 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="HI" type="CompoundRunConfigurationType">
-    <toRun name="OemDataProviderApplication" type="Application" />
-    <toRun name="OemDataUpdaterApplication" type="Application" />
-    <toRun name="OemHiBackendServiceApplication" type="Application" />
     <toRun name="OemHiFrontendApplication" type="Application" />
     <method v="2" />
   </configuration>

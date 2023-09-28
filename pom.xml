@@ -40,6 +40,51 @@
 
 	<profiles>
 		<profile>
+			<id>oemdatacollector</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<version>3.1.2</version>
+						<configuration>
+							<mainClass>net.catena_x.btp.sedc.apps.oem.backend.OemDataCollectorApplication</mainClass>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>oempeakloaddashboard</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<version>3.1.2</version>
+						<configuration>
+							<mainClass>net.catena_x.btp.sedc.apps.oem.dashboard.OemPeakLoadDashboard</mainClass>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>supplierpeakloadservice</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<version>3.1.2</version>
+						<configuration>
+							<mainClass>net.catena_x.btp.sedc.apps.supplier.calculation.SupplierPeakLoadServiceApplication</mainClass>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
 			<id>dataprovider</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
