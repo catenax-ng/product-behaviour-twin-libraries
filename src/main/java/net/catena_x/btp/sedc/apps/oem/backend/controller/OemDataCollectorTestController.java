@@ -11,6 +11,7 @@ import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import net.catena_x.btp.libraries.util.json.ObjectMapperFactoryBtp;
 import net.catena_x.btp.sedc.apps.oem.backend.calculation.CalculationConnection;
+import net.catena_x.btp.sedc.apps.oem.backend.receiver.ResultReceiver;
 import net.catena_x.btp.sedc.apps.oem.backend.receiver.ResultReceiverChannel;
 import net.catena_x.btp.sedc.apps.oem.backend.sender.RawdataSender;
 import net.catena_x.btp.sedc.protocol.model.blocks.ConfigBlock;
@@ -71,7 +72,10 @@ public class OemDataCollectorTestController {
                     "http://localhost:25562/calculate",
                     "peakloadcalculationasset",
                     configBlock, getHeaders());
-            logger.info("Result stream opened.");
+            logger.info("Result stream opened, start receiving results...");
+            ResultReceiver.startReceivingResultsAsync(connection.getReceiver().getRawReceiver(),
+                    connection.getStreamId());
+
             return apiHelper.ok("ok");
         } catch (final BtpException exception) {
             return apiHelper.failed(exception.getMessage());
@@ -81,7 +85,6 @@ public class OemDataCollectorTestController {
     @PostMapping(value = "/input", produces = MediaType.ALL_VALUE)
     public ResponseEntity<StreamingResponseBody> input(@RequestBody @NotNull final ConfigBlock configBlock,
                                                        @NotNull final HttpServletResponse response) {
-
         logger.info("Request for rawdata stream.");
         final CalculationConnection connection = calculateinConnections.get(configBlock.getStream().getStreamId());
         if(connection == null) {
@@ -89,9 +92,8 @@ public class OemDataCollectorTestController {
             return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
         }
 
-        final RawdataSender sender = new RawdataSender();
-        connection.setSender(sender);
-        return new ResponseEntity(sender.getStreamingResponseBody(), HttpStatus.OK);
+        connection.setSender(new RawdataSender());
+        return new ResponseEntity(connection.getSender().getStreamingResponseBody(), HttpStatus.OK);
     }
 
     private ConfigBlock getConfiguration() {
