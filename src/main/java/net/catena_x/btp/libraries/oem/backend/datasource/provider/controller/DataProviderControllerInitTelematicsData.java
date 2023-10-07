@@ -20,7 +20,7 @@ public class DataProviderControllerInitTelematicsData {
     @Autowired private TelematicsDataUpdater telematicsDataUpdater;
     @Autowired private TestDataManager testDataManager;
 
-    @GetMapping(value = "/init/telematicsdata", produces = "application/json")
+    @GetMapping(value = "/init/telematicsdata", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = InitTelematicsDataDoc.SUMMARY, description = InitTelematicsDataDoc.DESCRIPTION,
             tags = {"Initializing"},

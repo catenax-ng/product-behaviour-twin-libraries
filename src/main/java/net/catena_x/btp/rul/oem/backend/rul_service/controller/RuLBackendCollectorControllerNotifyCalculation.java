@@ -37,7 +37,7 @@ public class RuLBackendCollectorControllerNotifyCalculation {
 
     private final Logger logger = LoggerFactory.getLogger(RuLBackendCollectorControllerNotifyCalculation.class);
 
-    @PostMapping(value = "/notifycalculation", produces = "application/json")
+    @PostMapping(value = "/notifycalculation", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = CollectorNotifyCalculationDoc.SUMMARY, description = CollectorNotifyCalculationDoc.DESCRIPTION,
             tags = {"Productive"},

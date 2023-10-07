@@ -1,11 +1,11 @@
 package net.catena_x.btp.rul.oem.backend.database.rul.tables.calculation;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import jakarta.persistence.*;
 import java.time.Instant;
 
 @Entity

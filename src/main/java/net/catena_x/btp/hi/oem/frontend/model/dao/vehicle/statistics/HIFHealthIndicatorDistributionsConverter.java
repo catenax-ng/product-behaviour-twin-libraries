@@ -12,7 +12,7 @@ import java.io.UncheckedIOException;
 public class HIFHealthIndicatorDistributionsConverter
         extends DAOConverter<HIFHealthIndicatorDistributions, HIHealthIndicatorDistributions> {
 
-    @Autowired HIFHistogramConverter hifHistogramConverter;
+    @Autowired private HIFHistogramConverter hifHistogramConverter;
 
     protected HIHealthIndicatorDistributions toDTOSourceExists(@NotNull final HIFHealthIndicatorDistributions source) {
         throw new UncheckedIOException("Conversion is not allowed!", null);

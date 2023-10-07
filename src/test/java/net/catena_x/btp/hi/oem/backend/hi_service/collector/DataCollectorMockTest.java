@@ -89,7 +89,7 @@ class DataCollectorMockTest {
         Mockito.when(infoTable.getInfoValueNewTransaction(InfoKey.DATAVERSION)).thenReturn(dataversion);
 
         // load expected result
-        String expectedJson = objectMapper.writeValueAsString(
+        final String expectedJson = objectMapper.writeValueAsString(
                 objectMapper.readValue(readFromResourceFile("/update-expected-s3-1.json"),
                 HIDataToSupplierContent.class));
 

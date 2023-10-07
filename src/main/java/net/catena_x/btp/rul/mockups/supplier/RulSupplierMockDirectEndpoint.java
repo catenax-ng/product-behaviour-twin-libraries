@@ -10,7 +10,9 @@ import net.catena_x.btp.rul.oem.backend.rul_service.notifications.dao.supplierse
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotNull;
 
@@ -63,7 +65,7 @@ public class RulSupplierMockDirectEndpoint {
                             ))
             }
     )
-    @PostMapping(value = "api/v1/routine/notification", produces = "application/json")
+    @PostMapping(value = "api/v1/routine/notification", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DefaultApiResult> mockupRulDirect(
             @RequestBody @NotNull String data) {
         try {

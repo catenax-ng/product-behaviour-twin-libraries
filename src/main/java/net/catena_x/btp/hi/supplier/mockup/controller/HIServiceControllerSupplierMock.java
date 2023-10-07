@@ -77,7 +77,7 @@ public class HIServiceControllerSupplierMock {
         return !useHiValues1;
     }
 
-    @PostMapping(value = "api/service/{assetId}/submodel", produces = "application/json")
+    @PostMapping(value = "api/service/{assetId}/submodel", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = SupplierMockUpDoc.SUMMARY, description = SupplierMockUpDoc.DESCRIPTION,
             tags = {"MockUp"},

@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 
 @Component
 public class RuLVinToIdConverter {
-    @Autowired RuLVinRelationTable vinRelationTable;
+    @Autowired private RuLVinRelationTable vinRelationTable;
 
     public RuLVinRelation getByVin(@NotNull final String vin) throws OemRuLException {
         final RuLVinRelation relation = vinRelationTable.getByVinNewTransaction(vin);

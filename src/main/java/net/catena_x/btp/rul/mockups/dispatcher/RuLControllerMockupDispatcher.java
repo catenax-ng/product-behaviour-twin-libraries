@@ -96,7 +96,7 @@ public class RuLControllerMockupDispatcher {
                             ))
             }
     )
-    @PostMapping(value = "api/service/{assetId}/submodel", produces = "application/json")
+    @PostMapping(value = "api/service/{assetId}/submodel", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DefaultApiResult> mockupReceive(
             @RequestBody @NotNull String data,
             @PathVariable @NotNull final String assetId,

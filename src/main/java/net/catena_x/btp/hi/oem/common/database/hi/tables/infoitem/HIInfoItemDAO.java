@@ -1,11 +1,10 @@
 package net.catena_x.btp.hi.oem.common.database.hi.tables.infoitem;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import jakarta.persistence.*;
 
 @Entity
 @Table(name = "hiinfo", uniqueConstraints={@UniqueConstraint(columnNames = {"key"})})

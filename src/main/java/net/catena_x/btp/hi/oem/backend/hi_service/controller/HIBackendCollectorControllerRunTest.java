@@ -27,7 +27,7 @@ public class HIBackendCollectorControllerRunTest {
     @Autowired private HICollectorOptionReader hiCollectorOptionReader;
     @Autowired private ApiHelper apiHelper;
 
-    @GetMapping(value = "/runtest/{options}", produces = "application/json")
+    @GetMapping(value = "/runtest/{options}", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = CollectorRunTestDoc.SUMMARY, description = CollectorRunTestDoc.DESCRIPTION,
             tags = {"Development"},

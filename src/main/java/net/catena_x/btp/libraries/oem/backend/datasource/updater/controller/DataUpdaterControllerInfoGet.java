@@ -23,7 +23,7 @@ public class DataUpdaterControllerInfoGet {
     @Autowired private ApiHelper apiHelper;
     @Autowired private InfoTable infoTable;
 
-    @GetMapping(value = "/info/get/{key}", produces = "application/json")
+    @GetMapping(value = "/info/get/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             tags = {"Development"},
             summary = InfoGetDoc.SUMMARY, description = InfoGetDoc.DESCRIPTION,

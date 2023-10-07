@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
         DataSourceTransactionManagerAutoConfiguration.class,
         HibernateJpaAutoConfiguration.class})
 @ComponentScan(basePackages = {
-        "net.catena_x.btp.sedc.apps.oem.collector",
+        "net.catena_x.btp.sedc.apps.oem.backend",
         "net.catena_x.btp.libraries.util",
         "net.catena_x.btp.libraries.edc",
         "net.catena_x.btp.sedc.model",

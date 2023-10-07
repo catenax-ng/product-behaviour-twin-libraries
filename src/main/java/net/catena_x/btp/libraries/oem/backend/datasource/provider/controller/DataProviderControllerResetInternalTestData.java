@@ -20,7 +20,7 @@ public class DataProviderControllerResetInternalTestData {
     @Autowired private ApiHelper apiHelper;
     @Autowired private TestDataManager testDataManager;
 
-    @GetMapping(value = "/resetinternaltestdata", produces = "application/json")
+    @GetMapping(value = "/resetinternaltestdata", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = ResetInternalTestDataDoc.SUMMARY, description = ResetInternalTestDataDoc.DESCRIPTION,
             tags = {"Development"},

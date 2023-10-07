@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +38,7 @@ public class ApiHelper {
         return apiResponse.sql(sqlString);
     }
 
-    public <T> ResponseEntity<String> okAsString(@NotNull final T value, @NotNull final Class<?> typeOfT) {
+    public <T> ResponseEntity<String> okAsString(@NotNull final T value, @NotNull final Class<T> typeOfT) {
         return apiResponse.toString(ApiResult.ok(value), typeOfT);
     }
 
@@ -112,7 +113,7 @@ public class ApiHelper {
 
     private HttpHeaders generateDefaultHeaders() {
         final HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
+        headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
         headers.add("Content-Disposition", "inline");
         return headers;
     }

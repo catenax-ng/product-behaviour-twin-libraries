@@ -1,10 +1,14 @@
 package net.catena_x.btp.libraries.edc.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.catena_x.btp.libraries.edc.model.CatalogRequest;
+import net.catena_x.btp.libraries.edc.model.CatalogResult;
 import net.catena_x.btp.libraries.edc.util.exceptions.EdcException;
+import net.catena_x.btp.libraries.util.json.ObjectMapperFactoryBtp;
 import okhttp3.HttpUrl;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,17 +25,29 @@ public class EdcApi {
     private final static String API_KEY_KEY = "X-Api-Key";
 
     @Autowired private RestTemplate restTemplate;
+    @Autowired @Qualifier(ObjectMapperFactoryBtp.EXTENDED_OBJECT_MAPPER) private ObjectMapper objectMapper;
 
     @Value("${edc.api.management.url}") private String managementUrl;
     @Value("${edc.api.management.apikey}") private String apiKey;
 
-    public ResponseEntity<String> requestCatalog(@NotNull final CatalogRequest catalogRequest) {
+    public ResponseEntity<CatalogResult> requestCatalog(@NotNull final CatalogRequest catalogRequest) {
         final HttpHeaders headers = getNewManagementApiHeaders();
         final HttpEntity<CatalogRequest> request = new HttpEntity<>(catalogRequest, headers);
         final HttpUrl requestUrl = getCatalogRequestUrl();
-        final ResponseEntity<String> response = restTemplate.exchange(
-                requestUrl.uri(), HttpMethod.POST, request, String.class);
-        return response;
+
+        /*
+        try {
+            final String body = objectMapper.writeValueAsString(request.getBody());
+            System.out.println(body);
+        } catch (final Exception exception) {
+        }
+        */
+
+
+        // response = restTemplate.postForObject(requestUrl.toString(), request, CatalogResult.class);
+
+
+        return restTemplate.exchange(requestUrl.uri(), HttpMethod.POST, request, CatalogResult.class);
     }
 
     private HttpUrl getCatalogRequestUrl() {

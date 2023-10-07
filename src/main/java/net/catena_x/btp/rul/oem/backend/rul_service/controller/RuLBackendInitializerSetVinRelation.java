@@ -16,11 +16,11 @@ import javax.validation.constraints.NotNull;
 @RestController
 @RequestMapping(RuLBackendApiConfig.INITIALIZER_API_PATH_BASE)
 public class RuLBackendInitializerSetVinRelation {
-    @Autowired VinRelationSetter vinRelationSetter;
+    @Autowired private VinRelationSetter vinRelationSetter;
 
     private final Logger logger = LoggerFactory.getLogger(RuLBackendCollectorControllerNotifyCalculation.class);
 
-    @GetMapping(value = "/vinrelation/set/{vin}", produces = "application/json")
+    @GetMapping(value = "/vinrelation/set/{vin}", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = InitializerSetVinRelationDoc.SUMMARY, description = InitializerSetVinRelationDoc.DESCRIPTION,
             tags = {"Initialization"},

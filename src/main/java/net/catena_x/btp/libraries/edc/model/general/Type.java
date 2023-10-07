@@ -10,5 +10,11 @@ public enum Type {
     POLICY_DEFINITION,
 
     @JsonProperty("ContractDefinition")
-    CONTRACT_DEFINITION
+    CONTRACT_DEFINITION,
+
+    @JsonProperty("dcat:Catalog")
+    CATALOG_RESULT,
+
+    @JsonProperty("dcat:DataService")
+    CATALOG_DATA_SERVICE
 }

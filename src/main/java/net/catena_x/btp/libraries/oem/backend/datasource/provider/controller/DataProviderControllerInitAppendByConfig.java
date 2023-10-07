@@ -9,7 +9,10 @@ import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotNull;
 
@@ -19,7 +22,7 @@ public class DataProviderControllerInitAppendByConfig {
     @Autowired private ApiHelper apiHelper;
     @Autowired private TestDataManager testDataManager;
 
-    @PostMapping(value = "/init/appendbyconfig", produces = "application/json")
+    @PostMapping(value = "/init/appendbyconfig", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = InitAppendByConfigDoc.SUMMARY, description = InitAppendByConfigDoc.DESCRIPTION,
             tags = {"Development"},

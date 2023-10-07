@@ -28,15 +28,15 @@ import java.util.List;
 @RestController
 @RequestMapping(HIFrontendApiConfig.API_PATH_BASE)
 public class HIFrontendControllerStatisticHealthStatesDistributionType {
-    @Autowired ApiHelper apiHelper;
-    @Autowired HIFVehicleConverter hifVehicleConverter;
-    @Autowired HIVehicleTable hiVehicleTable;
-    @Autowired HIFHistogramConverter hifHistogramConverter;
-    @Autowired HIHistogramGenerator hiHistogramGenerator;
+    @Autowired private ApiHelper apiHelper;
+    @Autowired private HIFVehicleConverter hifVehicleConverter;
+    @Autowired private HIVehicleTable hiVehicleTable;
+    @Autowired private HIFHistogramConverter hifHistogramConverter;
+    @Autowired private HIHistogramGenerator hiHistogramGenerator;
 
     private final Logger logger = LoggerFactory.getLogger(HIResultProcessor.class);
 
-    @GetMapping(value = "/statistic/healthstates/distribution/{type}", produces = "application/json")
+    @GetMapping(value = "/statistic/healthstates/distribution/{type}", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = StatisticHealthStatesDistributionTypeDoc.SUMMARY,
             tags = {"Productive"},

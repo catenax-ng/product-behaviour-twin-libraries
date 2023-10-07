@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HIBackendCollectorControllerSetState {
     @Autowired private ApiHelper apiHelper;
 
-    @GetMapping(value = "/setstate", produces = "application/json")
+    @GetMapping(value = "/setstate", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = CollectorSetStateDoc.SUMMARY, description = CollectorSetStateDoc.DESCRIPTION,
             tags = {"Productive"},

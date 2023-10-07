@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HIBackendCollectorControllerResetQueue {
     @Autowired private HIJobRunner jobRunner;
 
-    @GetMapping(value = "/resetqueue", produces = "application/json")
+    @GetMapping(value = "/resetqueue", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = CollectorResetQueueDoc.SUMMARY, description = CollectorResetQueueDoc.DESCRIPTION,
             tags = {"Development"},

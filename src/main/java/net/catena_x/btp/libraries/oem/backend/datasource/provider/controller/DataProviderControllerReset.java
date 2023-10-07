@@ -20,7 +20,7 @@ public class DataProviderControllerReset {
     @Autowired private ApiHelper apiHelper;
     @Autowired private TestDataManager testDataManager;
 
-    @GetMapping(value = "/reset", produces = "application/json")
+    @GetMapping(value = "/reset", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = ResetDoc.SUMMARY, description = ResetDoc.DESCRIPTION,
             tags = {"Initializing"},

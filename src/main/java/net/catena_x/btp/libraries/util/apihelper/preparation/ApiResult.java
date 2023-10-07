@@ -8,6 +8,7 @@ import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResultWithValue
 import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
@@ -74,7 +75,7 @@ public class ApiResult<T> {
 
     private static HttpHeaders generateDefaultHeaders() {
         final HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
+        headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
         headers.add("Content-Disposition", "inline");
         return headers;
     }

@@ -21,6 +21,18 @@ public class PowerClassesNormalized {
     private double highTorqueHighRevolutions = 0.0;
     private double peakLoad = 0.0;
 
+    public void normalize() {
+        final double sum = getSum();
+        if(sum > 1E-5) {
+            recuperation /= sum;
+            lowTorqueLowRevolutions /= sum;
+            lowTorqueHighRevolutions /= sum;
+            highTorqueLowRevolutions /= sum;
+            highTorqueHighRevolutions /= sum;
+            peakLoad /= sum;
+        }
+    }
+
     public boolean check() {
         Function<Double, Boolean> isAbsoluteOk = x -> x >= 0.0 && x <= 1.0;
 
@@ -33,8 +45,11 @@ public class PowerClassesNormalized {
             return false;
         }
 
-        final double sum = recuperation + lowTorqueLowRevolutions + lowTorqueHighRevolutions
-                                    + highTorqueLowRevolutions + highTorqueHighRevolutions + peakLoad;
-        return Math.abs(sum) < 0.01;
+        return Math.abs(getSum()) < 0.01;
+    }
+
+    private double getSum() {
+        return recuperation + lowTorqueLowRevolutions + lowTorqueHighRevolutions
+                + highTorqueLowRevolutions + highTorqueHighRevolutions + peakLoad;
     }
 }

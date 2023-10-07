@@ -7,10 +7,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import net.catena_x.btp.libraries.oem.backend.datasource.testdata.TestDataExporter;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.controller.swagger.ExportTestDataDoc;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.tesdtata.TestDataManager;
+import net.catena_x.btp.libraries.oem.backend.datasource.testdata.TestDataExporter;
 import net.catena_x.btp.libraries.util.apihelper.ApiHelper;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import org.jetbrains.annotations.Nullable;
@@ -42,7 +42,7 @@ public class DataProviderControllerExportTestData {
     private DateTimeFormatter exportDataFormatter =
             DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss").withZone(ZoneId.from(ZoneOffset.UTC));
 
-    @GetMapping(value = "/export/testdata", produces = "application/json")
+    @GetMapping(value = "/export/testdata", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             summary = ExportTestDataDoc.SUMMARY, description = ExportTestDataDoc.DESCRIPTION,
             tags = {"Development"},

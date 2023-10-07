@@ -16,7 +16,7 @@ public class HIBackendReceiverControllerResetHiDb {
     @Autowired
     private HIDbMaintainer hiDbMaintainer;
 
-    @GetMapping(value = "/resethidb", produces = "application/json")
+    @GetMapping(value = "/resethidb", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = ReceiverResetHiDbDoc.SUMMARY, description = ReceiverResetHiDbDoc.DESCRIPTION,
             tags = {"Development"},

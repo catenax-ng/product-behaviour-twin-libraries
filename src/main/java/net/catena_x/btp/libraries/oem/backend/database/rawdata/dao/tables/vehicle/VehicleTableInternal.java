@@ -1,5 +1,7 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.vehicle;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import net.catena_x.btp.libraries.bamm.custom.adaptionvalues.AdaptionValues;
 import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.ClassifiedLoadSpectrum;
 import net.catena_x.btp.libraries.bamm.util.StatusFromBammFunction;
@@ -25,8 +27,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.ArrayList;

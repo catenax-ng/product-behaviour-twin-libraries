@@ -21,7 +21,7 @@ public class DataProviderControllerInitAppendByFile {
     @Autowired private ApiHelper apiHelper;
     @Autowired private TestDataManager testDataManager;
 
-    @PostMapping(value = "/init/appendbyfile", produces = "application/json")
+    @PostMapping(value = "/init/appendbyfile", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = InitAppendByFileDoc.SUMMARY, description = InitAppendByFileDoc.DESCRIPTION,
             tags = {"Development"},

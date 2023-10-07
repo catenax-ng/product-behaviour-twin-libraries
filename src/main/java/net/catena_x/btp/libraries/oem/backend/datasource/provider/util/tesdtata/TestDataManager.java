@@ -1,10 +1,10 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.provider.util.tesdtata;
 
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
-import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.TestdataConfig;
-import net.catena_x.btp.libraries.oem.backend.datasource.testdata.TestDataReader;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.TestdataCategorized;
+import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.TestdataConfig;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
+import net.catena_x.btp.libraries.oem.backend.datasource.testdata.TestDataReader;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

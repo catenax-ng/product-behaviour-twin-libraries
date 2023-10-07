@@ -22,7 +22,7 @@ public class DataUpdaterControllerVehicleRegister {
     @Autowired private ApiHelper apiHelper;
     @Autowired private VehicleTable vehicleTable;
 
-    @PostMapping(value = "/vehicle/register", produces = "application/json")
+    @PostMapping(value = "/vehicle/register", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = VehicleRegisterDoc.SUMMARY, description = VehicleRegisterDoc.DESCRIPTION,
             tags = {"Productive"},

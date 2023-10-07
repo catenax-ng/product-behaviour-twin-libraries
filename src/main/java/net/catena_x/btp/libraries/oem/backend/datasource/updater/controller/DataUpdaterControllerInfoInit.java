@@ -18,7 +18,7 @@ public class DataUpdaterControllerInfoInit {
     @Autowired private ApiHelper apiHelper;
     @Autowired private RawdataInfoTableInitializer rawdataInfoTableInitializer;
 
-    @GetMapping(value = "/info/init", produces = "application/json")
+    @GetMapping(value = "/info/init", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = InfoInitDoc.SUMMARY, description = InfoInitDoc.DESCRIPTION,
             tags = {"Initializing"},

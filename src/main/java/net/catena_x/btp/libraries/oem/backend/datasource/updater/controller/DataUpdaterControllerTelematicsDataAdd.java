@@ -22,7 +22,7 @@ public class DataUpdaterControllerTelematicsDataAdd {
     @Autowired private VehicleTable vehicleTable;
     @Autowired private ApiHelper apiHelper;
 
-    @PostMapping(value = "/telematicsdata/add", produces = "application/json")
+    @PostMapping(value = "/telematicsdata/add", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = TelematicsDataAddDoc.SUMMARY, description = TelematicsDataAddDoc.DESCRIPTION,
             tags = {"Productive"},

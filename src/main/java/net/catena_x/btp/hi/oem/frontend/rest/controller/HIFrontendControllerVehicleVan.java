@@ -25,13 +25,13 @@ import javax.validation.constraints.NotNull;
 @RestController
 @RequestMapping(HIFrontendApiConfig.API_PATH_BASE)
 public class HIFrontendControllerVehicleVan extends HIFrontendControllerVehicleBase {
-    @Autowired ApiHelper apiHelper;
-    @Autowired HIFVehicleConverter hifVehicleConverter;
-    @Autowired HIVehicleTable hiVehicleTable;
+    @Autowired private ApiHelper apiHelper;
+    @Autowired private HIFVehicleConverter hifVehicleConverter;
+    @Autowired private HIVehicleTable hiVehicleTable;
 
     private final Logger logger = LoggerFactory.getLogger(HIResultProcessor.class);
 
-    @GetMapping(value = "/vehicle/van/{van}", produces = "application/json")
+    @GetMapping(value = "/vehicle/van/{van}", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = VehicleVanDoc.SUMMARY, description = VehicleVanDoc.DESCRIPTION,
             tags = {"Productive"},

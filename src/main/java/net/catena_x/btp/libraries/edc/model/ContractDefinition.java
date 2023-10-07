@@ -9,7 +9,6 @@ import lombok.Setter;
 import net.catena_x.btp.libraries.edc.model.contract.AssetsSelector;
 import net.catena_x.btp.libraries.edc.model.general.Context;
 import net.catena_x.btp.libraries.edc.model.general.Type;
-import net.catena_x.btp.libraries.edc.model.policy.Policy;
 
 @NoArgsConstructor
 @AllArgsConstructor

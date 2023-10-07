@@ -7,7 +7,6 @@ import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exception
 import net.catena_x.btp.libraries.util.datahelper.DataHelper;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
 

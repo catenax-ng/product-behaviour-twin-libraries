@@ -1,11 +1,10 @@
 package net.catena_x.btp.rul.oem.backend.database.rul.tables.serviceoption;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import jakarta.persistence.*;
 
 @Entity
 @Table(name = "rulserviceoptions", uniqueConstraints={@UniqueConstraint(columnNames = {"key"})})

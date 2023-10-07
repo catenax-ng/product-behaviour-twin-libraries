@@ -21,7 +21,7 @@ public class DataProviderControllerInitReinitByFile {
     @Autowired private ApiHelper apiHelper;
     @Autowired private TestDataManager testDataManager;
 
-    @PostMapping(value = "/init/reinitbyfile", produces = "application/json")
+    @PostMapping(value = "/init/reinitbyfile", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = InitReinitByFileDoc.SUMMARY, description = InitReinitByFileDoc.DESCRIPTION,
             tags = {"Development"},

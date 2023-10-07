@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 public class HIServiceControllerSupplierMockDirectEndpoint {
     @Autowired private HIServiceControllerSupplierMock service;
 
-    @PostMapping(value = "api/v1/routine/notification", produces = "application/json")
+    @PostMapping(value = "api/v1/routine/notification", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = SupplierMockUpDirectEndpointDoc.SUMMARY, description = SupplierMockUpDirectEndpointDoc.DESCRIPTION,
             tags = {"MockUp"},

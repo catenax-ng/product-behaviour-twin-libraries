@@ -20,7 +20,7 @@ public class DataProviderControllerInitVehicles {
     @Autowired private VehicleRegistration vehicleRegistration;
     @Autowired private TestDataManager testDataManager;
 
-    @GetMapping(value = "/init/vehicles", produces = "application/json")
+    @GetMapping(value = "/init/vehicles", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = InitVehiclesDoc.SUMMARY, description = InitVehiclesDoc.DESCRIPTION,
             tags = {"Initializing"},

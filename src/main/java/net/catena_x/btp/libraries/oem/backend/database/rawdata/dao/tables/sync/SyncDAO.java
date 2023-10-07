@@ -1,11 +1,11 @@
 package net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.sync;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import jakarta.persistence.*;
 import java.time.Instant;
 
 @Entity

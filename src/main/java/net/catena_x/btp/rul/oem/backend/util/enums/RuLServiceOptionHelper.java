@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RuLServiceOptionHelper {
-    @Autowired RuLServiceOptionTable rulServiceOptionTable;
+    @Autowired private RuLServiceOptionTable rulServiceOptionTable;
 
     public boolean isShowInputFromRequester() throws OemRuLException {
         return readBooleanSetIfNull(RuLServiceOptionType.SHOW_INPUT_FROM_REQUESTER, true);

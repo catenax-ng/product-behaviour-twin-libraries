@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HIBackendCollectorControllerRun {
     @Autowired private HIJobRunner jobRunner;
 
-    @GetMapping(value = "/run", produces = "application/json")
+    @GetMapping(value = "/run", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = CollectorRunDoc.SUMMARY, description = CollectorRunDoc.DESCRIPTION,
             tags = {"Productive"},

@@ -23,7 +23,7 @@ public class RuLBackendInitializerDeleteVinRelation {
 
     private final Logger logger = LoggerFactory.getLogger(RuLBackendCollectorControllerNotifyCalculation.class);
 
-    @GetMapping(value = "/vinrelation/delete/{vin}", produces = "application/json")
+    @GetMapping(value = "/vinrelation/delete/{vin}", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = InitializerDeleteVinRelationDoc.SUMMARY,
             description = InitializerDeleteVinRelationDoc.DESCRIPTION,

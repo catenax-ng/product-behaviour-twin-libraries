@@ -12,6 +12,6 @@ import net.catena_x.btp.sedc.model.result.PeakLoadCapability;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PeakLoadResult{
+public class PeakLoadResult {
     private long peakLoadCapability = PeakLoadCapability.UNKNOWN;
 }

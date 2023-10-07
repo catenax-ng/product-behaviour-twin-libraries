@@ -23,7 +23,7 @@ public class DataUpdaterControllerInfoSet {
     @Autowired private ApiHelper apiHelper;
     @Autowired private InfoTable infoTable;
 
-    @PostMapping(value = "/info/set", produces = "application/json")
+    @PostMapping(value = "/info/set", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             tags = {"Development"},
             summary = InfoSetDoc.SUMMARY, description = InfoSetDoc.DESCRIPTION,

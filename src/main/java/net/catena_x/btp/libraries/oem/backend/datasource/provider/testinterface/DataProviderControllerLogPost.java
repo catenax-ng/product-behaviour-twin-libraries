@@ -6,6 +6,7 @@ import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +23,7 @@ public class DataProviderControllerLogPost {
 
     private final Logger logger = LoggerFactory.getLogger(DataProviderControllerLogPost.class);
 
-    @PostMapping(value = "/logpost", produces = "application/json")
+    @PostMapping(value = "/logpost", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             tags = {"Integration tests"},
             summary = "Logs the body of the post request."

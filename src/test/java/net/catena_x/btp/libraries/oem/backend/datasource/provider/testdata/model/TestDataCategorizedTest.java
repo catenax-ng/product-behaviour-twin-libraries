@@ -1,10 +1,10 @@
 package net.catena_x.btp.libraries.oem.backend.datasource.provider.testdata.model;
 
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
-import net.catena_x.btp.libraries.oem.backend.datasource.testdata.TestDataReader;
 import net.catena_x.btp.libraries.oem.backend.datasource.model.rawdata.testdata.TestdataCategorized;
-import net.catena_x.btp.libraries.oem.backend.datasource.testdata.util.DigitalTwinType;
 import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
+import net.catena_x.btp.libraries.oem.backend.datasource.testdata.TestDataReader;
+import net.catena_x.btp.libraries.oem.backend.datasource.testdata.util.DigitalTwinType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

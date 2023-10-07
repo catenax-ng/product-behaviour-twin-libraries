@@ -33,7 +33,7 @@ public class HIBackendReceiverControllerNotifyResult {
 
     private final Logger logger = LoggerFactory.getLogger(HIBackendReceiverControllerNotifyResult.class);
 
-    @PostMapping(value = "/notifyresult", produces = "application/json")
+    @PostMapping(value = "/notifyresult", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             summary = ReceiverNotifyResultDoc.SUMMARY, description = ReceiverNotifyResultDoc.DESCRIPTION,
             tags = {"Productive"},

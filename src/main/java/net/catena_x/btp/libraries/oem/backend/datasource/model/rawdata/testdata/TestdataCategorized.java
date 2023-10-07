@@ -9,12 +9,12 @@ import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.ClassifiedL
 import net.catena_x.btp.libraries.bamm.custom.classifiedloadspectrum.items.LoadSpectrumType;
 import net.catena_x.btp.libraries.bamm.digitaltwin.DigitalTwin;
 import net.catena_x.btp.libraries.bamm.testdata.TestData;
+import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
+import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.UncheckedDataProviderException;
 import net.catena_x.btp.libraries.oem.backend.datasource.testdata.util.CatenaXIdToDigitalTwinType;
 import net.catena_x.btp.libraries.oem.backend.datasource.testdata.util.DigitalTwinCategorizer;
 import net.catena_x.btp.libraries.oem.backend.datasource.testdata.util.DigitalTwinType;
 import net.catena_x.btp.libraries.oem.backend.datasource.testdata.util.VehicleDataLoader;
-import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
-import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.UncheckedDataProviderException;
 import net.catena_x.btp.libraries.util.datahelper.DataHelper;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import net.catena_x.btp.libraries.util.json.ObjectMapperFactoryBtp;

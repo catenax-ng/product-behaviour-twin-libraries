@@ -5,6 +5,7 @@ import net.catena_x.btp.libraries.util.apihelper.ApiHelper;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +21,7 @@ import java.util.Arrays;
 public class DataProviderControllerTestPost {
     @Autowired ApiHelper apiHelper;
 
-    @PostMapping(value = "/post", produces = "application/json")
+    @PostMapping(value = "/post", produces = MediaType.APPLICATION_JSON_VALUE)
     @io.swagger.v3.oas.annotations.Operation(
             tags = {"Integration tests"},
             summary = "Test endpoint with post method, returns embedded post body.",
