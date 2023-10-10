@@ -8,26 +8,23 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.catena_x.btp.libraries.edc.model.general.EdcElementType;
 
-import java.util.List;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Constraint {
+public class OrConstraint {
     @JsonProperty("@type")
-    private EdcElementType type = EdcElementType.LOGICAL_CONSTRAINT;
-
-    @JsonProperty("odrl:or")
-    private List<OrConstraint> or = null;
+    private EdcElementType type = EdcElementType.CONSTRAINT;
 
     @JsonProperty("odrl:leftOperand")
     private PolicyLeftOperand leftOperand = null;
 
     @JsonProperty("odrl:operator")
-    private PolicyOperator operator = null;
+    private PolicyOperatorStructured operator = null;
 
     @JsonProperty("odrl:rightOperand")
     private String rightOperand = null;
+
+
 }

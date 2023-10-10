@@ -10,12 +10,14 @@ import net.catena_x.btp.libraries.edc.model.asset.DataAddress;
 import net.catena_x.btp.libraries.edc.model.general.Context;
 import net.catena_x.btp.libraries.edc.model.general.Type;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-
 public class AssetDefinition {
     @JsonProperty("@context")
     private Context context = Context.DEFAULT_CONTEXT_ASSET;
@@ -25,6 +27,10 @@ public class AssetDefinition {
 
     @JsonProperty("@id")
     private String id = null;
+
+    private Map<String, String> properties = new HashMap<>();
+
+    private Map<String, String> privateProperties = new HashMap<>();
 
     private DataAddress dataAddress = null;
 }

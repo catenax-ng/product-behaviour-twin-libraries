@@ -1,5 +1,6 @@
 package net.catena_x.btp.sedc.apps.oem.backend.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import net.catena_x.btp.libraries.edc.api.EdcApi;
@@ -50,11 +51,44 @@ public class OemDataCollectorTestController {
     public ResponseEntity<DefaultApiResult> catalog() {
         final CatalogRequest catalogRequest = new CatalogRequest();
         catalogRequest.setQuerySpec(new QuerySpec());
-        catalogRequest.setProviderUrl("https://supplier-btp-test.dev.demo.catena-x.net/api/v1/dsp");
+        catalogRequest.setCounterPartyAddress("https://supplier-btp-test.dev.demo.catena-x.net/api/v1/dsp");
 
-        final CatalogResult result = edcApi.requestCatalog(catalogRequest).getBody();
+        try {
+            final CatalogResult result = edcApi.requestCatalog(catalogRequest).getBody();
+            return apiHelper.ok("ok: " + objectMapper.writeValueAsString(result));
+        } catch (final BtpException | JsonProcessingException exception) {
+            return apiHelper.failed(exception.getMessage());
+        }
+    }
 
-        return apiHelper.ok("ok");
+    @GetMapping(value = "/asset", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<DefaultApiResult> assetRegistration() {
+        try {
+            edcApi.registerAsset("testAsset2", "https://jsonplaceholder.typicode.com/todos/1");
+            return apiHelper.ok("ok");
+        } catch (final BtpException exception) {
+            return apiHelper.failed(exception.getMessage());
+        }
+    }
+
+    @GetMapping(value = "/policy", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<DefaultApiResult> policyRegistration() {
+        try {
+            edcApi.registerPolicy("testPolicy2", "BPNL00000008GX34");
+            return apiHelper.ok("ok");
+        } catch (final BtpException exception) {
+            return apiHelper.failed(exception.getMessage());
+        }
+    }
+
+    @GetMapping(value = "/contract", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<DefaultApiResult> contractRegistration() {
+        try {
+            edcApi.registerContract("testContract2", "testAsset2", "testPolicy2");
+            return apiHelper.ok("ok");
+        } catch (final BtpException exception) {
+            return apiHelper.failed(exception.getMessage());
+        }
     }
 
     @GetMapping(value = "/start", produces = MediaType.APPLICATION_JSON_VALUE)

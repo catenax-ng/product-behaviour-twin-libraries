@@ -10,7 +10,7 @@ import net.catena_x.btp.libraries.edc.model.catalog.CatelogService;
 import net.catena_x.btp.libraries.edc.model.general.Context;
 import net.catena_x.btp.libraries.edc.model.general.Type;
 
-import java.util.List;
+import java.util.Map;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,5 +34,5 @@ public class CatalogResult {
     CatelogService service = null;
 
     @JsonProperty("dcat:dataset")
-    List<Object> dataset = null;
+    Map<String, Object> dataset = null;
 }

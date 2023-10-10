@@ -20,6 +20,6 @@ public class CatalogRequest {
     private Context context = Context.DEFAULT_CONTEXT_CATALOG;
 
     private CatalogProtocol protocol = CatalogProtocol.HTTP;
-    private String providerUrl = null;
+    private String counterPartyAddress = null;
     private QuerySpec querySpec = null;
 }

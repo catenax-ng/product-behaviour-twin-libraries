@@ -4,7 +4,6 @@ import lombok.Getter;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import net.catena_x.btp.sedc.protocol.model.blocks.type.BlockType;
 import net.catena_x.btp.sedc.protocol.model.blocks.type.BlockTypeInfo;
-import net.catena_x.btp.sedc.transmit.RawBlockReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

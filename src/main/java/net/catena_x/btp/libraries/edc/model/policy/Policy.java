@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.catena_x.btp.libraries.edc.model.general.EdcElementType;
 
 import java.util.List;
 
@@ -13,12 +14,15 @@ import java.util.List;
 @Getter
 @Setter
 public class Policy {
+    @JsonProperty("@type")
+    private EdcElementType type = EdcElementType.POLICY;
+
     @JsonProperty("odrl:permission")
-    private List<PolicyRestriction> permissions;
+    private List<PolicyRestriction> permissions = null;
 
     @JsonProperty("odrl:prohibition")
-    private List<PolicyRestriction> prohibitions;
+    private List<PolicyRestriction> prohibitions = null;
 
     @JsonProperty("odrl:obligation")
-    private List<PolicyRestriction> obligations;
+    private List<PolicyRestriction> obligations = null;
 }
