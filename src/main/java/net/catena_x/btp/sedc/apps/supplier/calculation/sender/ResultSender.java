@@ -18,14 +18,17 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class ResultSender implements SenderInterface<PeakLoadResult> {
     private final OutputStream outputStream = new OutputStream();
     private final ContentMapperInterface contentMapper = new PeakLoadContentMapper();
     private final Logger logger = LoggerFactory.getLogger(ResultSender.class);
+    private final ThreadPoolExecutor threadPool =  (ThreadPoolExecutor)Executors.newCachedThreadPool();
 
     @Override
-    public void send(@NotNull final PeakLoadResult value, @NotNull final String id) throws BtpException {
+    public synchronized void send(@NotNull final PeakLoadResult value, @NotNull final String id) throws BtpException {
         final HeaderBlock headerBlock = new HeaderBlock();
         headerBlock.setId(id);
         headerBlock.setContentType("PeakLoadResult");
@@ -55,8 +58,15 @@ public class ResultSender implements SenderInterface<PeakLoadResult> {
                     final DataBlock<PeakLoadRawValues> rawData = contentMapper.deserialize(
                             result.content.getContent(), result.header.getContentType());
 
-                    final PeakLoadResult calculationResult = calculation.calculate(rawData.getData());
-                    send(calculationResult, result.header.getId());
+                    threadPool.submit(()->{
+                        try {
+                            logger.info("Calculating task with id " + result.header.getId() + ".");
+                            final PeakLoadResult calculationResult = calculation.calculate(rawData.getData());
+                            send(calculationResult, result.header.getId());
+                        } catch (final BtpException exception) {
+                            logger.error(exception.getMessage());
+                        }
+                    });
                 }
             } catch (final BtpException exception) {
                 logger.error(exception.getMessage());

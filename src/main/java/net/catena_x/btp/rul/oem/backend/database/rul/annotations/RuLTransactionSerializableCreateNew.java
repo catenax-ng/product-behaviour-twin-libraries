@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@Transactional(transactionManager= PersistenceRuLConfiguration.TRANSACTION_MANAGER,
+@Transactional(transactionManager=PersistenceRuLConfiguration.TRANSACTION_MANAGER,
                rollbackFor = Exception.class, isolation = Isolation.SERIALIZABLE,
                propagation = Propagation.REQUIRES_NEW)
 public @interface RuLTransactionSerializableCreateNew {

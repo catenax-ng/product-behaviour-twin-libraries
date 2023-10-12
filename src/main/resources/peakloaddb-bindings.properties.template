@@ -1,0 +1,3 @@
+peakloaddb.url=jdbc:postgresql://localhost:${PEAKLOAD_DB_PORT}/peakload
+peakloaddb.username=${PEAKLOAD_DB_USER}
+peakloaddb.password=${PEAKLOAD_DB_PASS}

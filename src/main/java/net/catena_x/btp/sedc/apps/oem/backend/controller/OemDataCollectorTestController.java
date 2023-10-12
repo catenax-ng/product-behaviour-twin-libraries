@@ -11,10 +11,12 @@ import net.catena_x.btp.libraries.util.apihelper.ApiHelper;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import net.catena_x.btp.libraries.util.json.ObjectMapperFactoryBtp;
+import net.catena_x.btp.sedc.apps.oem.backend.buffer.RingBufferImpl;
 import net.catena_x.btp.sedc.apps.oem.backend.calculation.CalculationConnection;
 import net.catena_x.btp.sedc.apps.oem.backend.receiver.ResultReceiver;
 import net.catena_x.btp.sedc.apps.oem.backend.receiver.ResultReceiverChannel;
 import net.catena_x.btp.sedc.apps.oem.backend.sender.RawdataSender;
+import net.catena_x.btp.sedc.apps.oem.database.dto.peakloadringbuffer.PeakLoadRingBufferTable;
 import net.catena_x.btp.sedc.protocol.model.blocks.ConfigBlock;
 import net.catena_x.btp.sedc.protocol.model.blocks.elements.Backchannel;
 import net.catena_x.btp.sedc.protocol.model.blocks.elements.Stream;
@@ -43,7 +45,10 @@ public class OemDataCollectorTestController {
     @Autowired private ApiHelper apiHelper;
     @Autowired private EdcApi edcApi;
     @Autowired @Qualifier(ObjectMapperFactoryBtp.EXTENDED_OBJECT_MAPPER) private ObjectMapper objectMapper;
+    @Autowired private RingBufferImpl ringBuffer;
+    @Autowired private PeakLoadRingBufferTable ringBufferTable;
 
+    private boolean started = false;
     private final Logger logger = LoggerFactory.getLogger(OemDataCollectorTestController.class);
     private final Map<String, CalculationConnection> calculateinConnections = new ConcurrentHashMap<>();
 
@@ -93,10 +98,20 @@ public class OemDataCollectorTestController {
 
     @GetMapping(value = "/start", produces = MediaType.APPLICATION_JSON_VALUE)
     public synchronized ResponseEntity<DefaultApiResult> start() {
+        if(started) {
+            return apiHelper.failed("Processing already started!");
+        }
+
         try {
+            started = true;
+
+            ringBufferTable.deleteAllNewTransaction();
+            ringBuffer.init(30L);
+
             final ConfigBlock configBlock = getConfiguration();
             final CalculationConnection connection = new CalculationConnection();
             connection.setStreamId(configBlock.getStream().getStreamId());
+            connection.setRingBuffer(ringBuffer);
             connection.setReceiver(new ResultReceiverChannel());
             calculateinConnections.put(configBlock.getStream().getStreamId(), connection);
 
@@ -108,10 +123,12 @@ public class OemDataCollectorTestController {
                     configBlock, getHeaders());
             logger.info("Result stream opened, start receiving results...");
             ResultReceiver.startReceivingResultsAsync(connection.getReceiver().getRawReceiver(),
-                    connection.getStreamId());
+                    connection.getStreamId(), ringBuffer);
 
-            return apiHelper.ok("ok");
+            return apiHelper.ok("Started processing...");
         } catch (final BtpException exception) {
+            return apiHelper.failed(exception.getMessage());
+        } catch (final Exception exception) {
             return apiHelper.failed(exception.getMessage());
         }
     }
@@ -126,7 +143,7 @@ public class OemDataCollectorTestController {
             return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
         }
 
-        connection.setSender(new RawdataSender());
+        connection.setSender(new RawdataSender(ringBuffer));
         return new ResponseEntity(connection.getSender().getStreamingResponseBody(), HttpStatus.OK);
     }
 

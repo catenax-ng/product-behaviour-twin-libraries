@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@Transactional(transactionManager= PersistenceRawDataConfiguration.TRANSACTION_MANAGER,
+@Transactional(transactionManager=PersistenceRawDataConfiguration.TRANSACTION_MANAGER,
                rollbackFor = Exception.class, isolation = Isolation.DEFAULT, propagation = Propagation.MANDATORY)
 public @interface RDTransactionDefaultUseExisting {
 }

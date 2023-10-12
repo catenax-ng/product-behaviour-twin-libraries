@@ -49,3 +49,4 @@ build/
 /src/main/resources/oemdatacollector-bindings.properties
 /src/main/resources/oempeakloaddashboard-bindings.properties
 /src/main/resources/supplierpeakloadservice-bindings.properties
+/src/main/resources/peakloaddb-bindings.properties
