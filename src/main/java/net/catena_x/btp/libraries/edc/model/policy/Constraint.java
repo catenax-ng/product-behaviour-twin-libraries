@@ -1,12 +1,13 @@
 package net.catena_x.btp.libraries.edc.model.policy;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.catena_x.btp.libraries.edc.model.general.EdcElementType;
+import net.catena_x.btp.libraries.edc.model.general.Type;
 
 import java.util.List;
 
@@ -17,9 +18,10 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Constraint {
     @JsonProperty("@type")
-    private EdcElementType type = EdcElementType.LOGICAL_CONSTRAINT;
+    private Type type = Type.LOGICAL_CONSTRAINT;
 
     @JsonProperty("odrl:or")
+    @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
     private List<OrConstraint> or = null;
 
     @JsonProperty("odrl:leftOperand")

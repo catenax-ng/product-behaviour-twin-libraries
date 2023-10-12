@@ -13,8 +13,32 @@ public enum Type {
     CONTRACT_DEFINITION,
 
     @JsonProperty("dcat:Catalog")
-    CATALOG_RESULT,
+    CATALOG,
 
     @JsonProperty("dcat:DataService")
-    CATALOG_DATA_SERVICE
+    CATALOG_DATA_SERVICE,
+
+    @JsonProperty("dcat:Dataset")
+    CATALOG_DATASET,
+
+    @JsonProperty("dcat:Distribution")
+    CATALOG_DISTRIBUTION,
+
+    @JsonProperty("Policy")
+    POLICY,
+
+    @JsonProperty("PolicyDefinitionRequestDto")
+    POLICY_DEFINITION_REQUEST_DTO,
+
+    @JsonProperty("LogicalConstraint")
+    LOGICAL_CONSTRAINT,
+
+    @JsonProperty("Constraint")
+    CONSTRAINT,
+
+    @JsonProperty("dcat:DataService")
+    DCAT_DATA_SERVICE,
+
+    @JsonProperty("odrl:Set")
+    SET
 }

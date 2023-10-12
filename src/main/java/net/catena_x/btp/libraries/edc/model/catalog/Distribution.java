@@ -1,4 +1,4 @@
-package net.catena_x.btp.libraries.edc.model.policy;
+package net.catena_x.btp.libraries.edc.model.catalog;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -13,18 +13,13 @@ import net.catena_x.btp.libraries.edc.model.general.Type;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class OrConstraint {
+public class Distribution {
     @JsonProperty("@type")
-    private Type type = Type.CONSTRAINT;
+    private Type type = Type.CATALOG_DISTRIBUTION;
 
-    @JsonProperty("odrl:leftOperand")
-    private PolicyLeftOperand leftOperand = null;
+    @JsonProperty("dct:format")
+    private DistributionFormat format = null;
 
-    @JsonProperty("odrl:operator")
-    private PolicyOperatorStructured operator = null;
-
-    @JsonProperty("odrl:rightOperand")
-    private String rightOperand = null;
-
-
+    @JsonProperty("dcat:accessService")
+    private String accessService = null;
 }

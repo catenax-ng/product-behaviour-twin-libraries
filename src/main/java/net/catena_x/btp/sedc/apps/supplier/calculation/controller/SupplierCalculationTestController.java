@@ -61,12 +61,9 @@ public class SupplierCalculationTestController {
 
     @GetMapping(value = "/catalog", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DefaultApiResult> catalog() {
-        final CatalogRequest catalogRequest = new CatalogRequest();
-        catalogRequest.setQuerySpec(new QuerySpec());
-        catalogRequest.setCounterPartyAddress("https://bmw-btp-test.dev.demo.catena-x.net/api/v1/dsp");
-
         try {
-            final CatalogResult result = edcApi.requestCatalog(catalogRequest).getBody();
+            final CatalogResult result = edcApi.requestCatalog(
+                    "https://bmw-btp-test.dev.demo.catena-x.net/api/v1/dsp");
             return apiHelper.ok("ok: " + objectMapper.writeValueAsString(result));
         } catch (final BtpException | JsonProcessingException exception) {
             return apiHelper.failed(exception.getMessage());

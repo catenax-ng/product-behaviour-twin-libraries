@@ -3,10 +3,13 @@ package net.catena_x.btp.libraries.edc.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.catena_x.btp.libraries.edc.model.*;
 import net.catena_x.btp.libraries.edc.model.asset.DataAddress;
+import net.catena_x.btp.libraries.edc.model.catalog.Dataset;
+import net.catena_x.btp.libraries.edc.model.catalog.QuerySpec;
 import net.catena_x.btp.libraries.edc.model.contract.AssetsSelector;
 import net.catena_x.btp.libraries.edc.model.contract.ContractOperandLeft;
 import net.catena_x.btp.libraries.edc.model.contract.ContractOperator;
-import net.catena_x.btp.libraries.edc.model.general.EdcElementType;
+import net.catena_x.btp.libraries.edc.model.general.Policy;
+import net.catena_x.btp.libraries.edc.model.general.Type;
 import net.catena_x.btp.libraries.edc.model.policy.*;
 import net.catena_x.btp.libraries.edc.util.exceptions.EdcException;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
@@ -25,6 +28,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class EdcApi {
@@ -35,35 +39,46 @@ public class EdcApi {
 
     private final static String API_KEY_KEY = "X-Api-Key";
 
-    @Autowired private RestTemplate restTemplate;
-    @Autowired @Qualifier(ObjectMapperFactoryBtp.EXTENDED_OBJECT_MAPPER) private ObjectMapper objectMapper;
+    @Autowired
+    private RestTemplate restTemplate;
+    @Autowired
+    @Qualifier(ObjectMapperFactoryBtp.EXTENDED_OBJECT_MAPPER)
+    private ObjectMapper objectMapper;
 
-    @Value("${edc.api.management.url}") private String managementUrl;
-    @Value("${edc.api.management.apikey}") private String apiKey;
+    @Value("${edc.api.management.url}")
+    private String managementUrl;
+    @Value("${edc.api.management.apikey}")
+    private String apiKey;
 
-    public ResponseEntity<CatalogResult> requestCatalog(@NotNull final CatalogRequest catalogRequest)
+    public CatalogResult requestCatalog(@NotNull final String counterPartyAddress)
+            throws BtpException {
+        final CatalogRequest catalogRequest = new CatalogRequest();
+        catalogRequest.setQuerySpec(new QuerySpec());
+        catalogRequest.setCounterPartyAddress(counterPartyAddress);
+        return requestCatalog(catalogRequest);
+    }
+
+    public CatalogResult requestCatalog(@NotNull final CatalogRequest catalogRequest)
             throws BtpException {
         final HttpHeaders headers = getNewManagementApiHeaders();
         final HttpEntity<CatalogRequest> request = new HttpEntity<>(catalogRequest, headers);
         final HttpUrl requestUrl = getCatalogRequestUrl();
 
-        /*
         try {
-            final String body = objectMapper.writeValueAsString(request.getBody());
-            System.out.println(body);
-        } catch (final Exception exception) {
-        }
-        */
-
-
-        // response = restTemplate.postForObject(requestUrl.toString(), request, CatalogResult.class);
-
-
-        try {
-            return restTemplate.exchange(requestUrl.uri(), HttpMethod.POST, request, CatalogResult.class);
+            return restTemplate.exchange(requestUrl.uri(), HttpMethod.POST, request, CatalogResult.class).getBody();
         } catch (final Exception exception) {
             throw new BtpException(exception);
         }
+    }
+
+    public List<Dataset> requestAssetsFromCatalog(@NotNull final CatalogRequest catalogRequest,
+                                                  @NotNull final String assetId) throws BtpException {
+        return assetsFromCatalogResult(requestCatalog(catalogRequest), assetId);
+    }
+
+    public List<Dataset> requestAssetsFromCatalog(@NotNull final String counterPartyAddress,
+                                                  @NotNull final String assetId) throws BtpException {
+        return assetsFromCatalogResult(requestCatalog(counterPartyAddress), assetId);
     }
 
     public void registerAsset(@NotNull final AssetDefinition assetDefinition) throws BtpException {
@@ -114,16 +129,16 @@ public class EdcApi {
         final PolicyDefinition policyDefinition = new PolicyDefinition();
         policyDefinition.setId(policyId);
         policyDefinition.setPolicy(new Policy());
-        policyDefinition.getPolicy().setProhibitions(new ArrayList<>());
-        policyDefinition.getPolicy().setObligations(new ArrayList<>());
-        policyDefinition.getPolicy().setPermissions(new ArrayList<>());
+        policyDefinition.getPolicy().setProhibition(new ArrayList<>());
+        policyDefinition.getPolicy().setObligation(new ArrayList<>());
+        policyDefinition.getPolicy().setPermission(new ArrayList<>());
 
         final PolicyRestriction permission = new PolicyRestriction();
-        permission.setAction(ActionType.USE);
-        permission.setConstraints(new ArrayList<>());
+        permission.setAction(new Action(ActionType.USE));
+        permission.setConstraint(new ArrayList<>());
 
         final Constraint constraint = new Constraint();
-        constraint.setType(EdcElementType.LOGICAL_CONSTRAINT);
+        constraint.setType(Type.LOGICAL_CONSTRAINT);
 
         final OrConstraint or = new OrConstraint();
         or.setLeftOperand(PolicyLeftOperand.BUSINESS_PARTNER_NUMBER);
@@ -131,9 +146,9 @@ public class EdcApi {
         or.setRightOperand(partnerBPN);
         constraint.setOr(new ArrayList<>());
         constraint.getOr().add(or);
-        permission.getConstraints().add(constraint);
+        permission.getConstraint().add(constraint);
 
-        policyDefinition.getPolicy().getPermissions().add(permission);
+        policyDefinition.getPolicy().getPermission().add(permission);
 
         registerPolicy(policyDefinition);
     }
@@ -198,8 +213,18 @@ public class EdcApi {
         return headers;
     }
 
+    private List<Dataset> assetsFromCatalogResult(@NotNull final CatalogResult catalogResult,
+                                                  @NotNull final String assetId) {
+        final List<Dataset> assets = new ArrayList<>(5);
 
+        catalogResult.getDataset().forEach(x -> {
+            if(x.getId().equals(assetId)) {
+                assets.add(x);
+            }
+        });
 
+        return assets;
+    }
 
 
 
@@ -218,97 +243,3 @@ public class EdcApi {
         throw new EdcException("Not implemented!");
     }
 }
-
-/*
-@Component
-public class EdcApi {
-    @Autowired private RestTemplate restTemplate;
-    @Value("${edc.apiwrapper.url}") private String apiWrapperUrl;
-    @Value("${edc.apiwrapper.submodelPath}") private String submodelPath;            //"api/service"
-    @Value("${edc.apiwrapper.submodel}") private String submodel;                    //"submodel"
-    @Value("${edc.apiwrapper.providerEdcUrlKey}") private String providerEdcUrlKey;  //"provider-connector-url"
-    @Value("${edc.apiwrapper.username}") private String apiWrapperUsername;
-    @Value("${edc.apiwrapper.password}") private String apiWrapperPassword;
-
-    private final Logger logger = LoggerFactory.getLogger(EdcApi.class);
-
-    public <ResponseType> ResponseEntity<ResponseType> get(
-            @NotNull final HttpUrl partnerUrl, @NotNull final String asset, @NotNull Class<ResponseType> responseClass,
-            @Nullable final HttpHeaders headers) throws EdcException {
-
-        addAuthorizationHeaders(headers);
-
-        final HttpEntity<String> request = new HttpEntity<>(headers);
-
-        final HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
-
-        logger.info("API-WRAPPER request: GET " + requestUrl.toString());
-
-        final ResponseEntity<ResponseType> response = restTemplate.exchange(
-                requestUrl.uri(), HttpMethod.GET, request, responseClass);
-
-        try {
-            ResponseChecker.checkResponse(response);
-        } catch (final BtpException exception) {
-            throw new EdcException(exception);
-        }
-
-        return response;
-    }
-
-    public <BodyType, ResponseType> ResponseEntity<ResponseType> post(
-            @NotNull final HttpUrl partnerUrl,
-            @NotNull final String asset,
-            @NotNull Class<ResponseType> responseClass,
-            @NotNull BodyType body,
-            @Nullable HttpHeaders headers) throws EdcException {
-
-        addAuthorizationHeaders(headers);
-        final HttpEntity<BodyType> request = new HttpEntity<>(body, headers);
-
-        final HttpUrl requestUrl = buildApiWrapperUrl(partnerUrl, asset);
-
-        logger.info("API-WRAPPER request: POST " + requestUrl.toString());
-
-        final ResponseEntity<ResponseType> response = restTemplate.postForEntity(
-                requestUrl.uri(), request, responseClass);
-
-        try {
-            ResponseChecker.checkResponse(response);
-        } catch (final BtpException exception) {
-            throw new EdcException(exception);
-        }
-
-        return response;
-    }
-
-    private HttpUrl buildApiWrapperUrl(@NotNull final HttpUrl partnerUrl, @NotNull final String asset) {
-        String partnerUrlAsString = partnerUrl.toString();
-        if(partnerUrlAsString.endsWith("/")) {
-            partnerUrlAsString = partnerUrlAsString.substring(0, partnerUrlAsString.length() - 1);
-        }
-
-        final HttpUrl url = HttpUrl.parse(this.apiWrapperUrl).newBuilder()
-                                     .addPathSegments(submodelPath)
-                                     .addEncodedPathSegment(asset)
-                                     .addPathSegment(submodel)
-                                     .addEncodedQueryParameter(providerEdcUrlKey, partnerUrlAsString)
-                                     .build();
-
-        return url;
-    }
-
-    private void addAuthorizationHeaders(final HttpHeaders headers) {
-        headers.add("Authorization", getAuthString());
-    }
-
-    private String getAuthString() {
-        StringBuilder sb = new StringBuilder();
-
-        String authStr = sb.append(apiWrapperUsername).append(":").append(apiWrapperPassword).toString();
-        sb.setLength(0);
-        sb.append("Basic ").append(Base64.getEncoder().encodeToString(authStr.getBytes()));
-        return sb.toString();
-    }
-}
-*/

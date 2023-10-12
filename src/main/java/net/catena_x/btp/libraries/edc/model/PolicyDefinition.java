@@ -7,8 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.catena_x.btp.libraries.edc.model.general.Context;
-import net.catena_x.btp.libraries.edc.model.general.EdcElementType;
-import net.catena_x.btp.libraries.edc.model.policy.Policy;
+import net.catena_x.btp.libraries.edc.model.general.Policy;
+import net.catena_x.btp.libraries.edc.model.general.Type;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,7 +20,7 @@ public class PolicyDefinition {
     private Context context = Context.DEFAULT_CONTEXT_POLICY;
 
     @JsonProperty("@type")
-    EdcElementType type = EdcElementType.POLICY_DEFINITION_REQUEST_DTO;
+    Type type = Type.POLICY_DEFINITION_REQUEST_DTO;
 
     @JsonProperty("@id")
     private String id = null;
