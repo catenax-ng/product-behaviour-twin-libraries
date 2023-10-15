@@ -11,6 +11,7 @@ import net.catena_x.btp.libraries.oem.backend.model.dto.infoitem.InfoTable;
 import net.catena_x.btp.libraries.oem.backend.model.dto.sync.SyncTable;
 import net.catena_x.btp.libraries.oem.backend.model.dto.telematicsdata.TelematicsData;
 import net.catena_x.btp.libraries.oem.backend.model.dto.telematicsdata.TelematicsDataTable;
+import net.catena_x.btp.libraries.util.threads.Threads;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,13 +55,13 @@ class TelematicsDataTableTest {
     }
 
     @Test
-    void uploadandQueryTelematicsData() throws OemDatabaseException, InterruptedException  {
+    void uploadandQueryTelematicsData() throws OemDatabaseException  {
 
         telematicsDataTable.uploadTelematicsDataGetIdNewTransaction(generateTelematricsTestData("veh1"));
-        Thread.sleep(100);
+        Threads.sleepWithoutExceptions(100);
 
         telematicsDataTable.uploadTelematicsDataGetIdNewTransaction(generateTelematricsTestData("veh2"));
-        Thread.sleep(100);
+         Threads.sleepWithoutExceptions(100);
 
         telematicsDataTable.uploadTelematicsDataGetIdNewTransaction(generateTelematricsTestData("veh1"));
 

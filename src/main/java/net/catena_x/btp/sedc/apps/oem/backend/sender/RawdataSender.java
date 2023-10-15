@@ -2,6 +2,7 @@ package net.catena_x.btp.sedc.apps.oem.backend.sender;
 
 import lombok.Getter;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
+import net.catena_x.btp.libraries.util.threads.Threads;
 import net.catena_x.btp.sedc.apps.oem.backend.buffer.RingBufferInterface;
 import net.catena_x.btp.sedc.apps.oem.backend.generator.TestDataGenerator;
 import net.catena_x.btp.sedc.mapper.PeakLoadContentMapper;
@@ -70,10 +71,7 @@ public class RawdataSender implements SenderInterface<PeakLoadRawValues> {
 
                     send(rawValues, String.valueOf(id));
 
-                    try {
-                        Thread.sleep(700);
-                    } catch (final InterruptedException exception){
-                    }
+                    Threads.sleepWithoutExceptions(700);
                 }
             } catch (final BtpException exception) {
                 logger.error("Error while sending raw values: " + exception.getMessage());

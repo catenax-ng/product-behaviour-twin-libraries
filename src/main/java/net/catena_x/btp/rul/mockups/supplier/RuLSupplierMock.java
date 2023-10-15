@@ -11,6 +11,7 @@ import net.catena_x.btp.libraries.util.apihelper.ApiHelper;
 import net.catena_x.btp.libraries.util.apihelper.ResponseChecker;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
+import net.catena_x.btp.libraries.util.threads.Threads;
 import net.catena_x.btp.rul.oem.backend.rul_service.notifications.dao.supplierservice.RuLNotificationFromSupplierContentDAO;
 import net.catena_x.btp.rul.oem.backend.rul_service.notifications.dao.supplierservice.RuLNotificationToSupplierContentDAO;
 import net.catena_x.btp.rul.oem.backend.rul_service.notifications.dao.supplierservice.items.RuLInputDAO;
@@ -71,10 +72,7 @@ public class RuLSupplierMock {
 
             new Thread(() ->
             {
-                try {
-                    Thread.sleep(2000L);
-                } catch (InterruptedException exception) {
-                }
+                Threads.sleepWithoutExceptions(2000L);
 
                 final HttpHeaders headers = generateDefaultHeaders();
                 addAuthorizationHeaders(headers);

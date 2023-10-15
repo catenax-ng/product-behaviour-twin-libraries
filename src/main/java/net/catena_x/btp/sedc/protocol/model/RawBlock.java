@@ -2,6 +2,7 @@ package net.catena_x.btp.sedc.protocol.model;
 
 import lombok.Getter;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
+import net.catena_x.btp.libraries.util.threads.Threads;
 import net.catena_x.btp.sedc.protocol.model.blocks.type.BlockType;
 import net.catena_x.btp.sedc.protocol.model.blocks.type.BlockTypeInfo;
 import org.slf4j.Logger;
@@ -81,10 +82,7 @@ public class RawBlock {
     private static void waitForBytes(@NotNull final BufferedInputStream stream,
                                      final int byteCount) throws IOException {
         while(stream.available() < byteCount) {
-            try {
-                Thread.sleep(100);
-            } catch (final InterruptedException exception) {
-            }
+            Threads.sleepWithoutExceptions(100);
         }
     }
 }

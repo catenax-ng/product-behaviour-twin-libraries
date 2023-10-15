@@ -3,6 +3,7 @@ package net.catena_x.btp.libraries.edc.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.catena_x.btp.libraries.edc.model.*;
 import net.catena_x.btp.libraries.edc.model.asset.DataAddress;
+import net.catena_x.btp.libraries.edc.model.catalog.CatalogProtocol;
 import net.catena_x.btp.libraries.edc.model.catalog.Dataset;
 import net.catena_x.btp.libraries.edc.model.catalog.QuerySpec;
 import net.catena_x.btp.libraries.edc.model.contract.AssetsSelector;
@@ -10,25 +11,32 @@ import net.catena_x.btp.libraries.edc.model.contract.ContractOperandLeft;
 import net.catena_x.btp.libraries.edc.model.contract.ContractOperator;
 import net.catena_x.btp.libraries.edc.model.general.Policy;
 import net.catena_x.btp.libraries.edc.model.general.Type;
+import net.catena_x.btp.libraries.edc.model.negotiation.ContractNegotiationResponse;
+import net.catena_x.btp.libraries.edc.model.negotiation.IdResponse;
+import net.catena_x.btp.libraries.edc.model.negotiation.Offer;
 import net.catena_x.btp.libraries.edc.model.policy.*;
+import net.catena_x.btp.libraries.edc.model.transfer.DataDestination;
+import net.catena_x.btp.libraries.edc.model.transfer.TransferResponse;
+import net.catena_x.btp.libraries.edc.model.transfer.TransferType;
 import net.catena_x.btp.libraries.edc.util.exceptions.EdcException;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import net.catena_x.btp.libraries.util.json.ObjectMapperFactoryBtp;
+import net.catena_x.btp.libraries.util.threads.Threads;
 import okhttp3.HttpUrl;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.constraints.NotNull;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class EdcApi {
@@ -36,19 +44,19 @@ public class EdcApi {
     private final static String ASSET_REGISTRATION_PATH = "v3/assets";
     private final static String POLICY_REGISTRATION_PATH = "v2/policydefinitions";
     private final static String CONTRACT_REGISTRATION_PATH = "v2/contractdefinitions";
+    private final static String CONTRACT_NEGOTIATION_PATH = "v2/contractnegotiations";
+    private final static String CONTRACT_TRANSFER_PATH = "v2/transferprocesses";
 
     private final static String API_KEY_KEY = "X-Api-Key";
+    private final static String CONTENT_TYPE = "Content-Type";
 
-    @Autowired
-    private RestTemplate restTemplate;
-    @Autowired
-    @Qualifier(ObjectMapperFactoryBtp.EXTENDED_OBJECT_MAPPER)
-    private ObjectMapper objectMapper;
+    private final static String RECEIVER_HTTP_ENDPOINT = "receiverHttpEndpoint";
 
-    @Value("${edc.api.management.url}")
-    private String managementUrl;
-    @Value("${edc.api.management.apikey}")
-    private String apiKey;
+    @Autowired private RestTemplate restTemplate;
+    @Autowired @Qualifier(ObjectMapperFactoryBtp.EXTENDED_OBJECT_MAPPER) private ObjectMapper objectMapper;
+
+    @Value("${edc.api.management.url}") private String managementUrl;
+    @Value("${edc.api.management.apikey}") private String apiKey;
 
     public CatalogResult requestCatalog(@NotNull final String counterPartyAddress)
             throws BtpException {
@@ -187,6 +195,217 @@ public class EdcApi {
         registerContract(contractDefinition);
     }
 
+    public String negotiateContract(@NotNull final String providerConnectorDspAddress, @NotNull final String providerBpn,
+                                    @NotNull final Dataset asset, @NotNull final Policy policy,
+                                    @NotNull final CatalogProtocol protocol) throws BtpException {
+        return negotiateContract(generateContractNegotiationRequest(
+                providerConnectorDspAddress, providerBpn, asset, policy, protocol));
+    }
+
+    public String negotiateContract(@NotNull final ContractNegotiationRequest contractNegotiationRequest)
+            throws BtpException {
+        final IdResponse negotiationResponse = initNegotiation(contractNegotiationRequest);
+
+        while(true) {
+            final ContractNegotiationResponse response = requestNegotiationState(negotiationResponse.getId());
+            switch (response.getState()) {
+                case INITIAL:
+                case REQUESTING:
+                case REQUESTED:
+                case OFFERING:
+                case OFFERED:
+                case ACCEPTING:
+                case ACCEPTED:
+                case AGREEING:
+                case AGREED:
+                case VERIFYING:
+                case VERIFIED:
+                case FINALIZING: {
+                    Threads.sleepWithoutExceptions(250);
+                    break;
+                }
+
+                case FINALIZED: {
+                    return response.getContractAgreementId();
+                }
+
+                case TERMINATING:
+                case TERMINATED: {
+                    throw new BtpException("Negotiation failed!");
+                }
+            }
+        }
+    }
+
+    public String startTransfer(@NotNull final String providerConnectorDspAddress, @NotNull final String connectorId,
+                                @NotNull final String contractAgreementId, @NotNull final String assetId,
+                                @NotNull final CatalogProtocol protocol,
+                                @NotNull final MediaType mediaType, final boolean isFinite,
+                                @NotNull final String backendAddress) throws BtpException {
+        final TransferRequest transferRequest = new TransferRequest();
+
+        final Map<String, String> privateProperties = new HashMap<>();
+        privateProperties.put(RECEIVER_HTTP_ENDPOINT, backendAddress);
+
+        transferRequest.setAssetId(assetId);
+        transferRequest.setConnectorAddress(providerConnectorDspAddress);
+        transferRequest.setConnectorId(connectorId);
+        transferRequest.setContractId(contractAgreementId);
+        transferRequest.setDataDestination(new DataDestination());
+        transferRequest.setManagedResources(false);
+        transferRequest.setPrivateProperties(privateProperties);
+        transferRequest.setProtocol(protocol);
+        transferRequest.setTransferType(new TransferType(mediaType.getType(), isFinite));
+
+        return startTransfer(transferRequest);
+    }
+
+    public String startTransfer(@NotNull final TransferRequest transferRequest)
+            throws BtpException {
+        final IdResponse transferResponse = initTransfer(transferRequest);
+
+        while(true) {
+            final TransferResponse response = requestTransferState(transferResponse.getId());
+            switch (response.getState()) {
+                case INITIAL:
+                case PROVISIONING:
+                case PROVISIONING_REQUESTED:
+                case PROVISIONED:
+                case REQUESTING:
+                case REQUESTED:
+                case STARTING: {
+                    Threads.sleepWithoutExceptions(250);
+                    break;
+                }
+
+                case STARTED: {
+                    return response.getCorrelationId();
+                }
+
+                case SUSPENDING:
+                case SUSPENDED:
+                case COMPLETING:
+                case COMPLETED:
+                case TERMINATING:
+                case TERMINATED:
+                case DEPROVISIONING:
+                case DEPROVISIONING_REQUESTED:
+                case DEPROVISIONED: {
+                    throw new BtpException("Transfer failed!");
+                }
+            }
+        }
+    }
+
+    private IdResponse initTransfer(@NotNull final TransferRequest transferRequest)
+            throws BtpException {
+        final HttpHeaders headers = getNewManagementApiHeaders();
+        final HttpEntity<TransferRequest> request = new HttpEntity<>(transferRequest, headers);
+
+        ResponseEntity<IdResponse> response = null;
+
+        try {
+            response = restTemplate.exchange(
+                    getTransferUrl().uri(), HttpMethod.POST, request, IdResponse.class);
+        } catch (final Exception exception) {
+            throw new BtpException(exception);
+        }
+
+        if(!response.getStatusCode().is2xxSuccessful()) {
+            throw new BtpException("Got status code " + response.getStatusCode().value());
+        }
+
+        return response.getBody();
+    }
+
+    private ContractNegotiationResponse requestNegotiationState(@NotNull final String negotiationId)
+            throws BtpException {
+        final HttpHeaders headers = getNewManagementApiHeaders();
+        final HttpEntity<ContractNegotiationResponse> request = new HttpEntity<>(headers);
+        final HttpUrl requestUrl = HttpUrl.parse(getContractNegotiationUrl().url().toString()).newBuilder().
+                addPathSegment(negotiationId).build();
+
+        ResponseEntity<ContractNegotiationResponse> response = null;
+
+        try {
+            response = restTemplate.exchange(
+                    requestUrl.uri(), HttpMethod.GET, request, ContractNegotiationResponse.class);
+        } catch (final Exception exception) {
+            throw new BtpException(exception);
+        }
+
+        if(!response.getStatusCode().is2xxSuccessful()) {
+            throw new BtpException("Got status code " + response.getStatusCode().value());
+        }
+
+        return response.getBody();
+    }
+
+    private TransferResponse requestTransferState(@NotNull final String transferId)
+            throws BtpException {
+        final HttpHeaders headers = getNewManagementApiHeaders();
+        final HttpEntity<TransferResponse> request = new HttpEntity<>(headers);
+        final HttpUrl requestUrl = HttpUrl.parse(getTransferUrl().url().toString()).newBuilder().
+                addPathSegment(transferId).build();
+
+        ResponseEntity<TransferResponse> response = null;
+
+        try {
+            response = restTemplate.exchange(requestUrl.uri(), HttpMethod.GET, request, TransferResponse.class);
+        } catch (final Exception exception) {
+            throw new BtpException(exception);
+        }
+
+        if(!response.getStatusCode().is2xxSuccessful()) {
+            throw new BtpException("Got status code " + response.getStatusCode().value());
+        }
+
+        return response.getBody();
+    }
+
+    private ContractNegotiationRequest generateContractNegotiationRequest(
+            @NotNull final String providerConnectorDspAddress, @NotNull final String providerBpn,
+            @NotNull final Dataset asset, @NotNull final Policy policy, @NotNull final CatalogProtocol protocol) {
+
+        final ContractNegotiationRequest negotiationRequest = new ContractNegotiationRequest();
+
+        negotiationRequest.setConnectorAddress(providerConnectorDspAddress);
+        negotiationRequest.setProtocol(protocol);
+        negotiationRequest.setConnectorId(providerBpn);
+        negotiationRequest.setProviderId(providerBpn);
+
+        final Offer offer = new Offer();
+        offer.setAssetId(asset.getId());
+        offer.setOfferId(policy.getId());
+
+        offer.setPolicy(policy);
+
+        negotiationRequest.setOffer(offer);
+
+        return negotiationRequest;
+    }
+
+    private IdResponse initNegotiation(@NotNull final ContractNegotiationRequest negotiationRequest)
+            throws BtpException {
+        final HttpHeaders headers = getNewManagementApiHeaders();
+        final HttpEntity<ContractNegotiationRequest> request = new HttpEntity<>(negotiationRequest, headers);
+
+        ResponseEntity<IdResponse> response = null;
+
+        try {
+            response = restTemplate.exchange(
+                    getContractNegotiationUrl().uri(), HttpMethod.POST, request, IdResponse.class);
+        } catch (final Exception exception) {
+            throw new BtpException(exception);
+        }
+
+        if(!response.getStatusCode().is2xxSuccessful()) {
+            throw new BtpException("Got status code " + response.getStatusCode().value());
+        }
+
+        return response.getBody();
+    }
+
     private HttpUrl getCatalogRequestUrl() {
         return HttpUrl.parse(managementUrl).newBuilder()
                 .addPathSegments(CATALOG_REQUEST_PATH).build();
@@ -207,9 +426,20 @@ public class EdcApi {
                 .addPathSegments(CONTRACT_REGISTRATION_PATH).build();
     }
 
+    private HttpUrl getContractNegotiationUrl() {
+        return HttpUrl.parse(managementUrl).newBuilder()
+                .addPathSegments(CONTRACT_NEGOTIATION_PATH).build();
+    }
+
+    private HttpUrl getTransferUrl() {
+        return HttpUrl.parse(managementUrl).newBuilder()
+                .addPathSegments(CONTRACT_TRANSFER_PATH).build();
+    }
+
     private HttpHeaders getNewManagementApiHeaders() {
         final HttpHeaders headers = new HttpHeaders();
         headers.add(API_KEY_KEY, apiKey);
+        headers.add(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         return headers;
     }
 

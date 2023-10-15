@@ -40,5 +40,22 @@ public enum Type {
     DCAT_DATA_SERVICE,
 
     @JsonProperty("odrl:Set")
-    SET
+    SET,
+
+    @JsonProperty("NegotiationInitiateRequestDto")
+    NEGOTIATION_INITIATE_REQUEST,
+
+    @JsonProperty("edc:IdResponse")
+    ID_RESPONSE,
+
+    @JsonProperty("edc:ContractNegotiation")
+    CONTRACT_NEGOTIATION,
+
+    CONSUMER,
+
+    @JsonProperty("edc:TransferProcess")
+    TRANSFER_PROCESS,
+
+    @JsonProperty("edc:DataAddress")
+    DATA_ADDRESS
 }

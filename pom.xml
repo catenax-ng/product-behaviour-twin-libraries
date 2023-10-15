@@ -85,6 +85,21 @@
 			</build>
 		</profile>
 		<profile>
+		<id>oemedrproxy</id>
+		<build>
+			<plugins>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<version>3.1.2</version>
+					<configuration>
+						<mainClass>net.catena_x.btp.sedc.apps.oem.edrproxy.OemEdrProxy</mainClass>
+					</configuration>
+				</plugin>
+			</plugins>
+		</build>
+	</profile>
+		<profile>
 			<id>dataprovider</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>

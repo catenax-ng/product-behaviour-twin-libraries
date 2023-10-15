@@ -4,9 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import net.catena_x.btp.libraries.edc.api.EdcApi;
-import net.catena_x.btp.libraries.edc.model.CatalogRequest;
 import net.catena_x.btp.libraries.edc.model.CatalogResult;
-import net.catena_x.btp.libraries.edc.model.catalog.QuerySpec;
+import net.catena_x.btp.libraries.edc.model.Edr;
+import net.catena_x.btp.libraries.edc.model.catalog.CatalogProtocol;
+import net.catena_x.btp.libraries.edc.model.catalog.Dataset;
 import net.catena_x.btp.libraries.util.apihelper.ApiHelper;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
@@ -35,6 +36,7 @@ import javax.validation.constraints.NotNull;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -91,6 +93,39 @@ public class OemDataCollectorTestController {
         } catch (final BtpException exception) {
             return apiHelper.failed(exception.getMessage());
         }
+    }
+
+    @GetMapping(value = "/test", produces = MediaType.APPLICATION_JSON_VALUE)
+    public synchronized ResponseEntity<DefaultApiResult> test() {
+        try {
+            started = true;
+
+            final List<Dataset> assets = edcApi.requestAssetsFromCatalog(
+                    "https://supplier-btp-test.dev.demo.catena-x.net/api/v1/dsp", "1");
+
+            final String contractAgreementId = edcApi.negotiateContract(
+                    "https://supplier-btp-test.dev.demo.catena-x.net/api/v1/dsp",
+                    "BPNL00000008GX34", assets.get(0), assets.get(0).getHasPolicy().get(0),
+                    CatalogProtocol.HTTP);
+
+            final String transferId = edcApi.startTransfer(
+                    "https://supplier-btp-test.dev.demo.catena-x.net/api/v1/dsp",
+                    "BPNL00000008GX34",
+                    contractAgreementId, assets.get(0).getId(), CatalogProtocol.HTTP,
+                    MediaType.APPLICATION_OCTET_STREAM, true, null);
+
+            return apiHelper.ok("Test successful, got transfer id \"" + transferId + "\".");
+        } catch (final Exception exception) {
+            return apiHelper.failed(exception.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/peakload/edrcallback", produces = MediaType.APPLICATION_JSON_VALUE)
+    public synchronized ResponseEntity<DefaultApiResult> edrPeakLoadStreamCallback(
+            @RequestBody @NotNull final Edr edr) {
+        //TODO: Find transfer id in database, start stream. */
+
+        return apiHelper.ok("Ok.");
     }
 
     @GetMapping(value = "/start", produces = MediaType.APPLICATION_JSON_VALUE)

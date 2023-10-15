@@ -50,3 +50,4 @@ build/
 /src/main/resources/oempeakloaddashboard-bindings.properties
 /src/main/resources/supplierpeakloadservice-bindings.properties
 /src/main/resources/peakloaddb-bindings.properties
+/src/main/resources/oemedrproxy-bindings.properties

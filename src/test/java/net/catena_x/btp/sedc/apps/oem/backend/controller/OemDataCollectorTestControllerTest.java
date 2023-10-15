@@ -23,6 +23,10 @@ class OemDataCollectorTestControllerTest {
     @Test
     void catalog() {
         controller.catalog();
+    }
 
+    @Test
+    void test() {
+        controller.test();
     }
 }

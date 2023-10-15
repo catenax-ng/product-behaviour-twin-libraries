@@ -29,6 +29,14 @@ public class Context {
             new Context(null, ContextElement.DCT_TERMS, ContextElement.TRACTUS_X, ContextElement.EDC_V0_0_1,
                     ContextElement.DCAT, ContextElement.ODRL_2, ContextElement.DSPACE_V0_8);
 
+    public static final Context DEFAULT_CONTEXT_CONTRACT_NEGOTIATION =
+            new Context(ContextElement.EDC_V0_0_1, null, null, null, null,
+                    ContextElement.ODRL_2, null);
+
+    public static final Context DEFAULT_CONTEXT_TRANSFER =
+            new Context(ContextElement.EDC_V0_0_1, null, null, null, null,
+                    ContextElement.ODRL_2, null);
+
     @JsonProperty("@vocab")
     private ContextElement vocab = null;
 

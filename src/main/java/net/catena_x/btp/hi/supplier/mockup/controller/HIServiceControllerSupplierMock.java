@@ -14,6 +14,7 @@ import net.catena_x.btp.libraries.notification.dto.Notification;
 import net.catena_x.btp.libraries.notification.dto.items.NotificationHeader;
 import net.catena_x.btp.libraries.util.apihelper.ApiHelper;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
+import net.catena_x.btp.libraries.util.threads.Threads;
 import okhttp3.HttpUrl;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -255,10 +256,7 @@ public class HIServiceControllerSupplierMock {
 
         new Thread(() ->
         {
-            try {
-                Thread.sleep(2000L);
-            } catch (InterruptedException exception) {
-            }
+            Threads.sleepWithoutExceptions(2000L);
 
             final HttpUrl requestUrl = HttpUrl.parse("http://localhost:25553/")
                     .newBuilder().addPathSegment("hidatareceiver").addPathSegment("notifyresult").build();
