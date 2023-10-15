@@ -14,7 +14,7 @@ FROM openjdk:17-oracle
 
 EXPOSE 25553
 
-ARG JAR_FILE=product-behaviour-twin-libraries/target/product-behaviour-twin-libraries-0.1.0.jar
+ARG JAR_FILE=target/product-behaviour-twin-libraries-0.1.0.jar
 
 WORKDIR /opt/app
 
