@@ -10,7 +10,7 @@
 name: Build & publish images
 on:
   push:
-    branches: ['release']
+    branches: ['release-all-in-one']
 
 env:
   REGISTRY: ghcr.io
