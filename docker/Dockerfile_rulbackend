@@ -7,8 +7,7 @@ LABEL MAINTAINER="bendikt.franke@dlr.de"
 WORKDIR /usr/src/app
 COPY . /usr/src/app
 # Compile and package the application to an executable JAR
-RUN mvn -pl product-behaviour-twin-libraries clean install -DskipTests
-RUN mvn -pl product-oem-rul-backend clean package spring-boot:repackage -DskipTests -P rulbackendservice
+RUN mvn clean package spring-boot:repackage -DskipTests -P rulbackendservice
 
 # For Java 11,
 FROM openjdk:17-oracle

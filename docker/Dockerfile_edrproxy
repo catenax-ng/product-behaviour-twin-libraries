@@ -7,7 +7,7 @@ LABEL MAINTAINER="anton.federl@pfeiffercontrol.de"
 WORKDIR /usr/src/app
 COPY . /usr/src/app
 # Compile and package the application to an executable JAR
-RUN mvn -pl product-behaviour-twin-libraries clean package spring-boot:repackage -DskipTests -P oemedrproxy
+RUN mvn clean package spring-boot:repackage -DskipTests -P oemedrproxy
 
 # For Java 11,
 FROM openjdk:17-oracle
