@@ -23,19 +23,19 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - dockerfile: ./Dockerfile_hifrontend
+          - dockerfile: ./docker/Dockerfile_hifrontend
             image: ghcr.io/catenax-ng/product-oem-hi-app-frontend
-          - dockerfile: ./Dockerfile_hibackend
+          - dockerfile: ./docker/Dockerfile_hibackend
             image: ghcr.io/catenax-ng/product-oem-hi-app
-          - dockerfile: ./Dockerfile_hisuppliermock
+          - dockerfile: ./docker/Dockerfile_hisuppliermock
             image: ghcr.io/catenax-ng/product-hi-supplier-service
-          - dockerfile: ./Dockerfile_provider
+          - dockerfile: ./docker/Dockerfile_provider
             image: ghcr.io/catenax-ng/product-oem-dataprovider
-          - dockerfile: ./Dockerfile_updater
+          - dockerfile: ./docker/Dockerfile_updater
             image: ghcr.io/catenax-ng/product-oem-dataupdater
-          - dockerfile: ./Dockerfile_rulbackend
+          - dockerfile: ./docker/Dockerfile_rulbackend
             image: ghcr.io/catenax-ng/product-oem-rul-backend
-          - dockerfile: ./Dockerfile_edrproxy
+          - dockerfile: ./docker/Dockerfile_edrproxy
             image: ghcr.io/catenax-ng/product-oem-edr-proxy
     permissions:
       contents: read
