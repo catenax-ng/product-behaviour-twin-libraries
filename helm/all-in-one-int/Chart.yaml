@@ -1,7 +1,7 @@
 ---
 apiVersion: v2
 name: all-in-one-int
-description: Deploys postgres, hiapp, updater and provider
+description: All-in-one integration chart
 home: https://github.com/catenax-ng/product-behaviour-twin-libraries
 type: application
 appVersion: "0.1.0"
@@ -39,6 +39,16 @@ dependencies:
 #  - name: oem-rul-backend
 #    version: "0.1.0"
 #    repository: file://../rulbackend
+  - name: postgresql
+    version: "12.1.2"
+    repository: https://charts.bitnami.com/bitnami
+    alias: peakloaddb
+  - name: sedc-oem-datacollector
+    version: "0.1.0"
+    repository: file://../sedcdatacollector
+  - name: sedc-oem-calculator
+    version: "0.1.0"
+    repository: file://../sedccalculator
   - name: oem-edr-proxy
     version: "0.1.0"
     repository: file://../edrproxy

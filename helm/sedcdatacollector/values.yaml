@@ -8,7 +8,7 @@ image:
   ##
   ## Which api-wrapper container image to use.
   ##
-  repository: ghcr.io/catenax-ng/product-oem-edr-proxy
+  repository: ghcr.io/catenax-ng/product-sedc-oem-datacollector
   pullPolicy: Always
   ##
   ## Overrides the image tag whose default is the chart appVersion.
@@ -120,7 +120,7 @@ ingress:
   ##
   ## The hostname to be used to precisely map incoming traffic onto the underlying network service
   ##
-  hostname: "oem-edrproxy.dev.demo.catena-x.net"
+  hostname: "sedc-peakloaddatacollector.dev.demo.catena-x.net"
   secret: tls-secret
 
 resources: {}
@@ -154,12 +154,12 @@ affinity: {}
 ## For the EDC configuration consult the eclipse-dataspaceconnector documentation for further details: https://github.com/eclipse-dataspaceconnector/DataSpaceConnector
 ##
 server:
-  port: 25563
+  port: 25560
 
 connection:
   endpoints:
     default:
-      port: 25563
+      port: 25560
       path: /
       ingress: True
 
@@ -167,8 +167,28 @@ credentials:
   api:
     username: xxxxxxx
     password: xxxxxxx
+  peakload:
+    username: xxxxxxx
+    password: xxxxxxx
 
 configuration:
   properties: |-
-    spring.application.name=oem-edr-proxy
+    spring.application.name=oemdatacollector
+    spring.mvc.async.request-timeout=-1
+    app.baseurl=https://sedc-peakloaddatacollector.dev.demo.catena-x.net
+    edc.api.management.url=https://bmw-btp-test.dev.demo.catena-x.net/management/
+    edc.public.bpn=BPNL00000008GX34
+    edc.public.url=https://bmw-btp-test.dev.demo.catena-x.net/api/v1/dsp
+    peakload.partner.url=https://supplier-btp-test.dev.demo.catena-x.net/api/v1/dsp
+    peakload.partner.assetid=peakload-calculation-asset
+    peakload.partner.bpn=BPNL00000008GX34
+    peakload.asset.id=peakload-rawdata-asset
+    peakload.policy.id=peakload-rawdata-policy
+    peakload.contract.id=peakload-rawdata-contract
+    peakload.asset.target=peakload/input
+    peakloaddb.drivername=org.postgresql.Driver
+    peakloaddb.show-sql=false
+    peakloaddb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+    peakloaddb.hibernate.hbm2ddl.auto=update
+    peakloaddb.url=jdbc:postgresql://peakloaddb/peakload
     spring.config.import=
