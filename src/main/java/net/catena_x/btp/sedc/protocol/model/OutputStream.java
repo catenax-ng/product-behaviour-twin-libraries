@@ -68,7 +68,7 @@ public class OutputStream implements StreamChannelWriter {
 
     private void sendBlock(final char prefix, @NotNull final String content) throws BtpException {
         try {
-            logger.info("Send block of type " + prefix + ".");
+            //logger.info("Send block of type " + prefix + ".");
             outputStream.write((int)prefix);
 
             final byte[] contentUtf8 = content.getBytes("utf-8");
@@ -76,7 +76,7 @@ public class OutputStream implements StreamChannelWriter {
             outputStream.write(contentUtf8);
 
             outputStream.flush();
-            logger.info("Stream flushed.");
+            //logger.info("Stream flushed.");
         } catch (final IOException exception) {
             throw new BtpException(exception);
         }

@@ -7,7 +7,6 @@ import net.catena_x.btp.libraries.edc.api.EdcApi;
 import net.catena_x.btp.libraries.edc.model.CatalogResult;
 import net.catena_x.btp.libraries.edc.model.Edr;
 import net.catena_x.btp.libraries.edc.model.catalog.CatalogProtocol;
-import net.catena_x.btp.libraries.edc.model.catalog.Dataset;
 import net.catena_x.btp.libraries.util.apihelper.ApiHelper;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
@@ -21,11 +20,12 @@ import net.catena_x.btp.sedc.apps.oem.database.dto.peakloadringbuffer.PeakLoadRi
 import net.catena_x.btp.sedc.protocol.model.blocks.ConfigBlock;
 import net.catena_x.btp.sedc.protocol.model.blocks.elements.Backchannel;
 import net.catena_x.btp.sedc.protocol.model.blocks.elements.Stream;
+import okhttp3.HttpUrl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpHeaders;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,10 +33,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import javax.validation.constraints.NotNull;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.util.Base64;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -50,6 +47,17 @@ public class OemDataCollectorTestController {
     @Autowired private RingBufferImpl ringBuffer;
     @Autowired private PeakLoadRingBufferTable ringBufferTable;
 
+    @Value("${app.baseurl}") private String appBaseUrl;
+    @Value("${peakload.partner.url}") private String peakloadPartnerUrl;
+    @Value("${peakload.partner.assetid}") private String peakloadPartnerAssetId;
+    @Value("${peakload.partner.bpn}") private String peakloadPartnerBpn;
+    @Value("${edc.public.bpn}") private String edcPublicBpn;
+    @Value("${edc.public.url}") private String edcPublicUrl;
+    @Value("${peakload.asset.id}") private String peakloadAssetId;
+    @Value("${peakload.policy.id}") private String peakloadPolicyId;
+    @Value("${peakload.contract.id}") private String peakloadContractId;
+    @Value("${peakload.asset.target}") private String peakloadAssetTarget;
+
     private boolean started = false;
     private final Logger logger = LoggerFactory.getLogger(OemDataCollectorTestController.class);
     private final Map<String, CalculationConnection> calculateinConnections = new ConcurrentHashMap<>();
@@ -57,38 +65,19 @@ public class OemDataCollectorTestController {
     @GetMapping(value = "/catalog", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DefaultApiResult> catalog() {
         try {
-            final CatalogResult result = edcApi.requestCatalog(
-                    "https://supplier-btp-test.dev.demo.catena-x.net/api/v1/dsp");
+            final CatalogResult result = edcApi.requestCatalog(peakloadPartnerUrl);
             return apiHelper.ok("ok: " + objectMapper.writeValueAsString(result));
         } catch (final BtpException | JsonProcessingException exception) {
             return apiHelper.failed(exception.getMessage());
         }
     }
 
-    @GetMapping(value = "/asset", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DefaultApiResult> assetRegistration() {
         try {
-            edcApi.registerAsset("testAsset2", "https://jsonplaceholder.typicode.com/todos/1");
-            return apiHelper.ok("ok");
-        } catch (final BtpException exception) {
-            return apiHelper.failed(exception.getMessage());
-        }
-    }
-
-    @GetMapping(value = "/policy", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DefaultApiResult> policyRegistration() {
-        try {
-            edcApi.registerPolicy("testPolicy2", "BPNL00000008GX34");
-            return apiHelper.ok("ok");
-        } catch (final BtpException exception) {
-            return apiHelper.failed(exception.getMessage());
-        }
-    }
-
-    @GetMapping(value = "/contract", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DefaultApiResult> contractRegistration() {
-        try {
-            edcApi.registerContract("testContract2", "testAsset2", "testPolicy2");
+            edcApi.registerAsset(peakloadAssetId, getPeakloadAssetTargetAddress());
+            edcApi.registerPolicy(peakloadPolicyId, peakloadPartnerBpn);
+            edcApi.registerContract(peakloadContractId, peakloadAssetId, peakloadPolicyId);
             return apiHelper.ok("ok");
         } catch (final BtpException exception) {
             return apiHelper.failed(exception.getMessage());
@@ -98,23 +87,13 @@ public class OemDataCollectorTestController {
     @GetMapping(value = "/test", produces = MediaType.APPLICATION_JSON_VALUE)
     public synchronized ResponseEntity<DefaultApiResult> test() {
         try {
-            started = true;
             final Edr edr = edcApi.getEdrForAsset(
-                    "https://supplier-btp-test.dev.demo.catena-x.net/api/v1/dsp",
-                    "BPNL00000008GX34", "2", CatalogProtocol.HTTP);
-            logger.info("Got edr for endpoint \"" + edr.getEndpoint() + "\".");
+                    peakloadPartnerUrl, peakloadPartnerBpn, peakloadPartnerAssetId, CatalogProtocol.HTTP,
+                    MediaType.APPLICATION_OCTET_STREAM, true);
             return apiHelper.ok("Test successful, got endpoint: \"" + edr.getEndpoint() + "\".");
         } catch (final Exception exception) {
             return apiHelper.failed(exception.getMessage());
         }
-    }
-
-    @PostMapping(value = "/peakload/edrcallback", produces = MediaType.APPLICATION_JSON_VALUE)
-    public synchronized ResponseEntity<DefaultApiResult> edrPeakLoadStreamCallback(
-            @RequestBody @NotNull final Edr edr) {
-        //TODO: Find transfer id in database, start stream. */
-
-        return apiHelper.ok("Ok.");
     }
 
     @GetMapping(value = "/start", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -137,11 +116,12 @@ public class OemDataCollectorTestController {
             calculateinConnections.put(configBlock.getStream().getStreamId(), connection);
 
             logger.info("Try to open result stream.");
-            connection.getReceiver().open(
-                    /*"https://supplier-btp-test.dev.demo.catena-x.net",*/
-                    "http://localhost:25562/calculate",
-                    "peakloadcalculationasset",
-                    configBlock, getHeaders());
+
+            final Edr edr = edcApi.getEdrForAsset(
+                    peakloadPartnerUrl, peakloadPartnerBpn, peakloadPartnerAssetId, CatalogProtocol.HTTP,
+                    MediaType.APPLICATION_OCTET_STREAM, false);
+
+            connection.getReceiver().open(edr, configBlock, null);
             logger.info("Result stream opened, start receiving results...");
             ResultReceiver.startReceivingResultsAsync(connection.getReceiver().getRawReceiver(),
                     connection.getStreamId(), ringBuffer);
@@ -154,7 +134,7 @@ public class OemDataCollectorTestController {
         }
     }
 
-    @PostMapping(value = "/input", produces = MediaType.ALL_VALUE)
+    @PostMapping(value = "peakload/input", produces = MediaType.ALL_VALUE)
     public ResponseEntity<StreamingResponseBody> input(@RequestBody @NotNull final ConfigBlock configBlock,
                                                        @NotNull final HttpServletResponse response) {
         logger.info("Request for rawdata stream.");
@@ -168,6 +148,10 @@ public class OemDataCollectorTestController {
         return new ResponseEntity(connection.getSender().getStreamingResponseBody(), HttpStatus.OK);
     }
 
+    private HttpUrl getPeakloadAssetTargetAddress() {
+        return HttpUrl.parse(appBaseUrl).newBuilder().addPathSegments(peakloadAssetTarget).build();
+    }
+
     private ConfigBlock getConfiguration() {
         final ConfigBlock configBlock = new ConfigBlock();
         configBlock.setStream(new Stream());
@@ -177,17 +161,10 @@ public class OemDataCollectorTestController {
         configBlock.getStream().setTimestamp(Instant.now());
 
         configBlock.setBackchannel(new Backchannel());
-        configBlock.getBackchannel().setBpn("BPN000X");
-        configBlock.getBackchannel().setAddress("http://localhost:25560/input");
-        configBlock.getBackchannel().setAssetId("AssetID:urn:");
+        configBlock.getBackchannel().setBpn(edcPublicBpn);
+        configBlock.getBackchannel().setAddress(edcPublicUrl);
+        configBlock.getBackchannel().setAssetId(peakloadAssetId);
 
         return configBlock;
-    }
-
-    private HttpHeaders getHeaders() {
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic " + Base64.getEncoder().withoutPadding()
-                .encodeToString(("user:pass").getBytes(StandardCharsets.UTF_8)));
-        return headers;
     }
 }

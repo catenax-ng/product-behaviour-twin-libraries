@@ -32,7 +32,7 @@ public class RawBlock {
 
     public static RawBlock fromStream(@NotNull final BufferedInputStream stream) throws BtpException {
         try {
-            logger.info("Wait for block type.");
+            //logger.info("Wait for block type.");
             waitForBytes(stream, 1);
             final int nextByte = stream.read();
 
@@ -45,7 +45,7 @@ public class RawBlock {
                 default -> throw new BtpException("Unknown block type " + (char)nextByte + "!");
             };
 
-            logger.info("Block type " + shortcut + ", wait for length.");
+            //logger.info("Block type " + shortcut + ", wait for length.");
 
             waitForBytes(stream, 6);
             final byte[] lenBuffer = new byte[6];
@@ -57,7 +57,7 @@ public class RawBlock {
                     + (1000 * charByteToDigit(lenBuffer[2])) + (100 * charByteToDigit(lenBuffer[3]))
                     + (10 * charByteToDigit(lenBuffer[4])) + charByteToDigit(lenBuffer[5]);
 
-            logger.info("Length is " + length + ", wait for content.");
+            //logger.info("Length is " + length + ", wait for content.");
 
             waitForBytes(stream, length);
             final byte[] contentBuffer = new byte[length];
@@ -67,7 +67,7 @@ public class RawBlock {
             }
             final String content = new String(contentBuffer, StandardCharsets.UTF_8);
 
-            logger.info("Content is \"" + content + "\".");
+            //logger.info("Content is \"" + content + "\".");
 
             return new RawBlock(content, shortcut, length);
         } catch (final IOException exception) {

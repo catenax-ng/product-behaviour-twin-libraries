@@ -1,6 +1,7 @@
 package net.catena_x.btp.libraries.edc.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.catena_x.btp.libraries.edc.api.controller.EdcEdrController;
 import net.catena_x.btp.libraries.edc.model.*;
 import net.catena_x.btp.libraries.edc.model.asset.DataAddress;
 import net.catena_x.btp.libraries.edc.model.catalog.CatalogProtocol;
@@ -32,8 +33,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.constraints.NotNull;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class EdcApi {
@@ -43,7 +46,7 @@ public class EdcApi {
     private final static String CONTRACT_REGISTRATION_PATH = "v2/contractdefinitions";
     private final static String CONTRACT_NEGOTIATION_PATH = "v2/contractnegotiations";
     private final static String CONTRACT_TRANSFER_PATH = "v2/transferprocesses";
-    private final static String EDR_PATH = "https://oem-edrproxy.dev.demo.catena-x.net/edr";
+    private final static String EDR_PROXY_PATH = "https://oem-edrproxy.dev.demo.catena-x.net/edr";
 
     private final static String API_KEY_KEY = "X-Api-Key";
     private final static String CONTENT_TYPE = "Content-Type";
@@ -52,9 +55,11 @@ public class EdcApi {
 
     @Autowired private RestTemplate restTemplate;
     @Autowired @Qualifier(ObjectMapperFactoryBtp.EXTENDED_OBJECT_MAPPER) private ObjectMapper objectMapper;
+    @Autowired EdcEdrController edcEdrController;
 
     @Value("${edc.api.management.url}") private String managementUrl;
     @Value("${edc.api.management.apikey}") private String apiKey;
+    @Value("${app.baseurl}") private String appBaseUrl;
 
     public CatalogResult requestCatalog(@NotNull final String counterPartyAddress)
             throws BtpException {
@@ -105,11 +110,11 @@ public class EdcApi {
         }
     }
 
-    public void registerAsset(@NotNull final String assetId, @NotNull final String dataAddress) throws BtpException {
+    public void registerAsset(@NotNull final String assetId, @NotNull final HttpUrl dataAddress) throws BtpException {
         final AssetDefinition assetDefinition = new AssetDefinition();
         assetDefinition.setId(assetId);
         assetDefinition.setDataAddress(new DataAddress());
-        assetDefinition.getDataAddress().setBaseUrl(dataAddress);
+        assetDefinition.getDataAddress().setBaseUrl(dataAddress.toString());
         registerAsset(assetDefinition);
     }
 
@@ -239,11 +244,11 @@ public class EdcApi {
                                 @NotNull final String contractAgreementId, @NotNull final String assetId,
                                 @NotNull final CatalogProtocol protocol,
                                 @NotNull final MediaType mediaType, final boolean isFinite,
-                                @NotNull final String backendAddress) throws BtpException {
+                                @NotNull final HttpUrl backendAddress) throws BtpException {
         final TransferRequest transferRequest = new TransferRequest();
 
         final Map<String, String> privateProperties = new HashMap<>();
-        privateProperties.put(RECEIVER_HTTP_ENDPOINT, backendAddress);
+        privateProperties.put(RECEIVER_HTTP_ENDPOINT, backendAddress.toString());
 
         transferRequest.setAssetId(assetId);
         transferRequest.setConnectorAddress(providerConnectorDspAddress);
@@ -295,10 +300,11 @@ public class EdcApi {
         }
     }
 
+    /* In case of using edr proxy:
     public Edr getEdr(@NotNull final String transferId) throws BtpException {
-        final HttpHeaders headers = getNewEdrApiHeaders();
+        final HttpHeaders headers = getNewEdrProxyApiHeaders();
         final HttpEntity<Edr> request = new HttpEntity<>(headers);
-        final HttpUrl requestUrl = HttpUrl.parse(getEdrBaseUrl().url().toString()).newBuilder().
+        final HttpUrl requestUrl = HttpUrl.parse(getEdrBaseProxyUrl().url().toString()).newBuilder().
                 addPathSegment(transferId).build();
 
         ResponseEntity<Edr> response = null;
@@ -332,20 +338,55 @@ public class EdcApi {
         return response.getBody();
     }
 
+    private HttpUrl getEdrBaseProxyUrl() {
+        return HttpUrl.parse(EDR_PROXY_PATH);
+    }
+
+    private HttpHeaders getNewEdrProxyApiHeaders() {
+        final HttpHeaders headers = new HttpHeaders();
+
+        headers.add("Authorization", "Basic " + Base64.getEncoder().withoutPadding()
+                .encodeToString(("xxxxxxx:xxxxxxx").getBytes(StandardCharsets.UTF_8)));
+        headers.add(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        return headers;
+    }
+    */
+
+    public Edr getEdr(@NotNull final String transferId) throws BtpException {
+        long count = 0;
+        while(true) {
+            ++count;
+            try {
+                return edcEdrController.getEdr(transferId);
+            } catch (final BtpException exception) {
+                if(count < 100) {
+                    Threads.sleepWithoutExceptions(150L);
+                    continue;
+                }
+                throw new BtpException(exception);
+            }
+        }
+    }
+
     public Edr getEdrForAsset(@NotNull final String counterPartyAddress,
                               @NotNull final String counterPartyBpn,
                               @NotNull final String assetId,
-                              @NotNull final CatalogProtocol protocol) throws BtpException {
+                              @NotNull final CatalogProtocol protocol,
+                              @NotNull final MediaType mediaType,
+                              final boolean isFinite) throws BtpException {
         final List<Dataset> assets = requestAssetsFromCatalog(counterPartyAddress, assetId);
 
         final String contractAgreementId = negotiateContract(counterPartyAddress, counterPartyBpn, assets.get(0),
                 assets.get(0).getHasPolicy().get(0), protocol);
 
         final String transferId = startTransfer(counterPartyAddress, counterPartyBpn, contractAgreementId,
-                assets.get(0).getId(), protocol, MediaType.APPLICATION_OCTET_STREAM, true,
-                "https://oem-edrproxy.dev.demo.catena-x.net/edrcallback");
+                assets.get(0).getId(), protocol, mediaType, isFinite, getEdrCallbackAddress());
 
         return getEdr(transferId);
+    }
+
+    private HttpUrl getEdrCallbackAddress() {
+        return HttpUrl.parse(appBaseUrl).newBuilder().addPathSegment("edr").addPathSegment("callback").build();
     }
 
     private IdResponse initTransfer(@NotNull final TransferRequest transferRequest)
@@ -487,22 +528,9 @@ public class EdcApi {
                 .addPathSegments(CONTRACT_TRANSFER_PATH).build();
     }
 
-    private HttpUrl getEdrBaseUrl() {
-        return HttpUrl.parse(EDR_PATH);
-    }
-
     private HttpHeaders getNewManagementApiHeaders() {
         final HttpHeaders headers = new HttpHeaders();
         headers.add(API_KEY_KEY, apiKey);
-        headers.add(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        return headers;
-    }
-
-    private HttpHeaders getNewEdrApiHeaders() {
-        final HttpHeaders headers = new HttpHeaders();
-
-        headers.add("Authorization", "Basic " + Base64.getEncoder().withoutPadding()
-                .encodeToString(("xxxxxxx:xxxxxxx").getBytes(StandardCharsets.UTF_8)));
         headers.add(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         return headers;
     }

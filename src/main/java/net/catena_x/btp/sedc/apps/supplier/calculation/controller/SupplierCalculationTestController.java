@@ -1,10 +1,10 @@
 package net.catena_x.btp.sedc.apps.supplier.calculation.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import net.catena_x.btp.libraries.edc.api.EdcApi;
-import net.catena_x.btp.libraries.edc.model.CatalogResult;
+import net.catena_x.btp.libraries.edc.model.Edr;
+import net.catena_x.btp.libraries.edc.model.catalog.CatalogProtocol;
 import net.catena_x.btp.libraries.util.apihelper.ApiHelper;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
@@ -13,11 +13,12 @@ import net.catena_x.btp.sedc.apps.supplier.calculation.receiver.TaskBaseReceiver
 import net.catena_x.btp.sedc.apps.supplier.calculation.sender.ResultSender;
 import net.catena_x.btp.sedc.protocol.model.blocks.ConfigBlock;
 import net.catena_x.btp.sedc.protocol.model.blocks.elements.Stream;
+import okhttp3.HttpUrl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpHeaders;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import javax.validation.constraints.NotNull;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.util.Base64;
 
 @RestController
 @RequestMapping("/")
@@ -36,19 +35,29 @@ public class SupplierCalculationTestController {
     @Autowired private EdcApi edcApi;
     @Autowired @Qualifier(ObjectMapperFactoryBtp.EXTENDED_OBJECT_MAPPER) private ObjectMapper objectMapper;
 
+    @Value("${app.baseurl}") private String appBaseUrl;
+    @Value("${peakload.partner.bpn}") private String peakloadPartnerBpn;
+    @Value("${peakload.asset.id}") private String peakloadAssetId;
+    @Value("${peakload.policy.id}") private String peakloadPolicyId;
+    @Value("${peakload.contract.id}") private String peakloadContractId;
+    @Value("${peakload.asset.target}") private String peakloadAssetTarget;
+
     private final Logger logger = LoggerFactory.getLogger(SupplierCalculationTestController.class);
 
-    @PostMapping(value = "/calculate", produces = MediaType.ALL_VALUE)
+    @PostMapping(value = "peakload/calculate", produces = MediaType.ALL_VALUE)
     public ResponseEntity<StreamingResponseBody> calculate(@RequestBody @NotNull final ConfigBlock configBlock,
                                                            @NotNull final HttpServletResponse response) {
-
         logger.info("Request for result stream.");
         try {
             final TaskBaseReceiverChannel receiver = new TaskBaseReceiverChannel();
             logger.info("Try to open rawdata stream.");
-            receiver.open(configBlock.getBackchannel().getAddress(),
-                    configBlock.getBackchannel().getAssetId(),
-                    getConfiguration(configBlock.getStream().getStreamId()), getHeaders());
+
+            final Edr edr = edcApi.getEdrForAsset(
+                    configBlock.getBackchannel().getAddress(), configBlock.getBackchannel().getBpn(),
+                    configBlock.getBackchannel().getAssetId(), CatalogProtocol.HTTP,
+                    MediaType.APPLICATION_OCTET_STREAM, false);
+
+            receiver.open(edr, getConfiguration(configBlock.getStream().getStreamId()), null);
             logger.info("Rawdata stream opened.");
             final ResultSender sender = new ResultSender();
             return new ResponseEntity(sender.getStreamingResponseBody(receiver.getRawReceiver()), HttpStatus.OK);
@@ -57,13 +66,14 @@ public class SupplierCalculationTestController {
         }
     }
 
-    @GetMapping(value = "/catalog", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DefaultApiResult> catalog() {
+    @GetMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<DefaultApiResult> assetRegistration() {
         try {
-            final CatalogResult result = edcApi.requestCatalog(
-                    "https://bmw-btp-test.dev.demo.catena-x.net/api/v1/dsp");
-            return apiHelper.ok("ok: " + objectMapper.writeValueAsString(result));
-        } catch (final BtpException | JsonProcessingException exception) {
+            edcApi.registerAsset(peakloadAssetId, getPeakloadAssetTargetAddress());
+            edcApi.registerPolicy(peakloadPolicyId, peakloadPartnerBpn);
+            edcApi.registerContract(peakloadContractId, peakloadAssetId, peakloadPolicyId);
+            return apiHelper.ok("ok");
+        } catch (final BtpException exception) {
             return apiHelper.failed(exception.getMessage());
         }
     }
@@ -81,10 +91,7 @@ public class SupplierCalculationTestController {
         return configBlock;
     }
 
-    private HttpHeaders getHeaders() {
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic " + Base64.getEncoder().withoutPadding()
-                .encodeToString(("user:pass").getBytes(StandardCharsets.UTF_8)));
-        return headers;
+    private HttpUrl getPeakloadAssetTargetAddress() {
+        return HttpUrl.parse(appBaseUrl).newBuilder().addPathSegments(peakloadAssetTarget).build();
     }
 }

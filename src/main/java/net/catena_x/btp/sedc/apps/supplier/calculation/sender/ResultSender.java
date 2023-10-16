@@ -35,9 +35,9 @@ public class ResultSender implements SenderInterface<PeakLoadResult> {
         headerBlock.setTimestamp(Instant.now());
         headerBlock.setContentVersion("V1");
 
-        logger.info("Send result.");
+        //logger.info("Send result.");
         outputStream.write(headerBlock, new DataBlock<>(value), contentMapper);
-        logger.info("Result sent.");
+        //logger.info("Result sent.");
     }
 
     public StreamingResponseBody getStreamingResponseBody(@NotNull final RawBlockReceiver rawReceiver) {
@@ -47,20 +47,20 @@ public class ResultSender implements SenderInterface<PeakLoadResult> {
                 this.outputStream.init(outputStream);
 
                 while (true) {
-                    logger.info("Wait for next task...");
+                    //logger.info("Wait for next task...");
                     final RawBlockReceiver.Result result = rawReceiver.receiveNext();
                     if(!result.successful) {
                         rawReceiver.close();
                         return;
                     }
 
-                    logger.info("Task received.");
+                    //logger.info("Task received.");
                     final DataBlock<PeakLoadRawValues> rawData = contentMapper.deserialize(
                             result.content.getContent(), result.header.getContentType());
 
                     threadPool.submit(()->{
                         try {
-                            logger.info("Calculating task with id " + result.header.getId() + ".");
+                            //logger.info("Calculating task with id " + result.header.getId() + ".");
                             final PeakLoadResult calculationResult = calculation.calculate(rawData.getData());
                             send(calculationResult, result.header.getId());
                         } catch (final BtpException exception) {

@@ -34,7 +34,7 @@ public class SecurityConfiguration {
 
         if(noAuthGlobal) {
             return security.build();
-         }
+        }
 
         if(noAuthCallbacks) {
             security = security
@@ -59,7 +59,7 @@ public class SecurityConfiguration {
 
         security.authorizeRequests().requestMatchers(
                         HttpMethod.POST,
-                        "/edrcallback")
+                        "/edrcallback", "/peakload/calculate", "/peakload/input", "/edr/callback")
                 .permitAll()
                 .and().authorizeRequests()
                 .anyRequest()

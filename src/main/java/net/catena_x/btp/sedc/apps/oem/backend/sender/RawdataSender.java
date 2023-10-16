@@ -49,9 +49,9 @@ public class RawdataSender implements SenderInterface<PeakLoadRawValues> {
             ringBuffer.addRawdata(id, Instant.now(), value);
         }
 
-        logger.info("Send rawdata.");
+        //logger.info("Send rawdata.");
         outputStream.write(headerBlock, new DataBlock<>(value), contentMapper);
-        logger.info("Rawdata sent.");
+        //logger.info("Rawdata sent.");
     }
 
     public StreamingResponseBody getStreamingResponseBody() {

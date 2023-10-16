@@ -2,6 +2,7 @@ package net.catena_x.btp.sedc.transmit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
+import net.catena_x.btp.libraries.edc.model.Edr;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import net.catena_x.btp.libraries.util.json.ObjectMapperFactoryBtp;
 import net.catena_x.btp.sedc.protocol.model.blocks.ConfigBlock;
@@ -21,12 +22,21 @@ public abstract class ReceiverChannelImplBase {
     @Getter private String streamId = null;
     private final ObjectMapper objectMapper = ObjectMapperFactoryBtp.createObjectMapper();
 
-    public void open(@NotNull final String partnerConnectorAddress,
-                     @NotNull final String assetId, @NotNull final ConfigBlock config,
-                     @Nullable final HttpHeaders headers) throws BtpException {
+    public void open(@NotNull final Edr edr, @NotNull final ConfigBlock config,
+                     @Nullable HttpHeaders headers) throws BtpException {
+        if(headers == null) {
+            headers = new HttpHeaders();
+        }
+        headers.add(edr.getAuthKey(), edr.getAuthCode());
+        open(edr.getEndpoint(), config, headers);
+    }
+
+    private void open(@NotNull final String partnerConnectorAddress,
+                      @NotNull final ConfigBlock config,
+                      @Nullable final HttpHeaders headers) throws BtpException {
         try {
             this.streamId = config.getStream().getStreamId();
-            final URLConnection connection = establishConnection(partnerConnectorAddress, assetId, headers);
+            final URLConnection connection = establishConnection(partnerConnectorAddress, headers);
             sendConfigBlock(connection, config);
             rawReceiver.init(new BufferedInputStream(connection.getInputStream()));
         } catch (final IOException exception) {
@@ -35,8 +45,7 @@ public abstract class ReceiverChannelImplBase {
     }
 
     private URLConnection establishConnection(@NotNull final String partnerConnectorAddress,
-                                              @NotNull final String assetId, @Nullable final HttpHeaders headers)
-            throws IOException {
+                                              @Nullable final HttpHeaders headers) throws IOException {
 
         final URL url = new URL(partnerConnectorAddress);
         final HttpURLConnection connection = (HttpURLConnection)url.openConnection();
