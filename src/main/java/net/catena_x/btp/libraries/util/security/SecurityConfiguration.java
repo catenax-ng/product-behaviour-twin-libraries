@@ -57,7 +57,11 @@ public class SecurityConfiguration {
                     .and();
         }
 
-        security.authorizeRequests()
+        security.authorizeRequests().requestMatchers(
+                        HttpMethod.POST,
+                        "/edrcallback")
+                .permitAll()
+                .and().authorizeRequests()
                 .anyRequest()
                 .authenticated()
                 .and().httpBasic();
