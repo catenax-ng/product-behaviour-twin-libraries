@@ -187,7 +187,7 @@ provider:
   configuration:
     properties: |-
       spring.application.name=dataprovider
-      services.dataupdater.endpoint.baseurl=https://bmw-updater.dev.demo.catena-x.net/api/rawdata
+      services.dataupdater.endpoint.baseurl=https://oem-updater.dev.demo.catena-x.net/api/rawdata
       services.dataprovider.testdata.file=testdata.json
       services.dataupdater.endpoint.authenticationActivated=true
       spring.config.import=

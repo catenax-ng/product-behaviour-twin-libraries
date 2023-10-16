@@ -120,7 +120,7 @@ ingress:
   ##
   ## The hostname to be used to precisely map incoming traffic onto the underlying network service
   ##
-  hostname: "bmw-hiapp.dev.demo.catena-x.net"
+  hostname: "oem-edrproxy.dev.demo.catena-x.net"
   secret: tls-secret
 
 resources: {}

@@ -72,15 +72,15 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - name: configuration
-              mountPath: /opt/app/application-rulbackendservice.properties
-              subPath: application-rulbackendservice.properties
+              mountPath: /opt/app/application-oemedrproxy.properties
+              subPath: application-oemedrproxy.properties
       volumes:
         - name: configuration
           configMap:
             name: {{ include "helper.fullname" . }}-configmap
             items:
-              - key: application-rulbackendservice.properties
-                path: application-rulbackendservice.properties
+              - key: application-oemedrproxy.properties
+                path: application-oemedrproxy.properties
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

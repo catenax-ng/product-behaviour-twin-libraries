@@ -138,7 +138,7 @@ ingress:
   ##
   ## The hostname to be used to precisely map incoming traffic onto the underlying network service
   ##
-  hostname: "bmw-updater.dev.demo.catena-x.net"
+  hostname: "oem-updater.dev.demo.catena-x.net"
   secret: tls-secret
 
 resources: {}
