@@ -25,6 +25,11 @@ public class OemEdrProxyController {
 
     @PostMapping(value = "/edrcallback", produces = MediaType.APPLICATION_JSON_VALUE)
     public synchronized ResponseEntity<DefaultApiResult> edrCallback(@RequestBody @NotNull final Edr edr) {
+        logger.info("Received EDR for id \"" + edr.getId()
+                + "\": Endpoint=\"" + edr.getEndpoint() + "\", "
+                + "\": AuthCode=\"" + edr.getAuthCode() + "\", "
+                + "\": AuthKey=\"" + edr.getAuthKey() + "\".");
+
         edrs.put(edr.getId(), edr);
         return apiHelper.ok("Ok.");
     }
