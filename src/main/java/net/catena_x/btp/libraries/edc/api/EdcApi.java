@@ -32,11 +32,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.constraints.NotNull;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 @Component
 public class EdcApi {
@@ -46,6 +43,7 @@ public class EdcApi {
     private final static String CONTRACT_REGISTRATION_PATH = "v2/contractdefinitions";
     private final static String CONTRACT_NEGOTIATION_PATH = "v2/contractnegotiations";
     private final static String CONTRACT_TRANSFER_PATH = "v2/transferprocesses";
+    private final static String EDR_PATH = "https://oem-edrproxy.dev.demo.catena-x.net/edr";
 
     private final static String API_KEY_KEY = "X-Api-Key";
     private final static String CONTENT_TYPE = "Content-Type";
@@ -297,6 +295,59 @@ public class EdcApi {
         }
     }
 
+    public Edr getEdr(@NotNull final String transferId) throws BtpException {
+        final HttpHeaders headers = getNewEdrApiHeaders();
+        final HttpEntity<Edr> request = new HttpEntity<>(headers);
+        final HttpUrl requestUrl = HttpUrl.parse(getEdrBaseUrl().url().toString()).newBuilder().
+                addPathSegment(transferId).build();
+
+        ResponseEntity<Edr> response = null;
+
+        long count = 0;
+        while(true) {
+            ++count;
+
+            try {
+                response = restTemplate.exchange(
+                        requestUrl.uri(), HttpMethod.GET, request, Edr.class);
+            } catch (final Exception exception) {
+                if(count < 100) {
+                    Threads.sleepWithoutExceptions(150L);
+                    continue;
+                }
+                throw new BtpException(exception);
+            }
+
+            if(!response.getStatusCode().is2xxSuccessful()) {
+                if(count < 100) {
+                    Threads.sleepWithoutExceptions(150L);
+                    continue;
+                }
+                throw new BtpException("Got status code " + response.getStatusCode().value());
+            }
+
+            break;
+        }
+
+        return response.getBody();
+    }
+
+    public Edr getEdrForAsset(@NotNull final String counterPartyAddress,
+                              @NotNull final String counterPartyBpn,
+                              @NotNull final String assetId,
+                              @NotNull final CatalogProtocol protocol) throws BtpException {
+        final List<Dataset> assets = requestAssetsFromCatalog(counterPartyAddress, assetId);
+
+        final String contractAgreementId = negotiateContract(counterPartyAddress, counterPartyBpn, assets.get(0),
+                assets.get(0).getHasPolicy().get(0), protocol);
+
+        final String transferId = startTransfer(counterPartyAddress, counterPartyBpn, contractAgreementId,
+                assets.get(0).getId(), protocol, MediaType.APPLICATION_OCTET_STREAM, true,
+                "https://oem-edrproxy.dev.demo.catena-x.net/edrcallback");
+
+        return getEdr(transferId);
+    }
+
     private IdResponse initTransfer(@NotNull final TransferRequest transferRequest)
             throws BtpException {
         final HttpHeaders headers = getNewManagementApiHeaders();
@@ -436,9 +487,22 @@ public class EdcApi {
                 .addPathSegments(CONTRACT_TRANSFER_PATH).build();
     }
 
+    private HttpUrl getEdrBaseUrl() {
+        return HttpUrl.parse(EDR_PATH);
+    }
+
     private HttpHeaders getNewManagementApiHeaders() {
         final HttpHeaders headers = new HttpHeaders();
         headers.add(API_KEY_KEY, apiKey);
+        headers.add(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        return headers;
+    }
+
+    private HttpHeaders getNewEdrApiHeaders() {
+        final HttpHeaders headers = new HttpHeaders();
+
+        headers.add("Authorization", "Basic " + Base64.getEncoder().withoutPadding()
+                .encodeToString(("xxxxxxx:xxxxxxx").getBytes(StandardCharsets.UTF_8)));
         headers.add(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         return headers;
     }

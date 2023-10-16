@@ -99,22 +99,11 @@ public class OemDataCollectorTestController {
     public synchronized ResponseEntity<DefaultApiResult> test() {
         try {
             started = true;
-
-            final List<Dataset> assets = edcApi.requestAssetsFromCatalog(
-                    "https://supplier-btp-test.dev.demo.catena-x.net/api/v1/dsp", "1");
-
-            final String contractAgreementId = edcApi.negotiateContract(
+            final Edr edr = edcApi.getEdrForAsset(
                     "https://supplier-btp-test.dev.demo.catena-x.net/api/v1/dsp",
-                    "BPNL00000008GX34", assets.get(0), assets.get(0).getHasPolicy().get(0),
-                    CatalogProtocol.HTTP);
-
-            final String transferId = edcApi.startTransfer(
-                    "https://supplier-btp-test.dev.demo.catena-x.net/api/v1/dsp",
-                    "BPNL00000008GX34",
-                    contractAgreementId, assets.get(0).getId(), CatalogProtocol.HTTP,
-                    MediaType.APPLICATION_OCTET_STREAM, true, null);
-
-            return apiHelper.ok("Test successful, got transfer id \"" + transferId + "\".");
+                    "BPNL00000008GX34", "2", CatalogProtocol.HTTP);
+            logger.info("Got edr for endpoint \"" + edr.getEndpoint() + "\".");
+            return apiHelper.ok("Test successful, got endpoint: \"" + edr.getEndpoint() + "\".");
         } catch (final Exception exception) {
             return apiHelper.failed(exception.getMessage());
         }
