@@ -31,7 +31,7 @@ image:
   ##
   ## Overrides the image tag whose default is the chart appVersion.
   ##
-  tag: "release"
+  tag: "release-all-in-one"
 
 ##
 ## Image pull secret to create to obtain the container image
