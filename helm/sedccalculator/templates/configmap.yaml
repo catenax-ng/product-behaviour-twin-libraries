@@ -9,6 +9,6 @@ data:
   application-supplierpeakloadservice.properties: |-
     security.api.username={{ .Values.credentials.api.username }}
     security.api.password={{ .Values.credentials.api.password }}
-    edc.api.management.apikey={{ .Values.credentials.edc.api.management.apikey }}
+    edc.api.management.apikey={{ .Values.credentials.supplieredcmanagement.apikey }}
     server.port={{ .Values.server.port }}
     {{- .Values.configuration.properties | nindent 4 }}

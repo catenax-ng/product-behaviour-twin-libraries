@@ -9,8 +9,8 @@ data:
   application-oemdatacollector.properties: |-
     security.api.username={{ .Values.credentials.api.username }}
     security.api.password={{ .Values.credentials.api.password }}
-    edc.api.management.apikey={{ .Values.credentials.edc.api.management.apikey }}
-    peakloaddb.username={{ .Values.credentials.peakloaddb.username }}
-    peakloaddb.password={{ .Values.credentials.peakloaddb.password }}
+    edc.api.management.apikey={{ .Values.credentials.oemedcmanagement.apikey }}
+    peakloaddb.username={{ .Values.credentials.peakload.username }}
+    peakloaddb.password={{ .Values.credentials.peakload.password }}
     server.port={{ .Values.server.port }}
     {{- .Values.configuration.properties | nindent 4 }}

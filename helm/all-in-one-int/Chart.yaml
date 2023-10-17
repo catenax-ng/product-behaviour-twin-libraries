@@ -9,38 +9,8 @@ version: 0.1.0
 maintainers: []
 
 dependencies:
-#  - name: postgresql
-#    version: "12.1.2"
-#    repository: https://charts.bitnami.com/bitnami
-#    alias: rawdatadb
-#  - name: postgresql
-#    version: "12.1.2"
-#    repository: https://charts.bitnami.com/bitnami
-#    alias: healthindicatordb
-#  - name: oem-hi-app
-#    version: "0.1.0"
-#    repository: file://../hiapp
-#  - name: hisuppliermock
-#    version: "0.1.0"
-#    repository: file://../hisuppliermock
-#  - name: provider
-#    version: "0.1.0"
-#    repository: file://../provider
-#  - name: updater
-#    version: "0.1.0"
-#    repository: file://../updater
-#  - name: oem-hi-frontend
-#    version: "0.1.0"
-#    repository: file://../hifrontend
-#  - name: postgresql
-#    version: ">=12.1.2"
-#    repository: https://charts.bitnami.com/bitnami
-#    alias: ruldb
-#  - name: oem-rul-backend
-#    version: "0.1.0"
-#    repository: file://../rulbackend
   - name: postgresql
-    version: "12.1.2"
+    version: ">=12.1.2"
     repository: https://charts.bitnami.com/bitnami
     alias: peakloaddb
   - name: sedc-oem-datacollector
