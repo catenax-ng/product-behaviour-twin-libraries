@@ -8,7 +8,7 @@ image:
   ##
   ## Which api-wrapper container image to use.
   ##
-  repository: ghcr.io/catenax-ng/product-sedc-oem-calculator
+  repository: ghcr.io/catenax-ng/product-sedc-supplier-calculator
   pullPolicy: Always
   ##
   ## Overrides the image tag whose default is the chart appVersion.
