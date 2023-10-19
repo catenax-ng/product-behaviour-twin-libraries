@@ -75,7 +75,7 @@ public class OemDataCollectorTestController {
     @GetMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DefaultApiResult> assetRegistration() {
         try {
-            edcApi.registerAsset(peakloadAssetId, getPeakloadAssetTargetAddress());
+            edcApi.registerAsset(peakloadAssetId, getPeakloadAssetTargetAddress(), true, false);
             edcApi.registerPolicy(peakloadPolicyId, peakloadPartnerBpn);
             edcApi.registerContract(peakloadContractId, peakloadAssetId, peakloadPolicyId);
             return apiHelper.ok("ok");

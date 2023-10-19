@@ -110,11 +110,22 @@ public class EdcApi {
         }
     }
 
-    public void registerAsset(@NotNull final String assetId, @NotNull final HttpUrl dataAddress) throws BtpException {
+    public void registerAsset(@NotNull final String assetId, @NotNull final HttpUrl dataAddress,
+                              final boolean isPostMethode, final boolean hasQueryParameters) throws BtpException {
         final AssetDefinition assetDefinition = new AssetDefinition();
         assetDefinition.setId(assetId);
         assetDefinition.setDataAddress(new DataAddress());
         assetDefinition.getDataAddress().setBaseUrl(dataAddress.toString());
+
+        if(isPostMethode) {
+            assetDefinition.getDataAddress().setProxyMethod(true);
+            assetDefinition.getDataAddress().setProxyBody(true);
+        }
+
+        if(hasQueryParameters) {
+            assetDefinition.getDataAddress().setProxyQueryParams(true);
+        }
+
         registerAsset(assetDefinition);
     }
 
