@@ -21,30 +21,30 @@ public class ResultReceiver {
                                                   @NotNull final String streamId,
                                                   @Nullable final RingBufferInterface ringBuffer) throws BtpException {
         try {
-            new Thread(() -> {
-                try {
-                while (true) {
-                    logger.info("Wait for next result...");
-                    final RawBlockReceiver.Result result = rawReceiver.receiveNext();
-                    if(!result.successful) {
-                        rawReceiver.close();
-                        return;
-                    }
+    new Thread(() -> {
+        try {
+        while (true) {
+            logger.info("Wait for next result...");
+            final RawBlockReceiver.Result result = rawReceiver.receiveNext();
+            if(!result.successful) {
+                rawReceiver.close();
+                return;
+            }
 
-                    final DataBlock<PeakLoadResult> rawData = (DataBlock<PeakLoadResult>)contentMapper.deserialize(
-                            result.content.getContent(), result.header.getContentType());
+            final DataBlock<PeakLoadResult> rawData = (DataBlock<PeakLoadResult>)contentMapper.deserialize(
+                    result.content.getContent(), result.header.getContentType());
 
-                    if(ringBuffer != null) {
-                        ringBuffer.addResult(result.header.getId(), rawData.getData());
-                    }
+            if(ringBuffer != null) {
+                ringBuffer.addResult(result.header.getId(), rawData.getData());
+            }
 
-                    logger.info("Result received for id \"" + result.header.getId() + "\", value: "
-                            + rawData.getData().getPeakLoadCapability() + "." );
-                    }
-                } catch (final BtpException exception) {
-                    logger.error(exception.getMessage());
-                }
-            }).start();
+            logger.info("Result received for id \"" + result.header.getId() + "\", value: "
+                    + rawData.getData().getPeakLoadCapability() + "." );
+            }
+        } catch (final BtpException exception) {
+            logger.error(exception.getMessage());
+        }
+    }).start();
         } catch (final Exception exception) {
             throw new BtpException(exception);
         }

@@ -22,7 +22,8 @@ import java.util.HashMap;
 import static org.hibernate.cfg.AvailableSettings.*;
 
 @Configuration
-@PropertySource({"classpath:healthindicatordb.properties"})
+@PropertySource(value={"classpath:healthindicatordb.properties"}, ignoreResourceNotFound=true)
+@PropertySource(value={"classpath:application-oemdatacollector.properties"}, ignoreResourceNotFound=true)
 @EnableTransactionManagement
 @EnableJpaRepositories(
         basePackages = {PersistenceHealthIndicatorConfiguration.BASE_PACKAGES},
