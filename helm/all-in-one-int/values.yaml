@@ -94,7 +94,8 @@ sedc-oem-calculator:
       app.baseurl=https://sedc-peakloaddatacollector.dev.demo.catena-x.net
       peakloaddb.drivername=org.postgresql.Driver
       peakloaddb.show-sql=false
-      peakloaddb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect      peakloaddb.hibernate.hbm2ddl.auto=update
+      peakloaddb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+      peakloaddb.hibernate.hbm2ddl.auto=update
       peakloaddb.url=jdbc:postgresql://peakloaddb/peakload
       edc.api.management.url=https://bmw-btp-test.dev.demo.catena-x.net/management/
       edc.public.bpn=BPNL00000008GX34
