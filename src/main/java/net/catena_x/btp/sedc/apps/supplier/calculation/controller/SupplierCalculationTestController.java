@@ -41,6 +41,7 @@ public class SupplierCalculationTestController {
     @Value("${peakload.policy.id}") private String peakloadPolicyId;
     @Value("${peakload.contract.id}") private String peakloadContractId;
     @Value("${peakload.asset.target}") private String peakloadAssetTarget;
+    @Value("${edc.dataplane.replacement.url:#{null}}") private String edcDataplaneReplacementUrl;
 
     private final Logger logger = LoggerFactory.getLogger(SupplierCalculationTestController.class);
 
@@ -52,10 +53,11 @@ public class SupplierCalculationTestController {
             final TaskBaseReceiverChannel receiver = new TaskBaseReceiverChannel();
             logger.info("Try to open rawdata stream.");
 
-            final Edr edr = edcApi.getEdrForAsset(
-                    configBlock.getBackchannel().getAddress(), configBlock.getBackchannel().getBpn(),
-                    configBlock.getBackchannel().getAssetId(), CatalogProtocol.HTTP,
-                    MediaType.APPLICATION_OCTET_STREAM, false);
+            final Edr edr = (edcDataplaneReplacementUrl != null)? getReplacementEdr(edcDataplaneReplacementUrl) :
+                    edcApi.getEdrForAsset(
+                        configBlock.getBackchannel().getAddress(), configBlock.getBackchannel().getBpn(),
+                        configBlock.getBackchannel().getAssetId(), CatalogProtocol.HTTP,
+                        MediaType.APPLICATION_OCTET_STREAM, false);
 
             receiver.open(edr, getConfiguration(configBlock.getStream().getStreamId()), null);
             logger.info("Rawdata stream opened.");
@@ -72,7 +74,19 @@ public class SupplierCalculationTestController {
             edcApi.registerAsset(peakloadAssetId, getPeakloadAssetTargetAddress(), true, false);
             edcApi.registerPolicy(peakloadPolicyId, peakloadPartnerBpn);
             edcApi.registerContract(peakloadContractId, peakloadAssetId, peakloadPolicyId);
-            return apiHelper.ok("ok");
+            return apiHelper.ok("Asset, policy and contract registration successful.");
+        } catch (final BtpException exception) {
+            return apiHelper.failed(exception.getMessage());
+        }
+    }
+
+    @GetMapping(value = "/delete", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<DefaultApiResult> assetDeletion() {
+        try {
+            edcApi.deleteContract(peakloadContractId);
+            edcApi.deletePolicy(peakloadPolicyId);
+            edcApi.deleteAsset(peakloadAssetId);
+            return apiHelper.ok("Asset, policy and contract deletion successful.");
         } catch (final BtpException exception) {
             return apiHelper.failed(exception.getMessage());
         }
@@ -93,5 +107,12 @@ public class SupplierCalculationTestController {
 
     private HttpUrl getPeakloadAssetTargetAddress() {
         return HttpUrl.parse(appBaseUrl).newBuilder().addPathSegments(peakloadAssetTarget).build();
+    }
+
+    private Edr getReplacementEdr(@NotNull final String replacementUrl) {
+        final Edr edr = new Edr();
+        edr.setId("replacement");
+        edr.setEndpoint(replacementUrl);
+        return edr;
     }
 }

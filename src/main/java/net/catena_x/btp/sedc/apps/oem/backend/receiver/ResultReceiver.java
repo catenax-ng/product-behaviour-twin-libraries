@@ -23,23 +23,27 @@ public class ResultReceiver {
         try {
     new Thread(() -> {
         try {
-        while (true) {
-            logger.info("Wait for next result...");
-            final RawBlockReceiver.Result result = rawReceiver.receiveNext();
-            if(!result.successful) {
-                rawReceiver.close();
-                return;
-            }
+            long count = 0L;
+            while (true) {
+                //logger.info("Wait for next result...");
+                final RawBlockReceiver.Result result = rawReceiver.receiveNext();
+                if(!result.successful) {
+                    rawReceiver.close();
+                    return;
+                }
 
-            final DataBlock<PeakLoadResult> rawData = (DataBlock<PeakLoadResult>)contentMapper.deserialize(
-                    result.content.getContent(), result.header.getContentType());
+                final DataBlock<PeakLoadResult> rawData = (DataBlock<PeakLoadResult>)contentMapper.deserialize(
+                        result.content.getContent(), result.header.getContentType());
 
-            if(ringBuffer != null) {
-                ringBuffer.addResult(result.header.getId(), rawData.getData());
-            }
+                if(ringBuffer != null) {
+                    ringBuffer.addResult(result.header.getId(), rawData.getData());
+                }
 
-            logger.info("Result received for id \"" + result.header.getId() + "\", value: "
-                    + rawData.getData().getPeakLoadCapability() + "." );
+                if(((count < 500000L) && (((count % 100L) == 0L) || (count < 10L))) || (count % 4000L == 0L)) {
+                    logger.info("Result received for id \"" + result.header.getId() + "\", value: "
+                            + rawData.getData().getPeakLoadCapability() + ".");
+                }
+                ++count;
             }
         } catch (final BtpException exception) {
             logger.error(exception.getMessage());

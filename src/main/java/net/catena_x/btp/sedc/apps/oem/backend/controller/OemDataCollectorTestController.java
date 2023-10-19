@@ -57,6 +57,7 @@ public class OemDataCollectorTestController {
     @Value("${peakload.policy.id}") private String peakloadPolicyId;
     @Value("${peakload.contract.id}") private String peakloadContractId;
     @Value("${peakload.asset.target}") private String peakloadAssetTarget;
+    @Value("${edc.dataplane.replacement.url:#{null}}") private String edcDataplaneReplacementUrl;
 
     private boolean started = false;
     private final Logger logger = LoggerFactory.getLogger(OemDataCollectorTestController.class);
@@ -78,7 +79,19 @@ public class OemDataCollectorTestController {
             edcApi.registerAsset(peakloadAssetId, getPeakloadAssetTargetAddress(), true, false);
             edcApi.registerPolicy(peakloadPolicyId, peakloadPartnerBpn);
             edcApi.registerContract(peakloadContractId, peakloadAssetId, peakloadPolicyId);
-            return apiHelper.ok("ok");
+            return apiHelper.ok("Asset, policy and contract registration successful.");
+        } catch (final BtpException exception) {
+            return apiHelper.failed(exception.getMessage());
+        }
+    }
+
+    @GetMapping(value = "/delete", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<DefaultApiResult> assetDeletion() {
+        try {
+            edcApi.deleteContract(peakloadContractId);
+            edcApi.deletePolicy(peakloadPolicyId);
+            edcApi.deleteAsset(peakloadAssetId);
+            return apiHelper.ok("Asset, policy and contract deletion successful.");
         } catch (final BtpException exception) {
             return apiHelper.failed(exception.getMessage());
         }
@@ -87,9 +100,10 @@ public class OemDataCollectorTestController {
     @GetMapping(value = "/test", produces = MediaType.APPLICATION_JSON_VALUE)
     public synchronized ResponseEntity<DefaultApiResult> test() {
         try {
-            final Edr edr = edcApi.getEdrForAsset(
-                    peakloadPartnerUrl, peakloadPartnerBpn, peakloadPartnerAssetId, CatalogProtocol.HTTP,
-                    MediaType.APPLICATION_OCTET_STREAM, true);
+            final Edr edr = (edcDataplaneReplacementUrl != null)? getReplacementEdr(edcDataplaneReplacementUrl) :
+                    edcApi.getEdrForAsset(
+                        peakloadPartnerUrl, peakloadPartnerBpn, peakloadPartnerAssetId, CatalogProtocol.HTTP,
+                        MediaType.APPLICATION_OCTET_STREAM, true);
             return apiHelper.ok("Test successful, got endpoint: \"" + edr.getEndpoint() + "\".");
         } catch (final Exception exception) {
             return apiHelper.failed(exception.getMessage());
@@ -117,12 +131,13 @@ public class OemDataCollectorTestController {
 
             logger.info("Try to open result stream.");
 
-            final Edr edr = edcApi.getEdrForAsset(
-                    peakloadPartnerUrl, peakloadPartnerBpn, peakloadPartnerAssetId, CatalogProtocol.HTTP,
-                    MediaType.APPLICATION_OCTET_STREAM, false);
+            final Edr edr = (edcDataplaneReplacementUrl != null)? getReplacementEdr(edcDataplaneReplacementUrl) :
+                    edcApi.getEdrForAsset(
+                        peakloadPartnerUrl, peakloadPartnerBpn, peakloadPartnerAssetId, CatalogProtocol.HTTP,
+                        MediaType.APPLICATION_OCTET_STREAM, false);
 
             connection.getReceiver().open(edr, configBlock, null);
-            logger.info("Result stream opened, start receiving results...");
+            logger.info("Result stream opened, start receiving results.");
             ResultReceiver.startReceivingResultsAsync(connection.getReceiver().getRawReceiver(),
                     connection.getStreamId(), ringBuffer);
 
@@ -166,5 +181,12 @@ public class OemDataCollectorTestController {
         configBlock.getBackchannel().setAssetId(peakloadAssetId);
 
         return configBlock;
+    }
+
+    private Edr getReplacementEdr(@NotNull final String replacementUrl) {
+        final Edr edr = new Edr();
+        edr.setId("replacement");
+        edr.setEndpoint(replacementUrl);
+        return edr;
     }
 }

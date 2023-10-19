@@ -40,6 +40,9 @@ import java.util.Map;
 
 @Component
 public class EdcApi {
+    private final static String ASSET_DELETION_PATH = "v2/assets";
+    private final static String POLICY_DELETION_PATH = "v2/policydefinitions";
+    private final static String CONTRACT_DELETION_PATH = "v2/contractdefinitions";
     private final static String CATALOG_REQUEST_PATH = "v2/catalog/request";
     private final static String ASSET_REGISTRATION_PATH = "v3/assets";
     private final static String POLICY_REGISTRATION_PATH = "v2/policydefinitions";
@@ -92,6 +95,60 @@ public class EdcApi {
         return assetsFromCatalogResult(requestCatalog(counterPartyAddress), assetId);
     }
 
+    public void deleteAsset(@NotNull final String assetId) throws BtpException {
+        final HttpHeaders headers = getNewManagementApiHeaders();
+        final HttpUrl requestUrl = getAssetDeletionUrl(assetId);
+        final HttpEntity<Object> request = new HttpEntity<>(headers);
+
+        ResponseEntity response = null;
+
+        try {
+            response = restTemplate.exchange(requestUrl.uri(), HttpMethod.DELETE, request, Object.class);
+        } catch (final Exception exception) {
+            throw new BtpException(exception);
+        }
+
+        if(!response.getStatusCode().is2xxSuccessful()) {
+            throw new BtpException("Got status code " + response.getStatusCode().value());
+        }
+    }
+
+    public void deletePolicy(@NotNull final String policyId) throws BtpException {
+        final HttpHeaders headers = getNewManagementApiHeaders();
+        final HttpUrl requestUrl = getPolicyDeletionUrl(policyId);
+        final HttpEntity<Object> request = new HttpEntity<>(headers);
+
+        ResponseEntity response = null;
+
+        try {
+            response = restTemplate.exchange(requestUrl.uri(), HttpMethod.DELETE, request, Object.class);
+        } catch (final Exception exception) {
+            throw new BtpException(exception);
+        }
+
+        if(!response.getStatusCode().is2xxSuccessful()) {
+            throw new BtpException("Got status code " + response.getStatusCode().value());
+        }
+    }
+
+    public void deleteContract(@NotNull final String contractId) throws BtpException {
+        final HttpHeaders headers = getNewManagementApiHeaders();
+        final HttpUrl requestUrl = getContractDeletionUrl(contractId);
+        final HttpEntity<Object> request = new HttpEntity<>(headers);
+
+        ResponseEntity response = null;
+
+        try {
+            response = restTemplate.exchange(requestUrl.uri(), HttpMethod.DELETE, request, Object.class);
+        } catch (final Exception exception) {
+            throw new BtpException(exception);
+        }
+
+        if(!response.getStatusCode().is2xxSuccessful()) {
+            throw new BtpException("Got status code " + response.getStatusCode().value());
+        }
+    }
+
     public void registerAsset(@NotNull final AssetDefinition assetDefinition) throws BtpException {
         final HttpHeaders headers = getNewManagementApiHeaders();
         final HttpEntity<AssetDefinition> request = new HttpEntity<>(assetDefinition, headers);
@@ -118,12 +175,12 @@ public class EdcApi {
         assetDefinition.getDataAddress().setBaseUrl(dataAddress.toString());
 
         if(isPostMethode) {
-            assetDefinition.getDataAddress().setProxyMethod(true);
-            assetDefinition.getDataAddress().setProxyBody(true);
+            assetDefinition.getDataAddress().setProxyMethod("true");
+            assetDefinition.getDataAddress().setProxyBody("true");
         }
 
         if(hasQueryParameters) {
-            assetDefinition.getDataAddress().setProxyQueryParams(true);
+            assetDefinition.getDataAddress().setProxyQueryParams("true");
         }
 
         registerAsset(assetDefinition);
@@ -425,8 +482,7 @@ public class EdcApi {
             throws BtpException {
         final HttpHeaders headers = getNewManagementApiHeaders();
         final HttpEntity<ContractNegotiationResponse> request = new HttpEntity<>(headers);
-        final HttpUrl requestUrl = HttpUrl.parse(getContractNegotiationUrl().url().toString()).newBuilder().
-                addPathSegment(negotiationId).build();
+        final HttpUrl requestUrl = getContractNegotiationUrl(negotiationId);
 
         ResponseEntity<ContractNegotiationResponse> response = null;
 
@@ -448,9 +504,8 @@ public class EdcApi {
             throws BtpException {
         final HttpHeaders headers = getNewManagementApiHeaders();
         final HttpEntity<TransferResponse> request = new HttpEntity<>(headers);
-        final HttpUrl requestUrl = HttpUrl.parse(getTransferUrl().url().toString()).newBuilder().
-                addPathSegment(transferId).build();
 
+        final HttpUrl requestUrl = getTransferUrl(transferId);
         ResponseEntity<TransferResponse> response = null;
 
         try {
@@ -509,6 +564,24 @@ public class EdcApi {
         return response.getBody();
     }
 
+    private HttpUrl getAssetDeletionUrl(@NotNull final String assetId) {
+        return HttpUrl.parse(managementUrl).newBuilder()
+                .addPathSegments(ASSET_DELETION_PATH)
+                .addPathSegments(assetId).build();
+    }
+
+    private HttpUrl getPolicyDeletionUrl(@NotNull final String policyId) {
+        return HttpUrl.parse(managementUrl).newBuilder()
+                .addPathSegments(POLICY_DELETION_PATH)
+                .addPathSegments(policyId).build();
+    }
+
+    private HttpUrl getContractDeletionUrl(@NotNull final String contractId) {
+        return HttpUrl.parse(managementUrl).newBuilder()
+                .addPathSegments(CONTRACT_DELETION_PATH)
+                .addPathSegments(contractId).build();
+    }
+
     private HttpUrl getCatalogRequestUrl() {
         return HttpUrl.parse(managementUrl).newBuilder()
                 .addPathSegments(CATALOG_REQUEST_PATH).build();
@@ -534,9 +607,21 @@ public class EdcApi {
                 .addPathSegments(CONTRACT_NEGOTIATION_PATH).build();
     }
 
+    private HttpUrl getContractNegotiationUrl(@NotNull final String negotiationId) {
+        return HttpUrl.parse(managementUrl).newBuilder()
+                .addPathSegments(CONTRACT_NEGOTIATION_PATH)
+                .addPathSegment(negotiationId).build();
+    }
+
     private HttpUrl getTransferUrl() {
         return HttpUrl.parse(managementUrl).newBuilder()
                 .addPathSegments(CONTRACT_TRANSFER_PATH).build();
+    }
+
+    private HttpUrl getTransferUrl(@NotNull final String transferId) {
+        return HttpUrl.parse(managementUrl).newBuilder()
+                .addPathSegments(CONTRACT_TRANSFER_PATH)
+                .addPathSegment(transferId).build();
     }
 
     private HttpHeaders getNewManagementApiHeaders() {

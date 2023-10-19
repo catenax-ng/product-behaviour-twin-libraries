@@ -14,7 +14,7 @@ import lombok.Setter;
 public class DataAddress {
     private DataAddressType type = DataAddressType.HTTP_DATA;
     private String baseUrl = null;
-    private Boolean proxyMethod = null;
-    private Boolean proxyBody = null;
-    private Boolean proxyQueryParams = null;
+    private String proxyMethod = null;
+    private String proxyBody = null;
+    private String proxyQueryParams = null;
 }

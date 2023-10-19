@@ -27,16 +27,20 @@ public abstract class ReceiverChannelImplBase {
         if(headers == null) {
             headers = new HttpHeaders();
         }
-        headers.add(edr.getAuthKey(), edr.getAuthCode());
+
+        if(edr.getAuthKey() != null) {
+            headers.add(edr.getAuthKey(), edr.getAuthCode());
+        }
+
         open(edr.getEndpoint(), config, headers);
     }
 
-    private void open(@NotNull final String partnerConnectorAddress,
+    private void open(@NotNull final String partnerStreamUrl,
                       @NotNull final ConfigBlock config,
                       @Nullable final HttpHeaders headers) throws BtpException {
         try {
             this.streamId = config.getStream().getStreamId();
-            final URLConnection connection = establishConnection(partnerConnectorAddress, headers);
+            final URLConnection connection = establishConnection(partnerStreamUrl, headers);
             sendConfigBlock(connection, config);
             rawReceiver.init(new BufferedInputStream(connection.getInputStream()));
         } catch (final IOException exception) {
@@ -44,10 +48,10 @@ public abstract class ReceiverChannelImplBase {
         }
     }
 
-    private URLConnection establishConnection(@NotNull final String partnerConnectorAddress,
+    private URLConnection establishConnection(@NotNull final String partnerStreamUrl,
                                               @Nullable final HttpHeaders headers) throws IOException {
 
-        final URL url = new URL(partnerConnectorAddress);
+        final URL url = new URL(partnerStreamUrl);
         final HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setDoOutput(true);
         connection.setRequestMethod("POST");
