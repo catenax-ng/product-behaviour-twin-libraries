@@ -167,6 +167,8 @@ credentials:
   api:
     username: xxxxxxx
     password: xxxxxxx
+  supplieredcmanagement:
+    apikey: xxxxxxx
 
 configuration:
   properties: |-

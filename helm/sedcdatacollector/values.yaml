@@ -170,6 +170,8 @@ credentials:
   peakload:
     username: xxxxxxx
     password: xxxxxxx
+  oemedcmanagement:
+    apikey: xxxxxxx
 
 configuration:
   properties: |-
