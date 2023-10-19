@@ -16,7 +16,7 @@ dependencies:
   - name: sedc-oem-datacollector
     version: "0.1.0"
     repository: file://../sedcdatacollector
-  - name: sedc-oem-calculator
+  - name: sedc-supplier-calculator
     version: "0.1.0"
     repository: file://../sedccalculator
   - name: oem-edr-proxy

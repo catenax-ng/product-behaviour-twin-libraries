@@ -1,7 +1,7 @@
 ---
 apiVersion: v2
-name: sedc-oem-calculator
-description: sedc-oem-calculator
+name: sedc-supplier-calculator
+description: ssedc-supplier-calculator
 home: https://github.com/catenax-ng/product-behaviour-twin-libraries
 type: application
 appVersion: "0.1.0"
