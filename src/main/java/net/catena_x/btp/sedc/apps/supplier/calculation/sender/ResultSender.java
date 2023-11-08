@@ -46,23 +46,47 @@ public class ResultSender implements SenderInterface<PeakLoadResult> {
                 final PeakLoadCalculationInterface calculation = new PeakLoadCalculation();
                 this.outputStream.init(outputStream);
 
+                boolean first = true;
+
                 while (true) {
-                    //logger.info("Wait for next task...");
+                    if(first) {
+                        logger.info("Wait for first task ...");
+                    }
+
                     final RawBlockReceiver.Result result = rawReceiver.receiveNext();
+
+                    if(first) {
+                        logger.info("Received data for first task.");
+                    }
+
                     if(!result.successful) {
+                        if(first) {
+                            logger.error("Receiving first task not successful!");
+                        }
+
                         rawReceiver.close();
                         return;
                     }
 
-                    //logger.info("Task received.");
+                    first = false;
+
                     final DataBlock<PeakLoadRawValues> rawData = contentMapper.deserialize(
                             result.content.getContent(), result.header.getContentType());
 
                     threadPool.submit(()->{
                         try {
-                            //logger.info("Calculating task with id " + result.header.getId() + ".");
+                            if(result.header.getId().equals("1")) {
+                                logger.info("Calculating first task with id " + result.header.getId() + ".");
+                            }
                             final PeakLoadResult calculationResult = calculation.calculate(rawData.getData());
+
+                            if(result.header.getId().equals("1")) {
+                                logger.info("Sending first result with id " + result.header.getId() + ".");
+                            }
                             send(calculationResult, result.header.getId());
+                            if(result.header.getId().equals("1")) {
+                                logger.info("First result with id " + result.header.getId() + " sent.");
+                            }
                         } catch (final BtpException exception) {
                             logger.error(exception.getMessage());
                         }

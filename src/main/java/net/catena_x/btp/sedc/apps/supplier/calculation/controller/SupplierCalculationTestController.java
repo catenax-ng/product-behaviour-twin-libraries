@@ -62,6 +62,8 @@ public class SupplierCalculationTestController {
                         configBlock.getBackchannel().getAssetId(), CatalogProtocol.HTTP,
                         MediaType.APPLICATION_OCTET_STREAM, false);
 
+            logger.info("Received EDR for rawdata stream: " + edr.getEndpoint());
+
             receiver.open(edr, getConfiguration(configBlock.getStream().getStreamId()), null);
             logger.info("Rawdata stream opened.");
             final ResultSender sender = new ResultSender();

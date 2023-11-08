@@ -49,14 +49,14 @@ public class RawdataSender implements SenderInterface<PeakLoadRawValues> {
             ringBuffer.addRawdata(id, Instant.now(), value);
         }
 
-        //logger.info("Send rawdata.");
         outputStream.write(headerBlock, new DataBlock<>(value), contentMapper);
-        //logger.info("Rawdata sent.");
     }
 
     public StreamingResponseBody getStreamingResponseBody() {
         final StreamingResponseBody stream = outputStream -> {
             try {
+                logger.info("Start sending rawdata over stream ...");
+
                 this.outputStream.init(outputStream);
 
                 final TestDataGenerator generator = new TestDataGenerator();
@@ -69,7 +69,15 @@ public class RawdataSender implements SenderInterface<PeakLoadRawValues> {
                         break;
                     }
 
+                    if(id == 1) {
+                        logger.info("Sending first rawdata block.");
+                    }
+
                     send(rawValues, String.valueOf(id));
+
+                    if(id == 1) {
+                        logger.info("First rawdata block sent.");
+                    }
 
                     Threads.sleepWithoutExceptions(700L);
                 }

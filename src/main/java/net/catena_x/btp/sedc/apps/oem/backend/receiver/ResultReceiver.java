@@ -21,34 +21,43 @@ public class ResultReceiver {
                                                   @NotNull final String streamId,
                                                   @Nullable final RingBufferInterface ringBuffer) throws BtpException {
         try {
-    new Thread(() -> {
-        try {
-            long count = 0L;
-            while (true) {
-                //logger.info("Wait for next result...");
-                final RawBlockReceiver.Result result = rawReceiver.receiveNext();
-                if(!result.successful) {
-                    rawReceiver.close();
-                    return;
-                }
+            new Thread(() -> {
+                try {
+                    long count = 0L;
+                    while (true) {
 
-                final DataBlock<PeakLoadResult> rawData = (DataBlock<PeakLoadResult>)contentMapper.deserialize(
-                        result.content.getContent(), result.header.getContentType());
+                        if(count == 0) {
+                            logger.info("Wait for first result ...");
+                        }
 
-                if(ringBuffer != null) {
-                    ringBuffer.addResult(result.header.getId(), rawData.getData());
-                }
+                        final RawBlockReceiver.Result result = rawReceiver.receiveNext();
+                        if(count == 0) {
+                            logger.info("Received data for first result.");
+                        }
 
-                if(((count < 500000L) && (((count % 100L) == 0L) || (count < 10L))) || (count % 4000L == 0L)) {
-                    logger.info("Result received for id \"" + result.header.getId() + "\", value: "
-                            + rawData.getData().getPeakLoadCapability() + ".");
+                        if(!result.successful) {
+                            logger.error("Receiving result was not successful!");
+                            rawReceiver.close();
+                            return;
+                        }
+
+                        final DataBlock<PeakLoadResult> rawData = (DataBlock<PeakLoadResult>)contentMapper.deserialize(
+                                result.content.getContent(), result.header.getContentType());
+
+                        if(ringBuffer != null) {
+                            ringBuffer.addResult(result.header.getId(), rawData.getData());
+                        }
+
+                        if(((count < 500000L) && (((count % 100L) == 0L) || (count < 10L))) || (count % 4000L == 0L)) {
+                            logger.info("Result received for id \"" + result.header.getId() + "\", value: "
+                                    + rawData.getData().getPeakLoadCapability() + ".");
+                        }
+                        ++count;
+                    }
+                } catch (final BtpException exception) {
+                    logger.error(exception.getMessage());
                 }
-                ++count;
-            }
-        } catch (final BtpException exception) {
-            logger.error(exception.getMessage());
-        }
-    }).start();
+            }).start();
         } catch (final Exception exception) {
             throw new BtpException(exception);
         }

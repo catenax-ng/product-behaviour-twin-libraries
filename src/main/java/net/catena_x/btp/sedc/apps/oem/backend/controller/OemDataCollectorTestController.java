@@ -18,9 +18,12 @@ import net.catena_x.btp.sedc.apps.oem.backend.receiver.ResultReceiver;
 import net.catena_x.btp.sedc.apps.oem.backend.receiver.ResultReceiverChannel;
 import net.catena_x.btp.sedc.apps.oem.backend.sender.RawdataSender;
 import net.catena_x.btp.sedc.apps.oem.database.dto.peakloadringbuffer.PeakLoadRingBufferTable;
+import net.catena_x.btp.sedc.model.PeakLoadResult;
 import net.catena_x.btp.sedc.protocol.model.blocks.ConfigBlock;
+import net.catena_x.btp.sedc.protocol.model.blocks.DataBlock;
 import net.catena_x.btp.sedc.protocol.model.blocks.elements.Backchannel;
 import net.catena_x.btp.sedc.protocol.model.blocks.elements.Stream;
+import net.catena_x.btp.sedc.transmit.RawBlockReceiver;
 import okhttp3.HttpUrl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,6 +114,52 @@ public class OemDataCollectorTestController {
         }
     }
 
+    @GetMapping(value = "/startasync", produces = MediaType.APPLICATION_JSON_VALUE)
+    public synchronized ResponseEntity<DefaultApiResult> startAsync() {
+        if(started) {
+            return apiHelper.failed("Processing already started!");
+        }
+
+        try {
+            started = true;
+
+            new Thread(() -> {
+                try {
+                    ringBufferTable.deleteAllNewTransaction();
+                    ringBuffer.init(30L);
+
+                    final ConfigBlock configBlock = getConfiguration();
+                    final CalculationConnection connection = new CalculationConnection();
+                    connection.setStreamId(configBlock.getStream().getStreamId());
+                    connection.setRingBuffer(ringBuffer);
+                    connection.setReceiver(new ResultReceiverChannel());
+                    calculateinConnections.put(configBlock.getStream().getStreamId(), connection);
+
+                    logger.info("Try to open result stream.");
+
+                    final Edr edr = (edcDataplaneReplacementUrl != null)? getReplacementEdr(edcDataplaneReplacementUrl) :
+                            edcApi.getEdrForAsset(
+                                    peakloadPartnerUrl, peakloadPartnerBpn, peakloadPartnerAssetId, CatalogProtocol.HTTP,
+                                    MediaType.APPLICATION_OCTET_STREAM, false);
+
+                    connection.getReceiver().open(edr, configBlock, null);
+                    logger.info("Result stream opened, start receiving results.");
+                    ResultReceiver.startReceivingResultsAsync(connection.getReceiver().getRawReceiver(),
+                            connection.getStreamId(), ringBuffer);
+                } catch (final BtpException exception) {
+                    started = false;
+                } catch (final Exception exception) {
+                    started = false;
+                }
+            }).start();
+
+            return apiHelper.ok("Started processing asynchronously...");
+        } catch (final Exception exception) {
+            started = false;
+            return apiHelper.failed(exception.getMessage());
+        }
+    }
+
     @GetMapping(value = "/start", produces = MediaType.APPLICATION_JSON_VALUE)
     public synchronized ResponseEntity<DefaultApiResult> start() {
         if(started) {
@@ -144,8 +193,10 @@ public class OemDataCollectorTestController {
 
             return apiHelper.ok("Started processing...");
         } catch (final BtpException exception) {
+            started = false;
             return apiHelper.failed(exception.getMessage());
         } catch (final Exception exception) {
+            started = false;
             return apiHelper.failed(exception.getMessage());
         }
     }
