@@ -2,6 +2,7 @@ package net.catena_x.btp.sedc.apps.oem.backend.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.net.HttpHeaders;
 import jakarta.servlet.http.HttpServletResponse;
 import net.catena_x.btp.libraries.edc.api.EdcApi;
 import net.catena_x.btp.libraries.edc.model.CatalogResult;
@@ -153,6 +154,7 @@ public class OemDataCollectorTestController {
     public ResponseEntity<StreamingResponseBody> input(@RequestBody @NotNull final ConfigBlock configBlock,
                                                        @NotNull final HttpServletResponse response) {
         logger.info("Request for rawdata stream.");
+        response.setHeader(HttpHeaders.TRANSFER_ENCODING, "chunked");
         final CalculationConnection connection = calculateinConnections.get(configBlock.getStream().getStreamId());
         if(connection == null) {
             logger.error("Requested unknown stream id \"" + configBlock.getStream().getStreamId() + "\"!");

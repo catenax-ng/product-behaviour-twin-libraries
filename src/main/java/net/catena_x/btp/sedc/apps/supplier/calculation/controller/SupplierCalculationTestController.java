@@ -1,6 +1,7 @@
 package net.catena_x.btp.sedc.apps.supplier.calculation.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.net.HttpHeaders;
 import jakarta.servlet.http.HttpServletResponse;
 import net.catena_x.btp.libraries.edc.api.EdcApi;
 import net.catena_x.btp.libraries.edc.model.Edr;
@@ -50,6 +51,8 @@ public class SupplierCalculationTestController {
                                                            @NotNull final HttpServletResponse response) {
         logger.info("Request for result stream.");
         try {
+            response.setHeader(HttpHeaders.TRANSFER_ENCODING, "chunked");
+
             final TaskBaseReceiverChannel receiver = new TaskBaseReceiverChannel();
             logger.info("Try to open rawdata stream.");
 

@@ -59,20 +59,20 @@ public class RawdataSender implements SenderInterface<PeakLoadRawValues> {
             try {
                 this.outputStream.init(outputStream);
 
-    final TestDataGenerator generator = new TestDataGenerator();
+                final TestDataGenerator generator = new TestDataGenerator();
 
-    long id = 0;
-    while(true) {
-        id += 1;
-        final PeakLoadRawValues rawValues = generator.getNext();
-        if(rawValues == null) {
-            break;
-        }
+                long id = 0;
+                while(true) {
+                    id += 1;
+                    final PeakLoadRawValues rawValues = generator.getNext();
+                    if(rawValues == null) {
+                        break;
+                    }
 
-        send(rawValues, String.valueOf(id));
+                    send(rawValues, String.valueOf(id));
 
-        Threads.sleepWithoutExceptions(700L);
-    }
+                    Threads.sleepWithoutExceptions(700L);
+                }
             } catch (final BtpException exception) {
                 logger.error("Error while sending raw values: " + exception.getMessage());
             }
