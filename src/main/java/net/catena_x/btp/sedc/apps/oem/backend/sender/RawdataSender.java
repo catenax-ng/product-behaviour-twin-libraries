@@ -86,7 +86,7 @@ public class RawdataSender implements SenderInterface<PeakLoadRawValues> {
 
                     Threads.sleepWithoutExceptions(700L);
                 }
-            } catch (final BtpException exception) {
+            } catch (final Exception exception) {
                 logger.error("Error while sending raw values: " + exception.getMessage());
             }
         };

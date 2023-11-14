@@ -132,12 +132,12 @@ public class ResultSender implements SenderInterface<PeakLoadResult> {
                             if(result.header.getId().equals("1")) {
                                 logger.info("First result with id " + result.header.getId() + " sent.");
                             }
-                        } catch (final BtpException exception) {
+                        } catch (final Exception exception) {
                             logger.error(exception.getMessage());
                         }
                     });
                 }
-            } catch (final BtpException exception) {
+            } catch (final Exception exception) {
                 logger.error(exception.getMessage());
             }
         };
