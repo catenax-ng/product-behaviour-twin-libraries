@@ -4,5 +4,6 @@ public enum BlockType {
     CONFIG,
     END,
     HEADER,
-    DATA
+    DATA,
+    KEEL_ALIVE
 }

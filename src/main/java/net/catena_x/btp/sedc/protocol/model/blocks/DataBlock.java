@@ -13,8 +13,7 @@ public class DataBlock<T> extends Block {
         this.data = data;
     }
 
-    @Override
-    public char getShortcut() {
+    @Override public char getShortcut() {
         return 'D';
     }
 }

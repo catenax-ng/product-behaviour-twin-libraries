@@ -16,8 +16,7 @@ public class ConfigBlock extends Block {
     private Stream stream;
     private Backchannel backchannel;
 
-    @Override
-    public char getShortcut() {
+    @Override public char getShortcut() {
         return 'C';
     }
 }

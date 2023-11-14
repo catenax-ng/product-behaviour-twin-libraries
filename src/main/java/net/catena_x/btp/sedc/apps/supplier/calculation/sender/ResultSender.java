@@ -1,6 +1,11 @@
 package net.catena_x.btp.sedc.apps.supplier.calculation.sender;
 
+import net.catena_x.btp.libraries.edc.api.EdcApi;
+import net.catena_x.btp.libraries.edc.model.Edr;
+import net.catena_x.btp.libraries.edc.model.catalog.CatalogProtocol;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
+import net.catena_x.btp.libraries.util.threads.Threads;
+import net.catena_x.btp.sedc.apps.supplier.calculation.receiver.TaskBaseReceiverChannel;
 import net.catena_x.btp.sedc.apps.supplier.calculation.service.PeakLoadCalculation;
 import net.catena_x.btp.sedc.apps.supplier.calculation.service.PeakLoadCalculationInterface;
 import net.catena_x.btp.sedc.mapper.PeakLoadContentMapper;
@@ -8,12 +13,16 @@ import net.catena_x.btp.sedc.model.PeakLoadRawValues;
 import net.catena_x.btp.sedc.model.PeakLoadResult;
 import net.catena_x.btp.sedc.protocol.model.ContentMapperInterface;
 import net.catena_x.btp.sedc.protocol.model.OutputStream;
+import net.catena_x.btp.sedc.protocol.model.blocks.ConfigBlock;
 import net.catena_x.btp.sedc.protocol.model.blocks.DataBlock;
 import net.catena_x.btp.sedc.protocol.model.blocks.HeaderBlock;
+import net.catena_x.btp.sedc.protocol.model.blocks.elements.Stream;
 import net.catena_x.btp.sedc.transmit.RawBlockReceiver;
 import net.catena_x.btp.sedc.transmit.SenderInterface;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import javax.validation.constraints.NotNull;
@@ -40,11 +49,45 @@ public class ResultSender implements SenderInterface<PeakLoadResult> {
         //logger.info("Result sent.");
     }
 
-    public StreamingResponseBody getStreamingResponseBody(@NotNull final RawBlockReceiver rawReceiver) {
+    @Override public void keepAlive() throws BtpException {
+        outputStream.keepAlive();
+    }
+
+    public StreamingResponseBody getStreamingResponseBody(@NotNull final ConfigBlock configBlock,
+                                                          @NotNull final EdcApi edcApi,
+                                                          @Nullable final String edcDataplaneReplacementUrl,
+                                                          final long edcNegotiationDelayInSeconds)
+            throws BtpException {
+
         final StreamingResponseBody stream = outputStream -> {
             try {
-                final PeakLoadCalculationInterface calculation = new PeakLoadCalculation();
                 this.outputStream.init(outputStream);
+
+                keepAlive();
+
+                final TaskBaseReceiverChannel receiver = new TaskBaseReceiverChannel();
+
+                //receiver.getRawReceiver()
+
+                logger.info("Try to open rawdata stream.");
+
+                final Edr edr = (edcDataplaneReplacementUrl != null)? getReplacementEdr(edcDataplaneReplacementUrl) :
+                        edcApi.getEdrForAsset(
+                                configBlock.getBackchannel().getAddress(), configBlock.getBackchannel().getBpn(),
+                                configBlock.getBackchannel().getAssetId(), CatalogProtocol.HTTP,
+                                MediaType.APPLICATION_OCTET_STREAM, false);
+
+                if(edcNegotiationDelayInSeconds != 0L) {
+                    Threads.sleepWithoutExceptions(edcNegotiationDelayInSeconds * 1000L);
+                }
+
+                logger.info("Received EDR for rawdata stream: " + edr.getEndpoint());
+
+                receiver.open(edr, getConfiguration(configBlock.getStream().getStreamId()), null);
+                logger.info("Rawdata stream opened.");
+
+                final RawBlockReceiver rawReceiver = receiver.getRawReceiver();
+                final PeakLoadCalculationInterface calculation = new PeakLoadCalculation();
 
                 boolean first = true;
 
@@ -54,18 +97,20 @@ public class ResultSender implements SenderInterface<PeakLoadResult> {
                     }
 
                     final RawBlockReceiver.Result result = rawReceiver.receiveNext();
-
-                    if(first) {
-                        logger.info("Received data for first task.");
+                    if(result.end != null) {
+                        rawReceiver.close();
+                        return;
                     }
 
-                    if(!result.successful) {
-                        if(first) {
-                            logger.error("Receiving first task not successful!");
-                        }
+                    if(result.content == null) {
+                        logger.error("Receiving " + (first? "first " : "") + "task not successful!");
 
                         rawReceiver.close();
                         return;
+                    }
+
+                    if(first) {
+                        logger.info("Received data for first task.");
                     }
 
                     first = false;
@@ -98,5 +143,25 @@ public class ResultSender implements SenderInterface<PeakLoadResult> {
         };
 
         return stream;
+    }
+
+    private ConfigBlock getConfiguration(@NotNull final String streamId) {
+        final ConfigBlock configBlock = new ConfigBlock();
+        configBlock.setStream(new Stream());
+        configBlock.getStream().setVersion("V1");
+        configBlock.getStream().setStreamId(streamId);
+        configBlock.getStream().setStreamType("PeakLoadResultStream");
+        configBlock.getStream().setTimestamp(Instant.now());
+
+        configBlock.setBackchannel(null);
+
+        return configBlock;
+    }
+
+    private Edr getReplacementEdr(@NotNull final String replacementUrl) {
+        final Edr edr = new Edr();
+        edr.setId("replacement");
+        edr.setEndpoint(replacementUrl);
+        return edr;
     }
 }

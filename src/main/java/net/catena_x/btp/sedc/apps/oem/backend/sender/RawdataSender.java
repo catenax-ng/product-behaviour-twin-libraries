@@ -11,6 +11,7 @@ import net.catena_x.btp.sedc.protocol.model.ContentMapperInterface;
 import net.catena_x.btp.sedc.protocol.model.OutputStream;
 import net.catena_x.btp.sedc.protocol.model.blocks.DataBlock;
 import net.catena_x.btp.sedc.protocol.model.blocks.HeaderBlock;
+import net.catena_x.btp.sedc.protocol.model.blocks.KeepAliveBlock;
 import net.catena_x.btp.sedc.transmit.SenderInterface;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -36,9 +37,7 @@ public class RawdataSender implements SenderInterface<PeakLoadRawValues> {
         this.ringBuffer = ringBuffer;
     }
 
-    @Override
-    public void send(@NotNull final PeakLoadRawValues value, @NotNull final String id) throws BtpException {
-
+    @Override public void send(@NotNull final PeakLoadRawValues value, @NotNull final String id) throws BtpException {
         final HeaderBlock headerBlock = new HeaderBlock();
         headerBlock.setId(id);
         headerBlock.setContentType("PeakLoadRawValues");
@@ -52,6 +51,10 @@ public class RawdataSender implements SenderInterface<PeakLoadRawValues> {
         outputStream.write(headerBlock, new DataBlock<>(value), contentMapper);
     }
 
+    @Override public void keepAlive() throws BtpException {
+        outputStream.keepAlive();
+    }
+
     public StreamingResponseBody getStreamingResponseBody() {
         final StreamingResponseBody stream = outputStream -> {
             try {
@@ -60,6 +63,8 @@ public class RawdataSender implements SenderInterface<PeakLoadRawValues> {
                 this.outputStream.init(outputStream);
 
                 final TestDataGenerator generator = new TestDataGenerator();
+
+                keepAlive();
 
                 long id = 0;
                 while(true) {

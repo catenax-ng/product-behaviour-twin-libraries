@@ -6,19 +6,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.catena_x.btp.sedc.protocol.model.Block;
 
-import java.time.Instant;
-
-@NoArgsConstructor
+//@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class HeaderBlock extends Block {
-    private String contentType;
-    private String contentVersion;
-    private Instant timestamp;
-    private String id;
-
+public class KeepAliveBlock extends Block {
     @Override public char getShortcut() {
-        return 'H';
+        return 'K';
     }
 }
+

@@ -7,6 +7,7 @@ import net.catena_x.btp.sedc.apps.supplier.calculation.sender.ResultSender;
 import net.catena_x.btp.sedc.protocol.model.blocks.DataBlock;
 import net.catena_x.btp.sedc.protocol.model.blocks.EndBlock;
 import net.catena_x.btp.sedc.protocol.model.blocks.HeaderBlock;
+import net.catena_x.btp.sedc.protocol.model.blocks.KeepAliveBlock;
 import net.catena_x.btp.sedc.protocol.model.channel.StreamChannelWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,16 @@ public class OutputStream implements StreamChannelWriter {
         try {
             sendBlock(header.getShortcut(), objectMapper.writeValueAsString(header));
             sendBlock(data.getShortcut(), contentMapper.serialize(header, data));
+        } catch (final IOException exception) {
+            throw new BtpException(exception);
+        }
+    }
+
+    @Override
+    public void keepAlive() throws BtpException {
+        final KeepAliveBlock keepAliveBlock = new KeepAliveBlock();
+        try {
+            sendBlock(keepAliveBlock.getShortcut(), objectMapper.writeValueAsString(keepAliveBlock));
         } catch (final IOException exception) {
             throw new BtpException(exception);
         }

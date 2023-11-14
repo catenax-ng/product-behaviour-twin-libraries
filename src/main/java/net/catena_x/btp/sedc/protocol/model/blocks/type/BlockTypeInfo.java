@@ -1,10 +1,7 @@
 package net.catena_x.btp.sedc.protocol.model.blocks.type;
 
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
-import net.catena_x.btp.sedc.protocol.model.blocks.ConfigBlock;
-import net.catena_x.btp.sedc.protocol.model.blocks.DataBlock;
-import net.catena_x.btp.sedc.protocol.model.blocks.EndBlock;
-import net.catena_x.btp.sedc.protocol.model.blocks.HeaderBlock;
+import net.catena_x.btp.sedc.protocol.model.blocks.*;
 
 import javax.validation.constraints.NotNull;
 
@@ -16,6 +13,7 @@ public class BlockTypeInfo {
             case 'E' -> BlockType.END;
             case 'H' -> BlockType.HEADER;
             case 'D' -> BlockType.DATA;
+            case 'K' -> BlockType.KEEL_ALIVE;
             default -> throw new BtpException("Unknown block type \"" + shortcut + "\"!" );
         };
     }
@@ -26,6 +24,7 @@ public class BlockTypeInfo {
             case END -> 'E';
             case HEADER -> 'H';
             case DATA -> 'D';
+            case KEEL_ALIVE -> 'K';
         };
     }
 
@@ -35,6 +34,7 @@ public class BlockTypeInfo {
             case END -> "end";
             case HEADER -> "header";
             case DATA -> "data";
+            case KEEL_ALIVE -> "keepAlive";
         };
     }
 
@@ -47,6 +47,8 @@ public class BlockTypeInfo {
             return BlockType.HEADER;
         } else if(type.equals(DataBlock.class)) {
             return BlockType.DATA;
+        } else if(type.equals(KeepAliveBlock.class)) {
+            return BlockType.KEEL_ALIVE;
         }
 
         throw new BtpException("Unknown block type class!" );

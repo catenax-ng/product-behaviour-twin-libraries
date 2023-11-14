@@ -1,6 +1,7 @@
 package net.catena_x.btp.libraries.util.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,8 @@ public class ObjectMapperFactoryBtp {
         final SimpleModule timestampDeserializerModule = new SimpleModule();
         timestampDeserializerModule.addDeserializer(Instant.class, new TimeStampDeserializer());
         objectMapper.registerModule(timestampDeserializerModule);
+
+        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 
         return objectMapper;
     }

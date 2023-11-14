@@ -41,7 +41,7 @@ public class RawBlock {
             }
 
             final char shortcut = switch (nextByte) {
-                case (int)'C', (int)'E', (int)'H', (int)'D' -> (char)nextByte;
+                case (int)'C', (int)'E', (int)'H', (int)'D', (int)'K' -> (char)nextByte;
                 default -> throw new BtpException("Unknown block type " + (char)nextByte + "!");
             };
 

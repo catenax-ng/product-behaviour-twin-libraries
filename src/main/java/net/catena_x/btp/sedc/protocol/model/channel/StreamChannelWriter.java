@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 public interface StreamChannelWriter {
     <T> void write(@NotNull final HeaderBlock header, @NotNull final DataBlock<T> data,
                    @NotNull final ContentMapperInterface contentMapper) throws BtpException;
+    void keepAlive() throws BtpException;
     void close() throws BtpException;
     boolean isOpen();
 }

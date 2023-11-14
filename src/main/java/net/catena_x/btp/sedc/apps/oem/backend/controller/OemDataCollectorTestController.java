@@ -12,6 +12,7 @@ import net.catena_x.btp.libraries.util.apihelper.ApiHelper;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import net.catena_x.btp.libraries.util.json.ObjectMapperFactoryBtp;
+import net.catena_x.btp.libraries.util.threads.Threads;
 import net.catena_x.btp.sedc.apps.oem.backend.buffer.RingBufferImpl;
 import net.catena_x.btp.sedc.apps.oem.backend.calculation.CalculationConnection;
 import net.catena_x.btp.sedc.apps.oem.backend.receiver.ResultReceiver;
@@ -62,6 +63,7 @@ public class OemDataCollectorTestController {
     @Value("${peakload.contract.id}") private String peakloadContractId;
     @Value("${peakload.asset.target}") private String peakloadAssetTarget;
     @Value("${edc.dataplane.replacement.url:#{null}}") private String edcDataplaneReplacementUrl;
+    @Value("${edc.negotiation.delayinseconds:0}") private long edcNegotiationDelayInSeconds;
 
     private boolean started = false;
     private final Logger logger = LoggerFactory.getLogger(OemDataCollectorTestController.class);
@@ -142,6 +144,10 @@ public class OemDataCollectorTestController {
                                     peakloadPartnerUrl, peakloadPartnerBpn, peakloadPartnerAssetId, CatalogProtocol.HTTP,
                                     MediaType.APPLICATION_OCTET_STREAM, false);
 
+                    if(edcNegotiationDelayInSeconds != 0L) {
+                        Threads.sleepWithoutExceptions(edcNegotiationDelayInSeconds * 1000L);
+                    }
+
                     connection.getReceiver().open(edr, configBlock, null);
                     logger.info("Result stream opened, start receiving results.");
                     ResultReceiver.startReceivingResultsAsync(connection.getReceiver().getRawReceiver(),
@@ -185,6 +191,10 @@ public class OemDataCollectorTestController {
                     edcApi.getEdrForAsset(
                         peakloadPartnerUrl, peakloadPartnerBpn, peakloadPartnerAssetId, CatalogProtocol.HTTP,
                         MediaType.APPLICATION_OCTET_STREAM, false);
+
+            if(edcNegotiationDelayInSeconds != 0L) {
+                Threads.sleepWithoutExceptions(edcNegotiationDelayInSeconds * 1000L);
+            }
 
             connection.getReceiver().open(edr, configBlock, null);
             logger.info("Result stream opened, start receiving results.");

@@ -25,18 +25,23 @@ public class ResultReceiver {
                 try {
                     long count = 0L;
                     while (true) {
-
                         if(count == 0) {
                             logger.info("Wait for first result ...");
                         }
 
                         final RawBlockReceiver.Result result = rawReceiver.receiveNext();
+                        if(result.end != null) {
+                            rawReceiver.close();
+                            return;
+                        }
+
                         if(count == 0) {
                             logger.info("Received data for first result.");
                         }
 
-                        if(!result.successful) {
-                            logger.error("Receiving result was not successful!");
+                        if(result.content == null) {
+                            logger.error("Receiving " + ((count == 0)? "first " : "") + "result not successful!");
+
                             rawReceiver.close();
                             return;
                         }

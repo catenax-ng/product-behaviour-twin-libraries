@@ -10,6 +10,7 @@ import net.catena_x.btp.libraries.util.apihelper.ApiHelper;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import net.catena_x.btp.libraries.util.json.ObjectMapperFactoryBtp;
+import net.catena_x.btp.libraries.util.threads.Threads;
 import net.catena_x.btp.sedc.apps.supplier.calculation.receiver.TaskBaseReceiverChannel;
 import net.catena_x.btp.sedc.apps.supplier.calculation.sender.ResultSender;
 import net.catena_x.btp.sedc.protocol.model.blocks.ConfigBlock;
@@ -43,6 +44,7 @@ public class SupplierCalculationTestController {
     @Value("${peakload.contract.id}") private String peakloadContractId;
     @Value("${peakload.asset.target}") private String peakloadAssetTarget;
     @Value("${edc.dataplane.replacement.url:#{null}}") private String edcDataplaneReplacementUrl;
+    @Value("${edc.negotiation.delayinseconds:0}") private long edcNegotiationDelayInSeconds;
 
     private final Logger logger = LoggerFactory.getLogger(SupplierCalculationTestController.class);
 
@@ -52,22 +54,9 @@ public class SupplierCalculationTestController {
         logger.info("Request for result stream.");
         try {
             response.setHeader(HttpHeaders.TRANSFER_ENCODING, "chunked");
-
-            final TaskBaseReceiverChannel receiver = new TaskBaseReceiverChannel();
-            logger.info("Try to open rawdata stream.");
-
-            final Edr edr = (edcDataplaneReplacementUrl != null)? getReplacementEdr(edcDataplaneReplacementUrl) :
-                    edcApi.getEdrForAsset(
-                        configBlock.getBackchannel().getAddress(), configBlock.getBackchannel().getBpn(),
-                        configBlock.getBackchannel().getAssetId(), CatalogProtocol.HTTP,
-                        MediaType.APPLICATION_OCTET_STREAM, false);
-
-            logger.info("Received EDR for rawdata stream: " + edr.getEndpoint());
-
-            receiver.open(edr, getConfiguration(configBlock.getStream().getStreamId()), null);
-            logger.info("Rawdata stream opened.");
             final ResultSender sender = new ResultSender();
-            return new ResponseEntity(sender.getStreamingResponseBody(receiver.getRawReceiver()), HttpStatus.OK);
+            return new ResponseEntity(sender.getStreamingResponseBody(
+                    configBlock, edcApi, edcDataplaneReplacementUrl, edcNegotiationDelayInSeconds), HttpStatus.OK);
         } catch (final BtpException exception) {
             return new ResponseEntity(null, HttpStatus.FAILED_DEPENDENCY);
         }
@@ -97,27 +86,7 @@ public class SupplierCalculationTestController {
         }
     }
 
-    private ConfigBlock getConfiguration(@NotNull final String streamId) {
-        final ConfigBlock configBlock = new ConfigBlock();
-        configBlock.setStream(new Stream());
-        configBlock.getStream().setVersion("V1");
-        configBlock.getStream().setStreamId(streamId);
-        configBlock.getStream().setStreamType("PeakLoadResultStream");
-        configBlock.getStream().setTimestamp(Instant.now());
-
-        configBlock.setBackchannel(null);
-
-        return configBlock;
-    }
-
     private HttpUrl getPeakloadAssetTargetAddress() {
         return HttpUrl.parse(appBaseUrl).newBuilder().addPathSegments(peakloadAssetTarget).build();
-    }
-
-    private Edr getReplacementEdr(@NotNull final String replacementUrl) {
-        final Edr edr = new Edr();
-        edr.setId("replacement");
-        edr.setEndpoint(replacementUrl);
-        return edr;
     }
 }

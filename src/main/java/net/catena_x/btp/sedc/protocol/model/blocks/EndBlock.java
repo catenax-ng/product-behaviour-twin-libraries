@@ -13,8 +13,7 @@ import net.catena_x.btp.sedc.protocol.model.Block;
 public class EndBlock extends Block {
     private boolean end = true;
 
-    @Override
-    public char getShortcut() {
+    @Override public char getShortcut() {
         return 'E';
     }
 }

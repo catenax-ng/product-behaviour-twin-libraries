@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import net.catena_x.btp.libraries.util.json.ObjectMapperFactoryBtp;
 import net.catena_x.btp.sedc.protocol.model.RawBlock;
+import net.catena_x.btp.sedc.protocol.model.blocks.ConfigBlock;
+import net.catena_x.btp.sedc.protocol.model.blocks.EndBlock;
 import net.catena_x.btp.sedc.protocol.model.blocks.HeaderBlock;
 import net.catena_x.btp.sedc.protocol.model.blocks.type.BlockType;
 import net.catena_x.btp.sedc.protocol.model.blocks.type.BlockTypeInfo;
@@ -17,14 +19,15 @@ import java.io.IOException;
 
 public class RawBlockReceiver {
     public class Result {
+        public ConfigBlock config = null;
         public HeaderBlock header = null;
         public RawBlock content = null;
-        public boolean successful = false;
-        public boolean closed = false;
+        public EndBlock end = null;
     }
 
     private BufferedInputStream inputStream = null;
-    final ObjectMapper objectMapper = ObjectMapperFactoryBtp.createObjectMapper();
+    private final ObjectMapper objectMapper = ObjectMapperFactoryBtp.createObjectMapper();
+    private long keepAliveCount = 0L;
 
     private final Logger logger = LoggerFactory.getLogger(RawBlockReceiver.class);
 
@@ -41,50 +44,65 @@ public class RawBlockReceiver {
     }
 
     public Result receiveNext() throws BtpException {
+        HeaderBlock headerBlock = null;
 
-        final HeaderBlock headerBlock = receiveTyped(HeaderBlock.class);
-        if(headerBlock == null) {
-            return new Result();
-        }
+        while(true) {
+            final RawBlock nextBlock = RawBlock.fromStream(inputStream);
 
-        final RawBlock block = RawBlock.fromStream(inputStream);
-        if(block.getBlockType() == BlockType.END) {
-            logger.info("Stream closed by partner.");
-            final Result result = new Result();
-            result.closed = true;
-            return result;
-        }
+            switch(nextBlock.getBlockType()) {
+                case CONFIG: {
+                    if(headerBlock != null) {
+                        throw new BtpException("Content data block was expected, but received config block!");
+                    }
 
-        if(block.getBlockType() != BlockType.DATA) {
-            throw new BtpException("Expected next block to be a data block, but get block with shortcut \""
-                    + block.getShortcut() + "\"!");
-        }
+                    final Result result = new Result();
+                    result.config = convertBlock(nextBlock, ConfigBlock.class);
+                    return result;
+                }
 
-        final Result result = new Result();
-        result.header = headerBlock;
-        result.content = block;
-        result.successful = true;
-        return result;
-    }
+                case END: {
+                    final Result result = new Result();
+                    result.end = convertBlock(nextBlock, EndBlock.class);
+                    logger.info("Stream closed by partner.");
+                    return result;
+                }
 
-    private <T> T receiveTyped(@NotNull final Class<T> typeOfT) throws BtpException {
-        final RawBlock block = RawBlock.fromStream(inputStream);
+                case HEADER: {
+                    if(headerBlock != null) {
+                        throw new BtpException("Content data block was expected, but received header block again!");
+                    }
 
-        if(block.getBlockType() == BlockType.END) {
-            logger.info("Stream closed by partner.");
+                    headerBlock = convertBlock(nextBlock, HeaderBlock.class);
+                    break;
+                }
 
-            if(BlockTypeInfo.blockTypeFromClass(typeOfT) != BlockType.END) {
-                return null;
+                case DATA: {
+                    final Result result = new Result();
+                    result.header = headerBlock;
+                    result.content = nextBlock;
+                    return result;
+                }
+
+                case KEEL_ALIVE: {
+                    /* Ignore. */
+                    if(((keepAliveCount < 500000L) && ((keepAliveCount == 0L)
+                            || (keepAliveCount < 10L))) || (keepAliveCount % 4000L == 0L)) {
+                        logger.info("Keep alive received (" + keepAliveCount + ").");
+                    }
+                    keepAliveCount += 1L;
+                    break;
+                }
+
+                default: {
+                    throw new BtpException("Unknown block type \"" + nextBlock.getShortcut() + "\" received!");
+                }
             }
         }
+    }
 
-        if(BlockTypeInfo.blockTypeFromClass(typeOfT) != block.getBlockType()) {
-            throw new BtpException("Expected a config block, but get block with shortcut \""
-                    + block.getShortcut() + "\"!");
-        }
-
+    public <T> T convertBlock(@NotNull final RawBlock rawBlock, @NotNull final Class<T> typeOfT) throws BtpException {
         try {
-            return objectMapper.readValue(block.getContent(), typeOfT);
+            return objectMapper.readValue(rawBlock.getContent(), typeOfT);
         } catch (final JsonProcessingException exception) {
             throw new BtpException(exception);
         }
