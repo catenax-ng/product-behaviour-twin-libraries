@@ -19,13 +19,11 @@ import net.catena_x.btp.sedc.apps.oem.backend.receiver.ResultReceiver;
 import net.catena_x.btp.sedc.apps.oem.backend.receiver.ResultReceiverChannel;
 import net.catena_x.btp.sedc.apps.oem.backend.sender.RawdataSender;
 import net.catena_x.btp.sedc.apps.oem.database.dto.peakloadringbuffer.PeakLoadRingBufferTable;
-import net.catena_x.btp.sedc.model.PeakLoadResult;
 import net.catena_x.btp.sedc.protocol.model.blocks.ConfigBlock;
-import net.catena_x.btp.sedc.protocol.model.blocks.DataBlock;
 import net.catena_x.btp.sedc.protocol.model.blocks.elements.Backchannel;
 import net.catena_x.btp.sedc.protocol.model.blocks.elements.Stream;
-import net.catena_x.btp.sedc.transmit.RawBlockReceiver;
 import okhttp3.HttpUrl;
+import org.bouncycastle.util.encoders.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +36,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import javax.validation.constraints.NotNull;
+import java.nio.charset.Charset;
 import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
@@ -63,6 +62,8 @@ public class OemDataCollectorTestController {
     @Value("${peakload.contract.id}") private String peakloadContractId;
     @Value("${peakload.asset.target}") private String peakloadAssetTarget;
     @Value("${edc.dataplane.replacement.url:#{null}}") private String edcDataplaneReplacementUrl;
+    @Value("${edc.dataplane.replacement.user:#{null}}") private String edcDataplaneReplacementUser;
+    @Value("${edc.dataplane.replacement.pass:#{null}}") private String edcDataplaneReplacementPass;
     @Value("${edc.negotiation.delayinseconds:0}") private long edcNegotiationDelayInSeconds;
 
     private boolean started = false;
@@ -106,7 +107,9 @@ public class OemDataCollectorTestController {
     @GetMapping(value = "/test", produces = MediaType.APPLICATION_JSON_VALUE)
     public synchronized ResponseEntity<DefaultApiResult> test() {
         try {
-            final Edr edr = (edcDataplaneReplacementUrl != null)? getReplacementEdr(edcDataplaneReplacementUrl) :
+            final Edr edr = (edcDataplaneReplacementUrl != null)?
+                    getReplacementEdr(edcDataplaneReplacementUrl, edcDataplaneReplacementUser,
+                            edcDataplaneReplacementPass) :
                     edcApi.getEdrForAsset(
                         peakloadPartnerUrl, peakloadPartnerBpn, peakloadPartnerAssetId, CatalogProtocol.HTTP,
                         MediaType.APPLICATION_OCTET_STREAM, true);
@@ -121,6 +124,8 @@ public class OemDataCollectorTestController {
         if(started) {
             return apiHelper.failed("Processing already started!");
         }
+
+        logger.info("<>/startasync: Version 1.0.1");
 
         try {
             started = true;
@@ -139,7 +144,9 @@ public class OemDataCollectorTestController {
 
                     logger.info("Try to open result stream.");
 
-                    final Edr edr = (edcDataplaneReplacementUrl != null)? getReplacementEdr(edcDataplaneReplacementUrl) :
+                    final Edr edr = (edcDataplaneReplacementUrl != null)?
+                            getReplacementEdr(edcDataplaneReplacementUrl, edcDataplaneReplacementUser,
+                                    edcDataplaneReplacementPass) :
                             edcApi.getEdrForAsset(
                                     peakloadPartnerUrl, peakloadPartnerBpn, peakloadPartnerAssetId, CatalogProtocol.HTTP,
                                     MediaType.APPLICATION_OCTET_STREAM, false);
@@ -153,8 +160,10 @@ public class OemDataCollectorTestController {
                     ResultReceiver.startReceivingResultsAsync(connection.getReceiver().getRawReceiver(),
                             connection.getStreamId(), ringBuffer);
                 } catch (final BtpException exception) {
+                    logger.error("Starting calcualtions failed: " + exception.getMessage());
                     started = false;
                 } catch (final Exception exception) {
+                    logger.error("Starting calcualtions failed: " + exception.getMessage());
                     started = false;
                 }
             }).start();
@@ -172,6 +181,8 @@ public class OemDataCollectorTestController {
             return apiHelper.failed("Processing already started!");
         }
 
+        logger.info("<>/start: Version 1.0.1");
+
         try {
             started = true;
 
@@ -187,7 +198,8 @@ public class OemDataCollectorTestController {
 
             logger.info("Try to open result stream.");
 
-            final Edr edr = (edcDataplaneReplacementUrl != null)? getReplacementEdr(edcDataplaneReplacementUrl) :
+            final Edr edr = (edcDataplaneReplacementUrl != null)? getReplacementEdr(
+                    edcDataplaneReplacementUrl, edcDataplaneReplacementUser, edcDataplaneReplacementPass) :
                     edcApi.getEdrForAsset(
                         peakloadPartnerUrl, peakloadPartnerBpn, peakloadPartnerAssetId, CatalogProtocol.HTTP,
                         MediaType.APPLICATION_OCTET_STREAM, false);
@@ -203,9 +215,11 @@ public class OemDataCollectorTestController {
 
             return apiHelper.ok("Started processing...");
         } catch (final BtpException exception) {
+            logger.error("Starting calcualtions failed: " + exception.getMessage());
             started = false;
             return apiHelper.failed(exception.getMessage());
         } catch (final Exception exception) {
+            logger.error("Starting calcualtions failed: " + exception.getMessage());
             started = false;
             return apiHelper.failed(exception.getMessage());
         }
@@ -214,16 +228,21 @@ public class OemDataCollectorTestController {
     @PostMapping(value = "peakload/input", produces = MediaType.ALL_VALUE)
     public ResponseEntity<StreamingResponseBody> input(@RequestBody @NotNull final ConfigBlock configBlock,
                                                        @NotNull final HttpServletResponse response) {
-        logger.info("Request for rawdata stream.");
-        response.setHeader(HttpHeaders.TRANSFER_ENCODING, "chunked");
-        final CalculationConnection connection = calculateinConnections.get(configBlock.getStream().getStreamId());
-        if(connection == null) {
-            logger.error("Requested unknown stream id \"" + configBlock.getStream().getStreamId() + "\"!");
-            return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
-        }
+        try {
+            logger.info("Request for rawdata stream.");
+            response.setHeader(HttpHeaders.TRANSFER_ENCODING, "chunked");
+            final CalculationConnection connection = calculateinConnections.get(configBlock.getStream().getStreamId());
+            if (connection == null) {
+                logger.error("Requested unknown stream id \"" + configBlock.getStream().getStreamId() + "\"!");
+                return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
+            }
 
-        connection.setSender(new RawdataSender(ringBuffer));
-        return new ResponseEntity(connection.getSender().getStreamingResponseBody(), HttpStatus.OK);
+            connection.setSender(new RawdataSender(ringBuffer));
+            return new ResponseEntity(connection.getSender().getStreamingResponseBody(), HttpStatus.OK);
+        } catch (final Exception exception) {
+            logger.error("Starting input raw data generation failed: " + exception.getMessage());
+            return new ResponseEntity(HttpStatus.FAILED_DEPENDENCY);
+        }
     }
 
     private HttpUrl getPeakloadAssetTargetAddress() {
@@ -246,10 +265,26 @@ public class OemDataCollectorTestController {
         return configBlock;
     }
 
-    private Edr getReplacementEdr(@NotNull final String replacementUrl) {
+    private String getAuthString(@NotNull final String userASCII, @NotNull final String passASCII) {
+        StringBuilder sb = new StringBuilder();
+
+        String authStr = sb.append(userASCII).append(":").append(passASCII).toString();
+        sb.setLength(0);
+        sb.append("Basic ").append(java.util.Base64.getEncoder().encodeToString(authStr.getBytes()));
+        return sb.toString();
+    }
+
+    private Edr getReplacementEdr(@NotNull final String replacementUrl,
+                                  @NotNull final String userASCII, @NotNull final String passASCII) {
         final Edr edr = new Edr();
         edr.setId("replacement");
         edr.setEndpoint(replacementUrl);
+
+        if((userASCII != null) && (passASCII != null)) {
+            edr.setAuthKey("Authorization");
+            edr.setAuthCode(getAuthString(userASCII, passASCII));
+        }
+
         return edr;
     }
 }

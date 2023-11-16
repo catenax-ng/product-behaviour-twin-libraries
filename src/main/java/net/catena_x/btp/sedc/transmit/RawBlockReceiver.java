@@ -8,8 +8,6 @@ import net.catena_x.btp.sedc.protocol.model.RawBlock;
 import net.catena_x.btp.sedc.protocol.model.blocks.ConfigBlock;
 import net.catena_x.btp.sedc.protocol.model.blocks.EndBlock;
 import net.catena_x.btp.sedc.protocol.model.blocks.HeaderBlock;
-import net.catena_x.btp.sedc.protocol.model.blocks.type.BlockType;
-import net.catena_x.btp.sedc.protocol.model.blocks.type.BlockTypeInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

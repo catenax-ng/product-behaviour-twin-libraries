@@ -5,6 +5,7 @@ import lombok.Getter;
 import net.catena_x.btp.libraries.edc.model.Edr;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import net.catena_x.btp.libraries.util.json.ObjectMapperFactoryBtp;
+import net.catena_x.btp.sedc.protocol.model.InputStream;
 import net.catena_x.btp.sedc.protocol.model.blocks.ConfigBlock;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpHeaders;
@@ -42,7 +43,8 @@ public abstract class ReceiverChannelImplBase {
             this.streamId = config.getStream().getStreamId();
             final URLConnection connection = establishConnection(partnerStreamUrl, headers);
             sendConfigBlock(connection, config);
-            rawReceiver.init(new BufferedInputStream(connection.getInputStream()));
+            final java.io.InputStream inputStream = connection.getInputStream();
+            rawReceiver.init(new BufferedInputStream(inputStream));
         } catch (final IOException exception) {
             throw new BtpException(exception);
         }
@@ -50,17 +52,18 @@ public abstract class ReceiverChannelImplBase {
 
     private URLConnection establishConnection(@NotNull final String partnerStreamUrl,
                                               @Nullable final HttpHeaders headers) throws IOException {
-
         final URL url = new URL(partnerStreamUrl);
         final HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-        connection.setDoOutput(true);
         connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-        connection.setRequestProperty("Accept", MediaType.ALL_VALUE);
+        connection.addRequestProperty("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+        connection.addRequestProperty("Accept", MediaType.ALL_VALUE);
 
         if(headers != null) {
-            headers.toSingleValueMap().forEach((key, value) -> connection.setRequestProperty(key, value));
+            headers.toSingleValueMap().forEach((key, value) -> connection.addRequestProperty(key, value));
         }
+
+        connection.setDoInput(true);
+        connection.setDoOutput(true);
 
         return connection;
     }

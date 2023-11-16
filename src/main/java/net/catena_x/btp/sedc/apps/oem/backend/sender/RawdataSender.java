@@ -11,7 +11,6 @@ import net.catena_x.btp.sedc.protocol.model.ContentMapperInterface;
 import net.catena_x.btp.sedc.protocol.model.OutputStream;
 import net.catena_x.btp.sedc.protocol.model.blocks.DataBlock;
 import net.catena_x.btp.sedc.protocol.model.blocks.HeaderBlock;
-import net.catena_x.btp.sedc.protocol.model.blocks.KeepAliveBlock;
 import net.catena_x.btp.sedc.transmit.SenderInterface;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -65,6 +64,7 @@ public class RawdataSender implements SenderInterface<PeakLoadRawValues> {
                 final TestDataGenerator generator = new TestDataGenerator();
 
                 keepAlive();
+                logger.info("Sent keep alive.");
 
                 long id = 0;
                 while(true) {
