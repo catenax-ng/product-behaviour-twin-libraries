@@ -30,3 +30,7 @@ dependencies:
     version: "0.1.0"
     repository: file://../sedcdatacollector
     alias: direct-sedc-oem-datacollector
+  - name: sedc-supplier-calculator
+    version: "0.1.0"
+    repository: file://../sedccalculator
+    alias: direct-sedc-supplier-calculator
