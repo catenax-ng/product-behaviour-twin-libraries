@@ -226,3 +226,52 @@ direct-sedc-oem-datacollector:
       peakload.contract.id=peakload-rawdata-contract
       peakload.asset.target=peakload/input
       spring.config.import=
+
+direct-sedc-supplier-calculator:
+  fullnameOverride: "direct-sedc-supplier-calculator"
+
+  ingress:
+    enabled: true
+    className: ""
+    tls: true
+    certManager:
+      issuer: ""
+      clusterIssuer: ""
+
+    annotations: { }
+    hostname: "direct-sedc-peakloadcalculator.dev.demo.catena-x.net"
+    secret: tls-secret
+
+  server:
+    port: &directPeakloadCalculatorPort 45562
+
+  connection:
+    endpoints:
+      default:
+        port: *directPeakloadCalculatorPort
+        path: /
+        ingress: True
+
+  credentials:
+    api:
+      username: *apiUser
+      password: *apiPass
+    supplieredcmanagement:
+      apikey: *supplierEdcApiKey
+
+  configuration:
+    properties: |-
+      spring.application.name=supplierpeakloadservice
+      spring.mvc.async.request-timeout=-1
+      app.baseurl=https://direct-sedc-peakloadcalculator.dev.demo.catena-x.net
+      edc.api.management.url=https://supplier-btp-test.dev.demo.catena-x.net/management/
+      edc.public.bpn=BPNL00000008GX34
+      edc.public.url=https://bmw-btp-test.dev.demo.catena-x.net/api/v1/dsp
+      edc.dataplane.replacement.url=https://direct-sedc-peakloaddatacollector.dev.demo.catena-x.net/peakload/input
+      edc.negotiation.delayinseconds=65
+      peakload.partner.bpn=BPNL00000008GX34
+      peakload.asset.id=peakload-calculation-asset
+      peakload.policy.id=peakload-calculation-policy
+      peakload.contract.id=peakload-calculation-contract
+      peakload.asset.target=peakload/calculate
+      spring.config.import=
