@@ -9,26 +9,16 @@ version: 0.1.0
 maintainers: []
 
 dependencies:
-#  - name: postgresql
-#    version: ">=12.1.2"
-#    repository: https://charts.bitnami.com/bitnami
-#    alias: peakloaddb
   - name: postgresql
     version: ">=12.1.2"
     repository: https://charts.bitnami.com/bitnami
-    alias: direct-peakloaddb
-#  - name: sedc-oem-datacollector
-#    version: "0.1.0"
-#    repository: file://../sedcdatacollector
-#  - name: sedc-supplier-calculator
-#    version: "0.1.0"
-#    repository: file://../sedccalculator
-#  - name: oem-edr-proxy
-#    version: "0.1.0"
-#    repository: file://../edrproxy
-  - name: direct-sedc-oem-datacollector
+    alias: peakloaddb
+  - name: sedc-oem-datacollector
     version: "0.1.0"
     repository: file://../sedcdatacollector
-  - name: direct-sedc-supplier-calculator
+  - name: sedc-supplier-calculator
     version: "0.1.0"
     repository: file://../sedccalculator
+  - name: oem-edr-proxy
+    version: "0.1.0"
+    repository: file://../edrproxy
