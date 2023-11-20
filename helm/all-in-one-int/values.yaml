@@ -166,3 +166,61 @@ sedc-supplier-calculator:
       peakload.contract.id=peakload-calculation-contract
       peakload.asset.target=peakload/calculate
       spring.config.import=
+     
+
+direct-sedc-oem-datacollector:
+  ingress:
+    enabled: true
+    className: ""
+    tls: true
+    certManager:
+      issuer: ""
+      clusterIssuer: ""
+
+    annotations: { }
+    hostname: "direct-sedc-peakloaddatacollector.dev.demo.catena-x.net"
+    secret: tls-secret
+
+  server:
+    port: &directPeakloadDataCollectorPort 45560
+
+  connection:
+    endpoints:
+      default:
+        port: *directPeakloadDataCollectorPort
+        path: /
+        ingress: True
+
+  credentials:
+    api:
+      username: *apiUser
+      password: *apiPass
+    peakload:
+      username: *peakloadUser
+      password: *peakloadPass
+    oemedcmanagement:
+      apikey: *oemEdcApiKey
+
+  configuration:
+    properties: |-
+      spring.application.name=oemdatacollector
+      spring.mvc.async.request-timeout=-1
+      app.baseurl=https://direct-sedc-peakloaddatacollector.dev.demo.catena-x.net
+      edc.api.management.url=https://bmw-btp-test.dev.demo.catena-x.net/management/
+      edc.public.bpn=BPNL00000008GX34
+      edc.public.url=https://bmw-btp-test.dev.demo.catena-x.net/api/v1/dsp
+      edc.dataplane.replacement.url=https://direct-sedc-peakloadcalculator.dev.demo.catena-x.net/peakload/calculate
+      edc.negotiation.delayinseconds=63
+      peakloaddb.drivername=org.postgresql.Driver
+      peakloaddb.show-sql=false
+      peakloaddb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+      peakloaddb.hibernate.hbm2ddl.auto=update
+      peakloaddb.url=jdbc:postgresql://direct-peakloaddb/peakload
+      peakload.partner.url=https://supplier-btp-test.dev.demo.catena-x.net/api/v1/dsp
+      peakload.partner.assetid=peakload-calculation-asset
+      peakload.partner.bpn=BPNL00000008GX34
+      peakload.asset.id=peakload-rawdata-asset
+      peakload.policy.id=peakload-rawdata-policy
+      peakload.contract.id=peakload-rawdata-contract
+      peakload.asset.target=peakload/input
+      spring.config.import=
