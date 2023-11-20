@@ -25,6 +25,18 @@ peakloaddb:
     enabled: false
 
 
+direct-peakloaddb:
+  fullnameOverride: "direct-peakloaddb"
+  image:
+    pullPolicy: Always
+  auth:
+    database: "peakload"
+    username: *peakloadUser
+    password: *peakloadPass
+
+  persistence:
+    enabled: false
+
 oem-edr-proxy:
   ingress:
     enabled: true
