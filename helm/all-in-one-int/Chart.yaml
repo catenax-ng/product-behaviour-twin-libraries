@@ -26,3 +26,6 @@ dependencies:
   - name: oem-edr-proxy
     version: "0.1.0"
     repository: file://../edrproxy
+  - name: direct-sedc-oem-datacollector
+    version: "0.1.0"
+    repository: file://../sedcdatacollector
