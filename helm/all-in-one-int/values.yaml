@@ -169,6 +169,8 @@ sedc-supplier-calculator:
      
 
 direct-sedc-oem-datacollector:
+  fullnameOverride: "direct-sedc-oem-datacollector"
+
   ingress:
     enabled: true
     className: ""
