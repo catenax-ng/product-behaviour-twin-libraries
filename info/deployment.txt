@@ -1,0 +1,9 @@
+SEDC-POC
+
+PROJECT:            project-behaviour-twin-pilot
+REPO URL:           https://github.com/catenax-ng/product-behaviour-twin-libraries.git
+TARGET REVISION:    release-all-in-one
+PATH:               helm/all-in-one-int
+CLUSTER:            in-cluster (https://kubernetes.default.svc)
+NAMESPACE:          product-behaviour-twin-pilot
+PLUGIN-NAME:        argocd-vault-plugin-helm
