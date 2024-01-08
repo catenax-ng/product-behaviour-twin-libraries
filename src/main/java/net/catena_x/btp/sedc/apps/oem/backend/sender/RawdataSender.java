@@ -76,12 +76,16 @@ public class RawdataSender implements SenderInterface<PeakLoadRawValues> {
 
                     if(id == 1) {
                         logger.info("Sending first rawdata block.");
+                    } else if(id <= 5 || id % 100 == 0) {
+                        logger.info("Sending rawdata block nr {}.", id);
                     }
 
                     send(rawValues, String.valueOf(id));
 
                     if(id == 1) {
                         logger.info("First rawdata block sent.");
+                    } else if(id <= 5 || id % 100 == 0) {
+                        logger.info("Rawdata block nr {} sent.", id);
                     }
 
                     Threads.sleepWithoutExceptions(700L);
