@@ -11,61 +11,6 @@ credentials:
   supplieredcmanagement:
     password: &supplierEdcApiKey <path:behaviour-twin-pilot/data/health-indicator/credentials/supplieredcmanagement#apikey>
 
-
-peakloaddb:
-  fullnameOverride: "peakloaddb"
-  image:
-    pullPolicy: Always
-  auth:
-    database: "peakload"
-    username: *peakloadUser
-    password: *peakloadPass
-
-  persistence:
-    enabled: false
-
-
-direct-peakloaddb:
-  fullnameOverride: "direct-peakloaddb"
-  image:
-    pullPolicy: Always
-  auth:
-    database: "peakload"
-    username: *peakloadUser
-    password: *peakloadPass
-
-  persistence:
-    enabled: false
-
-oem-edr-proxy:
-  ingress:
-    enabled: true
-    className: ""
-    tls: true
-    certManager:
-      issuer: ""
-      clusterIssuer: ""
-
-    annotations: { }
-    hostname: "oem-edrproxy.dev.demo.catena-x.net"
-    secret: tls-secret
-
-  server:
-    port: &edrProxyPort 35563
-
-  connection:
-    endpoints:
-      default:
-        port: *edrProxyPort
-        path: /
-        ingress: True
-
-  credentials:
-    api:
-      username: *apiUser
-      password: *apiPass
-
-
 sedc-oem-datacollector:
   ingress:
     enabled: true

@@ -1,0 +1,19 @@
+---
+apiVersion: v2
+name: edc-debug
+description: EDC-debug integration chart
+home: https://github.com/catenax-ng/product-behaviour-twin-libraries
+type: application
+appVersion: "0.1.0"
+version: 0.1.0
+maintainers: []
+
+dependencies:
+  - name: sedc-oem-datacollector
+    version: "0.1.0"
+    repository: file://../sedcdatacollector
+    alias: direct-sedc-oem-datacollector
+  - name: sedc-supplier-calculator
+    version: "0.1.0"
+    repository: file://../sedccalculator
+    alias: direct-sedc-supplier-calculator
