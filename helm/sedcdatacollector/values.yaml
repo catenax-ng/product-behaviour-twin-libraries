@@ -8,7 +8,7 @@ image:
   ##
   ## Which api-wrapper container image to use.
   ##
-  repository: ghcr.io/catenax-ng/product-sedc-oem-datacollector
+  repository: ghcr.io/catenax-ng/product-sedc-oem-datacollector-edc-debug
   pullPolicy: Always
   ##
   ## Overrides the image tag whose default is the chart appVersion.
@@ -120,7 +120,7 @@ ingress:
   ##
   ## The hostname to be used to precisely map incoming traffic onto the underlying network service
   ##
-  hostname: "sedc-peakloaddatacollector.dev.demo.catena-x.net"
+  hostname: "sedc-peakloaddatacollector-edc-debug.dev.demo.catena-x.net"
   secret: tls-secret
 
 resources: {}
@@ -177,20 +177,9 @@ configuration:
   properties: |-
     spring.application.name=oemdatacollector
     spring.mvc.async.request-timeout=-1
-    app.baseurl=https://sedc-peakloaddatacollector.dev.demo.catena-x.net
+    app.baseurl=https://sedc-peakloaddatacollector-edc-debug.dev.demo.catena-x.net
     edc.api.management.url=https://bmw-btp-test.dev.demo.catena-x.net/management/
-    edc.public.bpn=BPNL00000008GX34
-    edc.public.url=https://bmw-btp-test.dev.demo.catena-x.net/api/v1/dsp
-    peakloaddb.drivername=org.postgresql.Driver
-    peakloaddb.show-sql=false
-    peakloaddb.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
-    peakloaddb.hibernate.hbm2ddl.auto=update
-    peakloaddb.url=jdbc:postgresql://peakloaddb/peakload
     peakload.partner.url=https://supplier-btp-test.dev.demo.catena-x.net/api/v1/dsp
-    peakload.partner.assetid=peakload-calculation-asset
+    peakload.partner.assetid=peakload-calculation-asset-edc-debug
     peakload.partner.bpn=BPNL00000008GX34
-    peakload.asset.id=peakload-rawdata-asset
-    peakload.policy.id=peakload-rawdata-policy
-    peakload.contract.id=peakload-rawdata-contract
-    peakload.asset.target=peakload/input
     spring.config.import=

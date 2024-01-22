@@ -37,10 +37,6 @@ public class SupplierCalculationTestController {
     @Value("${peakload.policy.id}") private String peakloadPolicyId;
     @Value("${peakload.contract.id}") private String peakloadContractId;
     @Value("${peakload.asset.target}") private String peakloadAssetTarget;
-    @Value("${edc.dataplane.replacement.url:#{null}}") private String edcDataplaneReplacementUrl;
-    @Value("${edc.dataplane.replacement.user:#{null}}") private String edcDataplaneReplacementUser;
-    @Value("${edc.dataplane.replacement.pass:#{null}}") private String edcDataplaneReplacementPass;
-    @Value("${edc.negotiation.delayinseconds:0}") private long edcNegotiationDelayInSeconds;
 
     private final Logger logger = LoggerFactory.getLogger(SupplierCalculationTestController.class);
 
@@ -49,15 +45,12 @@ public class SupplierCalculationTestController {
                                                            @NotNull final HttpServletResponse response) {
 
         logger.info("<>/peakload/calculate: Version 1.0.1");
-
         logger.info("Request for result stream.");
 
         try {
             response.setHeader(HttpHeaders.TRANSFER_ENCODING, "chunked");
             final ResultSender sender = new ResultSender();
-            return new ResponseEntity(sender.getStreamingResponseBody(
-                    configBlock, edcApi, edcDataplaneReplacementUrl, edcDataplaneReplacementUser,
-                    edcDataplaneReplacementPass, edcNegotiationDelayInSeconds), HttpStatus.OK);
+            return new ResponseEntity(sender.getStreamingResponseBody(), HttpStatus.OK);
         } catch (final BtpException exception) {
             logger.error("Starting calculations failed: " + exception.getMessage());
             return new ResponseEntity(null, HttpStatus.FAILED_DEPENDENCY);
@@ -74,18 +67,6 @@ public class SupplierCalculationTestController {
             edcApi.registerPolicy(peakloadPolicyId, peakloadPartnerBpn);
             edcApi.registerContract(peakloadContractId, peakloadAssetId, peakloadPolicyId);
             return apiHelper.ok("Asset, policy and contract registration successful.");
-        } catch (final BtpException exception) {
-            return apiHelper.failed(exception.getMessage());
-        }
-    }
-
-    @GetMapping(value = "/delete", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DefaultApiResult> assetDeletion() {
-        try {
-            edcApi.deleteContract(peakloadContractId);
-            edcApi.deletePolicy(peakloadPolicyId);
-            edcApi.deleteAsset(peakloadAssetId);
-            return apiHelper.ok("Asset, policy and contract deletion successful.");
         } catch (final BtpException exception) {
             return apiHelper.failed(exception.getMessage());
         }

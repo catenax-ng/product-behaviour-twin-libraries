@@ -49,7 +49,6 @@ public class EdcApi {
     private final static String CONTRACT_REGISTRATION_PATH = "v2/contractdefinitions";
     private final static String CONTRACT_NEGOTIATION_PATH = "v2/contractnegotiations";
     private final static String CONTRACT_TRANSFER_PATH = "v2/transferprocesses";
-    private final static String EDR_PROXY_PATH = "https://oem-edrproxy.dev.demo.catena-x.net/edr";
 
     private final static String API_KEY_KEY = "X-Api-Key";
     private final static String CONTENT_TYPE = "Content-Type";

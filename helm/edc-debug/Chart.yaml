@@ -9,11 +9,17 @@ version: 0.1.0
 maintainers: []
 
 dependencies:
-  - name: sedc-oem-datacollector
+  - name: sedc-oem-datacollector-edc-debug
     version: "0.1.0"
     repository: file://../sedcdatacollector
-    alias: direct-sedc-oem-datacollector
-  - name: sedc-supplier-calculator
+  - name: sedc-supplier-calculator-edc-debug
     version: "0.1.0"
     repository: file://../sedccalculator
-    alias: direct-sedc-supplier-calculator
+  - name: sedc-oem-datacollector-edc-debug
+    version: "0.1.0"
+    repository: file://../sedcdatacollector
+    alias: direct-sedc-oem-datacollector-edc-debug
+  - name: sedc-supplier-calculator-edc-debug
+    version: "0.1.0"
+    repository: file://../sedccalculator
+    alias: direct-sedc-supplier-calculator-edc-debug

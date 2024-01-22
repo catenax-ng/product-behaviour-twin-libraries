@@ -1,7 +1,7 @@
 ---
 apiVersion: v2
-name: sedc-oem-datacollector
-description: sedc-oem-datacollector
+name: sedc-oem-datacollector-edc-debug
+description: sedc-oem-datacollector-edc-debug
 home: https://github.com/catenax-ng/product-behaviour-twin-libraries
 type: application
 appVersion: "0.1.0"

@@ -10,7 +10,7 @@
 name: Build & publish images
 on:
   push:
-    branches: ['release-all-in-one']
+    branches: ['edc-debug']
 
 env:
   REGISTRY: ghcr.io
@@ -24,9 +24,9 @@ jobs:
       matrix:
         include:
           - dockerfile: ./docker/Dockerfile_sedcdatacollector
-            image: ghcr.io/catenax-ng/product-sedc-oem-datacollector
+            image: ghcr.io/catenax-ng/product-sedc-oem-datacollector-edc-debug
           - dockerfile: ./docker/Dockerfile_sedccalculator
-            image: ghcr.io/catenax-ng/product-sedc-supplier-calculator
+            image: ghcr.io/catenax-ng/product-sedc-supplier-calculator-edc-debug
     permissions:
       contents: read
       packages: write
