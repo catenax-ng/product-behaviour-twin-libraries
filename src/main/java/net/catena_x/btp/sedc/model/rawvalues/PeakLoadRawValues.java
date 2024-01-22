@@ -1,11 +1,10 @@
-package net.catena_x.btp.sedc.model;
+package net.catena_x.btp.sedc.model.rawvalues;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.catena_x.btp.sedc.model.rawvalues.PowerClassesNormalized;
 
 @NoArgsConstructor
 @AllArgsConstructor

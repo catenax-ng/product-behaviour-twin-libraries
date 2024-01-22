@@ -18,7 +18,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ContextConfiguration(classes = {OemDataCollectorApplication.class})
 class OemDataCollectorTestControllerTest {
     @Autowired EdcApi edcApi;
-    @Autowired OemDataCollectorTestController controller;
+    @Autowired
+    OemDataCollectorController controller;
 
     @Test
     void catalog() {

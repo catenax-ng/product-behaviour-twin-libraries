@@ -168,11 +168,13 @@ public class EdcApi {
     }
 
     public void registerAsset(@NotNull final String assetId, @NotNull final HttpUrl dataAddress,
-                              final boolean isPostMethode, final boolean hasQueryParameters) throws BtpException {
+                              final boolean isPostMethode, final boolean hasQueryParameters,
+                              final boolean nonChunkedTransfer) throws BtpException {
         final AssetDefinition assetDefinition = new AssetDefinition();
         assetDefinition.setId(assetId);
         assetDefinition.setDataAddress(new DataAddress());
         assetDefinition.getDataAddress().setBaseUrl(dataAddress.toString());
+        assetDefinition.getDataAddress().setNonChunkedTransfer(nonChunkedTransfer);
 
         if(isPostMethode) {
             assetDefinition.getDataAddress().setProxyMethod("true");

@@ -59,9 +59,9 @@ public final class ResponseChecker {
     }
 
     private static <T> void assertResponseNotNull(@Nullable final ResponseEntity<T> response)
-            throws DataProviderException {
+            throws BtpException {
         if(response == null) {
-            throw new DataProviderException("Internal error, response is nullr!");
+            throw new BtpException("Internal error, response is nullr!");
         }
     }
 }

@@ -23,7 +23,6 @@ import net.catena_x.btp.sedc.protocol.model.blocks.ConfigBlock;
 import net.catena_x.btp.sedc.protocol.model.blocks.elements.Backchannel;
 import net.catena_x.btp.sedc.protocol.model.blocks.elements.Stream;
 import okhttp3.HttpUrl;
-import org.bouncycastle.util.encoders.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import javax.validation.constraints.NotNull;
-import java.nio.charset.Charset;
 import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
@@ -44,7 +42,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @RequestMapping("/")
-public class OemDataCollectorTestController {
+public class OemDataCollectorController {
     @Autowired private ApiHelper apiHelper;
     @Autowired private EdcApi edcApi;
     @Autowired @Qualifier(ObjectMapperFactoryBtp.EXTENDED_OBJECT_MAPPER) private ObjectMapper objectMapper;
@@ -61,13 +59,14 @@ public class OemDataCollectorTestController {
     @Value("${peakload.policy.id}") private String peakloadPolicyId;
     @Value("${peakload.contract.id}") private String peakloadContractId;
     @Value("${peakload.asset.target}") private String peakloadAssetTarget;
+    @Value("${peakload.asset.nonChunkedTransfer:false}") private boolean peakloadAssetNonChunkedTransfer;
     @Value("${edc.dataplane.replacement.url:#{null}}") private String edcDataplaneReplacementUrl;
     @Value("${edc.dataplane.replacement.user:#{null}}") private String edcDataplaneReplacementUser;
     @Value("${edc.dataplane.replacement.pass:#{null}}") private String edcDataplaneReplacementPass;
     @Value("${edc.negotiation.delayinseconds:0}") private long edcNegotiationDelayInSeconds;
 
     private boolean started = false;
-    private final Logger logger = LoggerFactory.getLogger(OemDataCollectorTestController.class);
+    private final Logger logger = LoggerFactory.getLogger(OemDataCollectorController.class);
     private final Map<String, CalculationConnection> calculateinConnections = new ConcurrentHashMap<>();
 
     @GetMapping(value = "/catalog", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -83,7 +82,8 @@ public class OemDataCollectorTestController {
     @GetMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DefaultApiResult> assetRegistration() {
         try {
-            edcApi.registerAsset(peakloadAssetId, getPeakloadAssetTargetAddress(), true, false);
+            edcApi.registerAsset(peakloadAssetId, getPeakloadAssetTargetAddress(),
+                    true, false, peakloadAssetNonChunkedTransfer);
             edcApi.registerPolicy(peakloadPolicyId, peakloadPartnerBpn);
             edcApi.registerContract(peakloadContractId, peakloadAssetId, peakloadPolicyId);
             return apiHelper.ok("Asset, policy and contract registration successful.");

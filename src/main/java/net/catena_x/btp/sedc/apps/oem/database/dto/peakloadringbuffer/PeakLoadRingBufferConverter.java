@@ -2,8 +2,8 @@ package net.catena_x.btp.sedc.apps.oem.database.dto.peakloadringbuffer;
 
 import net.catena_x.btp.libraries.util.database.converter.DAOConverter;
 import net.catena_x.btp.sedc.apps.oem.database.tables.peakloadringbuffer.PeakLoadRingBufferElementDAO;
-import net.catena_x.btp.sedc.model.PeakLoadRawValues;
 import net.catena_x.btp.sedc.model.PeakLoadResult;
+import net.catena_x.btp.sedc.model.rawvalues.PeakLoadRawValues;
 import net.catena_x.btp.sedc.model.rawvalues.PowerClassesNormalized;
 import org.springframework.stereotype.Component;
 

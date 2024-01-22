@@ -1,7 +1,7 @@
 package net.catena_x.btp.sedc.apps.oem.backend.generator;
 
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
-import net.catena_x.btp.sedc.model.PeakLoadRawValues;
+import net.catena_x.btp.sedc.model.rawvalues.PeakLoadRawValues;
 import net.catena_x.btp.sedc.model.rawvalues.PowerClassesNormalized;
 
 import java.util.Random;

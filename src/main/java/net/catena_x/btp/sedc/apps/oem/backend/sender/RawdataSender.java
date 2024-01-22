@@ -6,7 +6,7 @@ import net.catena_x.btp.libraries.util.threads.Threads;
 import net.catena_x.btp.sedc.apps.oem.backend.buffer.RingBufferInterface;
 import net.catena_x.btp.sedc.apps.oem.backend.generator.TestDataGenerator;
 import net.catena_x.btp.sedc.mapper.PeakLoadContentMapper;
-import net.catena_x.btp.sedc.model.PeakLoadRawValues;
+import net.catena_x.btp.sedc.model.rawvalues.PeakLoadRawValues;
 import net.catena_x.btp.sedc.protocol.model.ContentMapperInterface;
 import net.catena_x.btp.sedc.protocol.model.OutputStream;
 import net.catena_x.btp.sedc.protocol.model.blocks.DataBlock;

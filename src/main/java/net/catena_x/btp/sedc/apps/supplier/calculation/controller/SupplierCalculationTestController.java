@@ -37,6 +37,7 @@ public class SupplierCalculationTestController {
     @Value("${peakload.policy.id}") private String peakloadPolicyId;
     @Value("${peakload.contract.id}") private String peakloadContractId;
     @Value("${peakload.asset.target}") private String peakloadAssetTarget;
+    @Value("${peakload.asset.nonChunkedTransfer:false}") private boolean peakloadAssetNonChunkedTransfer;
     @Value("${edc.dataplane.replacement.url:#{null}}") private String edcDataplaneReplacementUrl;
     @Value("${edc.dataplane.replacement.user:#{null}}") private String edcDataplaneReplacementUser;
     @Value("${edc.dataplane.replacement.pass:#{null}}") private String edcDataplaneReplacementPass;
@@ -70,7 +71,8 @@ public class SupplierCalculationTestController {
     @GetMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DefaultApiResult> assetRegistration() {
         try {
-            edcApi.registerAsset(peakloadAssetId, getPeakloadAssetTargetAddress(), true, false);
+            edcApi.registerAsset(peakloadAssetId, getPeakloadAssetTargetAddress(),
+                    true, false, peakloadAssetNonChunkedTransfer);
             edcApi.registerPolicy(peakloadPolicyId, peakloadPartnerBpn);
             edcApi.registerContract(peakloadContractId, peakloadAssetId, peakloadPolicyId);
             return apiHelper.ok("Asset, policy and contract registration successful.");

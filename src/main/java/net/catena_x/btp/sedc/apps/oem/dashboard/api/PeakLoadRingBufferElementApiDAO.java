@@ -1,4 +1,4 @@
-package net.catena_x.btp.sedc.apps.oem.database.dto.peakloadringbuffer;
+package net.catena_x.btp.sedc.apps.oem.dashboard.api;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PeakLoadRingBufferElement {
+public class PeakLoadRingBufferElementApiDAO {
     private String id = null;
     private Instant timestamp = null;
     private PeakLoadRawValues rawValues = null;

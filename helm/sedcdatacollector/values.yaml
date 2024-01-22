@@ -193,4 +193,5 @@ configuration:
     peakload.policy.id=peakload-rawdata-policy
     peakload.contract.id=peakload-rawdata-contract
     peakload.asset.target=peakload/input
+    peakload.asset.nonChunkedTransfer=false
     spring.config.import=

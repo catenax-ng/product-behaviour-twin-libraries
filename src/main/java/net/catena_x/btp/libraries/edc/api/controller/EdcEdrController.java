@@ -24,7 +24,7 @@ public class EdcEdrController {
 
     private HashMap<String, Edr> edrs = new HashMap<>();
 
-    private final Logger logger = LoggerFactory.getLogger(OemEdrProxyController.class);
+    private final Logger logger = LoggerFactory.getLogger(EdcEdrController.class);
 
     @PostMapping(value = "/callback", produces = MediaType.APPLICATION_JSON_VALUE)
     public synchronized ResponseEntity<DefaultApiResult> edrCallback(@RequestBody @NotNull final Edr edr) {

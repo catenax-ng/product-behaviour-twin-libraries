@@ -119,6 +119,7 @@ sedc-oem-datacollector:
       peakload.policy.id=peakload-rawdata-policy
       peakload.contract.id=peakload-rawdata-contract
       peakload.asset.target=peakload/input
+      peakload.asset.nonChunkedTransfer=false
       spring.config.import=
 
 
@@ -165,6 +166,7 @@ sedc-supplier-calculator:
       peakload.policy.id=peakload-calculation-policy
       peakload.contract.id=peakload-calculation-contract
       peakload.asset.target=peakload/calculate
+      peakload.asset.nonChunkedTransfer=false
       spring.config.import=
      
 
@@ -225,6 +227,7 @@ direct-sedc-oem-datacollector:
       peakload.policy.id=peakload-rawdata-policy
       peakload.contract.id=peakload-rawdata-contract
       peakload.asset.target=peakload/input
+      peakload.asset.nonChunkedTransfer=false
       spring.config.import=
 
 direct-sedc-supplier-calculator:
@@ -274,4 +277,5 @@ direct-sedc-supplier-calculator:
       peakload.policy.id=peakload-calculation-policy
       peakload.contract.id=peakload-calculation-contract
       peakload.asset.target=peakload/calculate
+      peakload.asset.nonChunkedTransfer=false
       spring.config.import=

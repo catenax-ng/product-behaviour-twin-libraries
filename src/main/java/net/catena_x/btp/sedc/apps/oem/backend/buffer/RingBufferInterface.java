@@ -2,8 +2,8 @@ package net.catena_x.btp.sedc.apps.oem.backend.buffer;
 
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import net.catena_x.btp.sedc.apps.oem.database.dto.peakloadringbuffer.PeakLoadRingBufferElement;
-import net.catena_x.btp.sedc.model.PeakLoadRawValues;
 import net.catena_x.btp.sedc.model.PeakLoadResult;
+import net.catena_x.btp.sedc.model.rawvalues.PeakLoadRawValues;
 import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.NotNull;
