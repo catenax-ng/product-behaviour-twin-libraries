@@ -13,17 +13,13 @@ import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import net.catena_x.btp.libraries.util.json.ObjectMapperFactoryBtp;
 import net.catena_x.btp.libraries.util.threads.Threads;
-import net.catena_x.btp.sedc.apps.oem.backend.buffer.RingBufferImpl;
 import net.catena_x.btp.sedc.apps.oem.backend.calculation.CalculationConnection;
 import net.catena_x.btp.sedc.apps.oem.backend.receiver.ResultReceiver;
 import net.catena_x.btp.sedc.apps.oem.backend.receiver.ResultReceiverChannel;
-import net.catena_x.btp.sedc.apps.oem.backend.sender.RawdataSender;
-import net.catena_x.btp.sedc.apps.oem.database.dto.peakloadringbuffer.PeakLoadRingBufferTable;
 import net.catena_x.btp.sedc.protocol.model.blocks.ConfigBlock;
 import net.catena_x.btp.sedc.protocol.model.blocks.elements.Backchannel;
 import net.catena_x.btp.sedc.protocol.model.blocks.elements.Stream;
 import okhttp3.HttpUrl;
-import org.bouncycastle.util.encoders.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +32,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import javax.validation.constraints.NotNull;
-import java.nio.charset.Charset;
 import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
@@ -48,8 +43,6 @@ public class OemDataCollectorTestController {
     @Autowired private ApiHelper apiHelper;
     @Autowired private EdcApi edcApi;
     @Autowired @Qualifier(ObjectMapperFactoryBtp.EXTENDED_OBJECT_MAPPER) private ObjectMapper objectMapper;
-    @Autowired private RingBufferImpl ringBuffer;
-    @Autowired private PeakLoadRingBufferTable ringBufferTable;
 
     @Value("${app.baseurl}") private String appBaseUrl;
     @Value("${peakload.partner.url}") private String peakloadPartnerUrl;
@@ -132,13 +125,10 @@ public class OemDataCollectorTestController {
 
             new Thread(() -> {
                 try {
-                    ringBufferTable.deleteAllNewTransaction();
-                    ringBuffer.init(30L);
 
                     final ConfigBlock configBlock = getConfiguration();
                     final CalculationConnection connection = new CalculationConnection();
                     connection.setStreamId(configBlock.getStream().getStreamId());
-                    connection.setRingBuffer(ringBuffer);
                     connection.setReceiver(new ResultReceiverChannel());
                     calculateinConnections.put(configBlock.getStream().getStreamId(), connection);
 
@@ -158,7 +148,7 @@ public class OemDataCollectorTestController {
                     connection.getReceiver().open(edr, configBlock, null);
                     logger.info("Result stream opened, start receiving results.");
                     ResultReceiver.startReceivingResultsAsync(connection.getReceiver().getRawReceiver(),
-                            connection.getStreamId(), ringBuffer);
+                            connection.getStreamId());
                 } catch (final BtpException exception) {
                     logger.error("Starting calcualtions failed: " + exception.getMessage());
                     started = false;
@@ -186,13 +176,9 @@ public class OemDataCollectorTestController {
         try {
             started = true;
 
-            ringBufferTable.deleteAllNewTransaction();
-            ringBuffer.init(30L);
-
             final ConfigBlock configBlock = getConfiguration();
             final CalculationConnection connection = new CalculationConnection();
             connection.setStreamId(configBlock.getStream().getStreamId());
-            connection.setRingBuffer(ringBuffer);
             connection.setReceiver(new ResultReceiverChannel());
             calculateinConnections.put(configBlock.getStream().getStreamId(), connection);
 
@@ -211,7 +197,7 @@ public class OemDataCollectorTestController {
             connection.getReceiver().open(edr, configBlock, null);
             logger.info("Result stream opened, start receiving results.");
             ResultReceiver.startReceivingResultsAsync(connection.getReceiver().getRawReceiver(),
-                    connection.getStreamId(), ringBuffer);
+                    connection.getStreamId());
 
             return apiHelper.ok("Started processing...");
         } catch (final BtpException exception) {
@@ -237,7 +223,7 @@ public class OemDataCollectorTestController {
                 return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
             }
 
-            connection.setSender(new RawdataSender(ringBuffer));
+            //connection.setSender();
             return new ResponseEntity(connection.getSender().getStreamingResponseBody(), HttpStatus.OK);
         } catch (final Exception exception) {
             logger.error("Starting input raw data generation failed: " + exception.getMessage());

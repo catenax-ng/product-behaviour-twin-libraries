@@ -1,13 +1,11 @@
 package net.catena_x.btp.sedc.apps.oem.backend.receiver;
 
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
-import net.catena_x.btp.sedc.apps.oem.backend.buffer.RingBufferInterface;
 import net.catena_x.btp.sedc.mapper.PeakLoadContentMapper;
 import net.catena_x.btp.sedc.model.PeakLoadResult;
 import net.catena_x.btp.sedc.protocol.model.ContentMapperInterface;
 import net.catena_x.btp.sedc.protocol.model.blocks.DataBlock;
 import net.catena_x.btp.sedc.transmit.RawBlockReceiver;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,8 +16,7 @@ public class ResultReceiver {
     private final static ContentMapperInterface contentMapper = new PeakLoadContentMapper();
 
     public static void startReceivingResultsAsync(@NotNull final RawBlockReceiver rawReceiver,
-                                                  @NotNull final String streamId,
-                                                  @Nullable final RingBufferInterface ringBuffer) throws BtpException {
+                                                  @NotNull final String streamId) throws BtpException {
         try {
             new Thread(() -> {
                 try {
@@ -48,10 +45,6 @@ public class ResultReceiver {
 
                         final DataBlock<PeakLoadResult> rawData = (DataBlock<PeakLoadResult>)contentMapper.deserialize(
                                 result.content.getContent(), result.header.getContentType());
-
-                        if(ringBuffer != null) {
-                            ringBuffer.addResult(result.header.getId(), rawData.getData());
-                        }
 
                         if(((count < 500000L) && (((count % 100L) == 0L) || (count < 10L))) || (count % 4000L == 0L)) {
                             logger.info("Result received for id \"" + result.header.getId() + "\", value: "

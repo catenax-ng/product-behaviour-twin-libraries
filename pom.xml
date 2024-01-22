@@ -25,19 +25,6 @@
 		<hibernate.version>6.1.7.Final</hibernate.version>
 	</properties>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<mainClass>net.catena_x.btp.hi.oem.backend.hi_service.OemHiBackendServiceApplication</mainClass>
-				</configuration>
-				<version>3.1.2</version>
-			</plugin>
-		</plugins>
-	</build>
-
 	<profiles>
 		<profile>
 			<id>oemdatacollector</id>
@@ -49,21 +36,6 @@
 						<version>3.1.2</version>
 						<configuration>
 							<mainClass>net.catena_x.btp.sedc.apps.oem.backend.OemDataCollectorApplication</mainClass>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>oempeakloaddashboard</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-maven-plugin</artifactId>
-						<version>3.1.2</version>
-						<configuration>
-							<mainClass>net.catena_x.btp.sedc.apps.oem.dashboard.OemPeakLoadDashboard</mainClass>
 						</configuration>
 					</plugin>
 				</plugins>
@@ -83,144 +55,6 @@
 					</plugin>
 				</plugins>
 			</build>
-		</profile>
-		<profile>
-		<id>oemedrproxy</id>
-		<build>
-			<plugins>
-				<plugin>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-maven-plugin</artifactId>
-					<version>3.1.2</version>
-					<configuration>
-						<mainClass>net.catena_x.btp.sedc.apps.oem.edrproxy.OemEdrProxy</mainClass>
-					</configuration>
-				</plugin>
-			</plugins>
-		</build>
-	</profile>
-		<profile>
-			<id>dataprovider</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-maven-plugin</artifactId>
-						<version>3.1.2</version>
-						<configuration>
-							<mainClass>net.catena_x.btp.libraries.oem.backend.datasource.provider.OemDataProviderApplication</mainClass>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>dataupdater</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-maven-plugin</artifactId>
-						<version>3.1.2</version>
-						<configuration>
-							<mainClass>net.catena_x.btp.libraries.oem.backend.datasource.updater.OemDataUpdaterApplication</mainClass>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>testdatagenerator</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-maven-plugin</artifactId>
-						<version>3.1.2</version>
-						<configuration>
-							<mainClass>net.catena_x.btp.libraries.oem.backend.datasource.testdatagenerator.TestDataGeneratorApplication</mainClass>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>rulbackendservice</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-maven-plugin</artifactId>
-						<version>3.1.2</version>
-						<configuration>
-							<mainClass>net.catena_x.btp.rul.oem.backend.rul_service.OemRulBackendServiceApplication</mainClass>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>hibackendservice</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-maven-plugin</artifactId>
-						<version>3.1.2</version>
-						<configuration>
-							<mainClass>net.catena_x.btp.hi.oem.backend.hi_service.OemHiBackendServiceApplication</mainClass>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>hisupplierservice</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-maven-plugin</artifactId>
-						<version>3.1.2</version>
-						<configuration>
-							<mainClass>net.catena_x.btp.hi.supplier.mockup.SupplierHIServiceApplication</mainClass>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>hifrontend</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-maven-plugin</artifactId>
-						<version>3.1.2</version>
-						<configuration>
-							<mainClass>net.catena_x.btp.hi.oem.frontend.OemHiFrontendApplication</mainClass>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-			<dependencies>
-				<dependency>
-					<groupId>org.thymeleaf</groupId>
-					<artifactId>thymeleaf</artifactId>
-					<version>3.0.15.RELEASE</version>
-				</dependency>
-				<dependency>
-					<groupId>org.thymeleaf</groupId>
-					<artifactId>thymeleaf-spring5</artifactId>
-					<version>3.0.15.RELEASE</version>
-				</dependency>
-			</dependencies>
 		</profile>
 	</profiles>
 	<dependencies>
@@ -308,18 +142,6 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<version>5.9.2</version>
-			<scope>test</scope>
-		</dependency>
-		<!--dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>2.1.214</version>
-			<scope>test</scope>
-		</dependency-->
-		<dependency>
-			<groupId>org.hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-			<version>2.7.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

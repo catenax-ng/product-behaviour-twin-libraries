@@ -4,7 +4,6 @@ import net.catena_x.btp.libraries.edc.model.Edr;
 import net.catena_x.btp.libraries.util.apihelper.ApiHelper;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
-import net.catena_x.btp.sedc.apps.oem.edrproxy.controller.OemEdrProxyController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ public class EdcEdrController {
 
     private HashMap<String, Edr> edrs = new HashMap<>();
 
-    private final Logger logger = LoggerFactory.getLogger(OemEdrProxyController.class);
+    private final Logger logger = LoggerFactory.getLogger(EdcEdrController.class);
 
     @PostMapping(value = "/callback", produces = MediaType.APPLICATION_JSON_VALUE)
     public synchronized ResponseEntity<DefaultApiResult> edrCallback(@RequestBody @NotNull final Edr edr) {

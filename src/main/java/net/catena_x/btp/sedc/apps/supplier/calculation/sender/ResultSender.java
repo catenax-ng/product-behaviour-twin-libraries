@@ -1,6 +1,5 @@
 package net.catena_x.btp.sedc.apps.supplier.calculation.sender;
 
-import kotlin.text.Charsets;
 import net.catena_x.btp.libraries.edc.api.EdcApi;
 import net.catena_x.btp.libraries.edc.model.Edr;
 import net.catena_x.btp.libraries.edc.model.catalog.CatalogProtocol;
@@ -20,7 +19,6 @@ import net.catena_x.btp.sedc.protocol.model.blocks.HeaderBlock;
 import net.catena_x.btp.sedc.protocol.model.blocks.elements.Stream;
 import net.catena_x.btp.sedc.transmit.RawBlockReceiver;
 import net.catena_x.btp.sedc.transmit.SenderInterface;
-import org.bouncycastle.util.encoders.Base64;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +26,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import javax.validation.constraints.NotNull;
-import java.nio.charset.Charset;
 import java.time.Instant;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;

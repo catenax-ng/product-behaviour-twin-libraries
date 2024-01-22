@@ -1,6 +1,0 @@
-server.port=25553
-
-supplier.hiservice.inputAssetId=example
-
-security.api.username=${HISUPPLIERSERVICE_API_USER}
-security.api.password=${HISUPPLIERSERVICE_API_PASS}

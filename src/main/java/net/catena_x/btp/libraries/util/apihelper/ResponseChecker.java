@@ -1,6 +1,5 @@
 package net.catena_x.btp.libraries.util.apihelper;
 
-import net.catena_x.btp.libraries.oem.backend.datasource.provider.util.exceptions.DataProviderException;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import org.jetbrains.annotations.Nullable;
@@ -59,9 +58,9 @@ public final class ResponseChecker {
     }
 
     private static <T> void assertResponseNotNull(@Nullable final ResponseEntity<T> response)
-            throws DataProviderException {
+            throws BtpException {
         if(response == null) {
-            throw new DataProviderException("Internal error, response is nullr!");
+            throw new BtpException("Internal error, response is nullr!");
         }
     }
 }

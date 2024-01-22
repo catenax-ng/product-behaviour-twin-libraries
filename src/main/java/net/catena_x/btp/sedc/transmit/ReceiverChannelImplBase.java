@@ -5,7 +5,6 @@ import lombok.Getter;
 import net.catena_x.btp.libraries.edc.model.Edr;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import net.catena_x.btp.libraries.util.json.ObjectMapperFactoryBtp;
-import net.catena_x.btp.sedc.protocol.model.InputStream;
 import net.catena_x.btp.sedc.protocol.model.blocks.ConfigBlock;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpHeaders;

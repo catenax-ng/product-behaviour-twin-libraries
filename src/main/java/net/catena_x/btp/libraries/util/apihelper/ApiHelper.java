@@ -1,6 +1,5 @@
 package net.catena_x.btp.libraries.util.apihelper;
 
-import net.catena_x.btp.libraries.oem.backend.database.rawdata.dao.tables.infoitem.InfoTableInternal;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResult;
 import net.catena_x.btp.libraries.util.apihelper.model.DefaultApiResultWithValue;
 import net.catena_x.btp.libraries.util.apihelper.preparation.ApiResponse;
@@ -20,7 +19,7 @@ import javax.validation.constraints.NotNull;
 public class ApiHelper {
     @Autowired private ApiResponse apiResponse;
 
-    private final Logger logger = LoggerFactory.getLogger(InfoTableInternal.class);
+    private final Logger logger = LoggerFactory.getLogger(ApiHelper.class);
 
     public ResponseEntity<DefaultApiResult> ok(@NotNull final String message) {
         return apiResponse.toObject(ApiResult.ok(message));
