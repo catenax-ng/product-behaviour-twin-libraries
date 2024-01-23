@@ -174,7 +174,7 @@ public class EdcApi {
         assetDefinition.setId(assetId);
         assetDefinition.setDataAddress(new DataAddress());
         assetDefinition.getDataAddress().setBaseUrl(dataAddress.toString());
-        assetDefinition.getDataAddress().setNonChunkedTransfer(nonChunkedTransfer);
+        assetDefinition.getDataAddress().setNonChunkedTransfer(String.valueOf(nonChunkedTransfer));
 
         if(isPostMethode) {
             assetDefinition.getDataAddress().setProxyMethod("true");

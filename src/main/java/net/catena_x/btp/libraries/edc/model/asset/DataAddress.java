@@ -17,5 +17,5 @@ public class DataAddress {
     private String proxyMethod = null;
     private String proxyBody = null;
     private String proxyQueryParams = null;
-    private boolean nonChunkedTransfer = false;
+    private String nonChunkedTransfer = "false";
 }
