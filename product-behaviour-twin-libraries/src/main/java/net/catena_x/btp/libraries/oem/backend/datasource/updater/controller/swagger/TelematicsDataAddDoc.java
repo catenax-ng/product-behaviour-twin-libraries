@@ -176,7 +176,7 @@ If the given telematics data are not newer than the last uploaded data, the new 
       }
     }
   ],
-  "adaptionValueList": [
+  "adaptionValues": [
     {
       "status": {
         "date": "2022-11-29T09:16:47.450911100Z",
