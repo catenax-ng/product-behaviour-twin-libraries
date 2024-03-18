@@ -49,22 +49,9 @@ public class SupplierCalculationTestController {
 
     private final Logger logger = LoggerFactory.getLogger(SupplierCalculationTestController.class);
 
-    //FA@PostMapping(value = "peakload/calculate", produces = MediaType.ALL_VALUE)
     @GetMapping(value = "peakload/calculate", produces = MediaType.ALL_VALUE)
-    public ResponseEntity<StreamingResponseBody> calculate(/*//FA@RequestBody @NotNull final ConfigBlock configBlock,*/
+    public ResponseEntity<StreamingResponseBody> calculate(@RequestBody @NotNull final ConfigBlock configBlock,
                                                            @NotNull final HttpServletResponse response) {
-//FA
-        ConfigBlock configBlock = new ConfigBlock();
-        configBlock.setBackchannel(new Backchannel());
-        configBlock.getBackchannel().setBpn("BPNL000000000001");
-        configBlock.getBackchannel().setAddress("http://oem-controlplane:8084/api/v1/dsp");
-        configBlock.getBackchannel().setAssetId("peakload-rawdata-asset");
-        configBlock.setStream(new Stream());
-        configBlock.getStream().setVersion("V1");
-        configBlock.getStream().setStreamId("ABC");
-        configBlock.getStream().setStreamType("PeakLoadRequestStream");
-        configBlock.getStream().setTimestamp(Instant.now());
-
         logger.info("<>/peakload/calculate: Version 1.0.1");
         logger.info("Request for result stream.");
 

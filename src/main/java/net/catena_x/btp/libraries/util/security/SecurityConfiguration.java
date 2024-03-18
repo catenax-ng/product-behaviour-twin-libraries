@@ -62,14 +62,6 @@ public class SecurityConfiguration {
                         "/edrcallback", "/peakload/calculate", "/peakload/input", "/edr/callback")
                 .permitAll()
                 .and()
-
-                //FA
-                .authorizeRequests().requestMatchers(
-                        HttpMethod.GET,
-                        "/peakload/calculate", "/peakload/input")
-                .permitAll()
-                .and()
-
                 .authorizeRequests()
                 .anyRequest()
                 .authenticated()

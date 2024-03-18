@@ -225,20 +225,9 @@ public class OemDataCollectorController {
         }
     }
 
-    //FA @PostMapping(value = "peakload/input", produces = MediaType.ALL_VALUE)
-    @GetMapping(value = "peakload/input", produces = MediaType.ALL_VALUE)
-    public ResponseEntity<StreamingResponseBody> input(/*//FA@RequestBody @NotNull final ConfigBlock configBlock,*/
+    @PostMapping(value = "peakload/input", produces = MediaType.ALL_VALUE)
+    public ResponseEntity<StreamingResponseBody> input(@RequestBody @NotNull final ConfigBlock configBlock,
                                                        @NotNull final HttpServletResponse response) {
-
-        //FA
-        final ConfigBlock configBlock = new ConfigBlock();
-        configBlock.setStream(new Stream());
-        configBlock.getStream().setVersion("V1");
-        configBlock.getStream().setStreamId("ABC");
-        configBlock.getStream().setStreamType("PeakLoadResultStream");
-        configBlock.getStream().setTimestamp(Instant.now());
-        configBlock.setBackchannel(null);
-
         logger.info("<>/peakload/input: Version 1.0.1");
         logger.info("Request for rawdata stream.");
 
@@ -271,8 +260,7 @@ public class OemDataCollectorController {
         final ConfigBlock configBlock = new ConfigBlock();
         configBlock.setStream(new Stream());
         configBlock.getStream().setVersion("V1");
-//FA configBlock.getStream().setStreamId(UUID.randomUUID().toString());
-        configBlock.getStream().setStreamId("ABC");
+        configBlock.getStream().setStreamId(UUID.randomUUID().toString());
         configBlock.getStream().setStreamType("PeakLoadRequestStream");
         configBlock.getStream().setTimestamp(Instant.now());
 

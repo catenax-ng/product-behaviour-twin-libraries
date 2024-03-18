@@ -46,7 +46,7 @@ public abstract class ReceiverChannelImplBase {
         try {
             this.streamId = config.getStream().getStreamId();
             final URLConnection connection = establishConnection(partnerStreamUrl, headers);
-//FA            sendConfigBlock(connection, config);
+            sendConfigBlock(connection, config);
             final java.io.InputStream inputStream = connection.getInputStream();
             rawReceiver.init(new BufferedInputStream(inputStream));
         } catch (final IOException exception) {
@@ -58,7 +58,7 @@ public abstract class ReceiverChannelImplBase {
                                               @Nullable final HttpHeaders headers) throws IOException {
         final URL url = new URL(partnerStreamUrl);
         final HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-//FA        connection.setRequestMethod("POST");
+        connection.setRequestMethod("POST");
         connection.setRequestMethod("GET");
 
         connection.addRequestProperty("Content-Type", MediaType.APPLICATION_JSON_VALUE);
@@ -69,7 +69,7 @@ public abstract class ReceiverChannelImplBase {
         }
 
         connection.setDoInput(true);
-//FA PROXYBODY       connection.setDoOutput(true);
+        connection.setDoOutput(true);
 
         return connection;
     }
