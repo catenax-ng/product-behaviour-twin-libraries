@@ -27,31 +27,31 @@ public class TransferResponse {
     @JsonProperty("@id")
     private String id = null;
 
-    @JsonProperty("edc:correlationId")
+    @JsonProperty("correlationId")
     private String correlationId = null;
 
-    @JsonProperty("edc:state")
+    @JsonProperty("state")
     private TransferState state = null;
 
-    @JsonProperty("edc:stateTimestamp")
+    @JsonProperty("stateTimestamp")
     private Long stateTimestamp = null;
 
-    @JsonProperty("edc:type")
+    @JsonProperty("type")
     private Type edcType = Type.CONSUMER;
 
-    @JsonProperty("edc:assetId")
+    @JsonProperty("assetId")
     private String assetId = null;
 
-    @JsonProperty("edc:contractId")
+    @JsonProperty("contractId")
     private String contractId = null;
 
-    @JsonProperty("edc:callbackAddresses")
+    @JsonProperty("callbackAddresses")
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
     private List<String> callbackAddresses = null;
 
-    @JsonProperty("edc:dataDestination")
+    @JsonProperty("dataDestination")
     private DataDestination dataDestination = null;
 
-    @JsonProperty("edc:connectorId")
+    @JsonProperty("connectorId")
     private String counterPartyId = null;
 }

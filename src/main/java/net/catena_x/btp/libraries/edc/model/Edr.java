@@ -17,5 +17,7 @@ public class Edr {
     private String endpoint = null;
     private String authKey = null;
     private String authCode = null;
+    private String contractId = null;
+    private String edrState = null;
     private EdrProperties properties = null;
 }

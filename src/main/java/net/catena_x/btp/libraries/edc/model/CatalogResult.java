@@ -29,7 +29,7 @@ public class CatalogResult {
     @JsonProperty("@id")
     private String id = null;
 
-    @JsonProperty("edc:participantId")
+    @JsonProperty("participantId")
     private String participantId = null;
 
     @JsonProperty("dcat:service")

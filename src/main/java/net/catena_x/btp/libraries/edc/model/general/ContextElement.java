@@ -19,5 +19,8 @@ public enum ContextElement {
     ODRL_2,
 
     @JsonProperty("https://w3id.org/dspace/v0.8/")
-    DSPACE_V0_8
+    DSPACE_V0_8,
+
+    @JsonProperty("http://www.w3.org/ns/dcat#")
+    DCAT_HASH
 }

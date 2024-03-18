@@ -5,8 +5,11 @@ import lombok.Getter;
 import net.catena_x.btp.libraries.edc.model.Edr;
 import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import net.catena_x.btp.libraries.util.json.ObjectMapperFactoryBtp;
+import net.catena_x.btp.sedc.apps.oem.backend.receiver.ResultReceiver;
 import net.catena_x.btp.sedc.protocol.model.blocks.ConfigBlock;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
@@ -21,6 +24,7 @@ public abstract class ReceiverChannelImplBase {
     @Getter private final RawBlockReceiver rawReceiver = new RawBlockReceiver();
     @Getter private String streamId = null;
     private final ObjectMapper objectMapper = ObjectMapperFactoryBtp.createObjectMapper();
+    private final static Logger logger = LoggerFactory.getLogger(ReceiverChannelImplBase.class);
 
     public void open(@NotNull final Edr edr, @NotNull final ConfigBlock config,
                      @Nullable HttpHeaders headers) throws BtpException {
@@ -31,6 +35,7 @@ public abstract class ReceiverChannelImplBase {
         if(edr.getAuthKey() != null) {
             headers.add(edr.getAuthKey(), edr.getAuthCode());
         }
+        logger.info("Received EDR: " + edr.getEndpoint());
 
         open(edr.getEndpoint(), config, headers);
     }
@@ -41,7 +46,7 @@ public abstract class ReceiverChannelImplBase {
         try {
             this.streamId = config.getStream().getStreamId();
             final URLConnection connection = establishConnection(partnerStreamUrl, headers);
-            sendConfigBlock(connection, config);
+//FA            sendConfigBlock(connection, config);
             final java.io.InputStream inputStream = connection.getInputStream();
             rawReceiver.init(new BufferedInputStream(inputStream));
         } catch (final IOException exception) {
@@ -53,7 +58,9 @@ public abstract class ReceiverChannelImplBase {
                                               @Nullable final HttpHeaders headers) throws IOException {
         final URL url = new URL(partnerStreamUrl);
         final HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-        connection.setRequestMethod("POST");
+//FA        connection.setRequestMethod("POST");
+        connection.setRequestMethod("GET");
+
         connection.addRequestProperty("Content-Type", MediaType.APPLICATION_JSON_VALUE);
         connection.addRequestProperty("Accept", MediaType.ALL_VALUE);
 
@@ -62,7 +69,7 @@ public abstract class ReceiverChannelImplBase {
         }
 
         connection.setDoInput(true);
-        connection.setDoOutput(true);
+//FA PROXYBODY       connection.setDoOutput(true);
 
         return connection;
     }

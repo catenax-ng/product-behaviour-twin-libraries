@@ -10,6 +10,8 @@ import net.catena_x.btp.libraries.util.exceptions.BtpException;
 import net.catena_x.btp.libraries.util.json.ObjectMapperFactoryBtp;
 import net.catena_x.btp.sedc.apps.supplier.calculation.sender.ResultSender;
 import net.catena_x.btp.sedc.protocol.model.blocks.ConfigBlock;
+import net.catena_x.btp.sedc.protocol.model.blocks.elements.Backchannel;
+import net.catena_x.btp.sedc.protocol.model.blocks.elements.Stream;
 import okhttp3.HttpUrl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import javax.validation.constraints.NotNull;
+import java.time.Instant;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/")
@@ -45,12 +49,23 @@ public class SupplierCalculationTestController {
 
     private final Logger logger = LoggerFactory.getLogger(SupplierCalculationTestController.class);
 
-    @PostMapping(value = "peakload/calculate", produces = MediaType.ALL_VALUE)
-    public ResponseEntity<StreamingResponseBody> calculate(@RequestBody @NotNull final ConfigBlock configBlock,
+    //FA@PostMapping(value = "peakload/calculate", produces = MediaType.ALL_VALUE)
+    @GetMapping(value = "peakload/calculate", produces = MediaType.ALL_VALUE)
+    public ResponseEntity<StreamingResponseBody> calculate(/*//FA@RequestBody @NotNull final ConfigBlock configBlock,*/
                                                            @NotNull final HttpServletResponse response) {
+//FA
+        ConfigBlock configBlock = new ConfigBlock();
+        configBlock.setBackchannel(new Backchannel());
+        configBlock.getBackchannel().setBpn("BPNL000000000001");
+        configBlock.getBackchannel().setAddress("http://oem-controlplane:8084/api/v1/dsp");
+        configBlock.getBackchannel().setAssetId("peakload-rawdata-asset");
+        configBlock.setStream(new Stream());
+        configBlock.getStream().setVersion("V1");
+        configBlock.getStream().setStreamId("ABC");
+        configBlock.getStream().setStreamType("PeakLoadRequestStream");
+        configBlock.getStream().setTimestamp(Instant.now());
 
         logger.info("<>/peakload/calculate: Version 1.0.1");
-
         logger.info("Request for result stream.");
 
         try {

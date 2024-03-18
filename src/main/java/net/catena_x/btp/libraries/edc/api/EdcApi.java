@@ -1,5 +1,6 @@
 package net.catena_x.btp.libraries.edc.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.catena_x.btp.libraries.edc.api.controller.EdcEdrController;
 import net.catena_x.btp.libraries.edc.model.*;
@@ -57,6 +58,7 @@ public class EdcApi {
     private final static String RECEIVER_HTTP_ENDPOINT = "receiverHttpEndpoint";
 
     @Autowired private RestTemplate restTemplate;
+
     @Autowired @Qualifier(ObjectMapperFactoryBtp.EXTENDED_OBJECT_MAPPER) private ObjectMapper objectMapper;
     @Autowired EdcEdrController edcEdrController;
 
@@ -72,6 +74,14 @@ public class EdcApi {
         return requestCatalog(catalogRequest);
     }
 
+    public String requestCatalogAsString(@NotNull final String counterPartyAddress)
+            throws BtpException {
+        final CatalogRequest catalogRequest = new CatalogRequest();
+        catalogRequest.setQuerySpec(new QuerySpec());
+        catalogRequest.setCounterPartyAddress(counterPartyAddress);
+        return requestCatalogAsString(catalogRequest);
+    }
+
     public CatalogResult requestCatalog(@NotNull final CatalogRequest catalogRequest)
             throws BtpException {
         final HttpHeaders headers = getNewManagementApiHeaders();
@@ -85,14 +95,28 @@ public class EdcApi {
         }
     }
 
+    public String requestCatalogAsString(@NotNull final CatalogRequest catalogRequest)
+            throws BtpException {
+        final HttpHeaders headers = getNewManagementApiHeaders();
+        final HttpEntity<CatalogRequest> request = new HttpEntity<>(catalogRequest, headers);
+        final HttpUrl requestUrl = getCatalogRequestUrl();
+
+        try {
+            return restTemplate.exchange(requestUrl.uri(), HttpMethod.POST, request, String.class).getBody();
+        } catch (final Exception exception) {
+            throw new BtpException(exception);
+        }
+    }
+
     public List<Dataset> requestAssetsFromCatalog(@NotNull final CatalogRequest catalogRequest,
                                                   @NotNull final String assetId) throws BtpException {
-        return assetsFromCatalogResult(requestCatalog(catalogRequest), assetId);
+        return assetsFromCatalogResult(requestCatalog(catalogRequest), assetId, true);
     }
 
     public List<Dataset> requestAssetsFromCatalog(@NotNull final String counterPartyAddress,
-                                                  @NotNull final String assetId) throws BtpException {
-        return assetsFromCatalogResult(requestCatalog(counterPartyAddress), assetId);
+                                                  @NotNull final String assetId,
+                                                  final boolean throwIfNoneFound) throws BtpException {
+        return assetsFromCatalogResult(requestCatalog(counterPartyAddress), assetId, throwIfNoneFound);
     }
 
     public void deleteAsset(@NotNull final String assetId) throws BtpException {
@@ -352,7 +376,7 @@ public class EdcApi {
                 }
 
                 case STARTED: {
-                    return response.getCorrelationId();
+                    return response.getContractId();
                 }
 
                 case SUSPENDING:
@@ -422,12 +446,12 @@ public class EdcApi {
     }
     */
 
-    public Edr getEdr(@NotNull final String transferId) throws BtpException {
+    public Edr getEdrByContractId(@NotNull final String contractId) throws BtpException {
         long count = 0;
         while(true) {
             ++count;
             try {
-                return edcEdrController.getEdr(transferId);
+                return edcEdrController.getEdrByContractId(contractId);
             } catch (final BtpException exception) {
                 if(count < 100) {
                     Threads.sleepWithoutExceptions(150L);
@@ -444,15 +468,15 @@ public class EdcApi {
                               @NotNull final CatalogProtocol protocol,
                               @NotNull final MediaType mediaType,
                               final boolean isFinite) throws BtpException {
-        final List<Dataset> assets = requestAssetsFromCatalog(counterPartyAddress, assetId);
+        final List<Dataset> assets = requestAssetsFromCatalog(counterPartyAddress, assetId, true);
 
         final String contractAgreementId = negotiateContract(counterPartyAddress, counterPartyBpn, assets.get(0),
                 assets.get(0).getHasPolicy().get(0), protocol);
 
-        final String transferId = startTransfer(counterPartyAddress, counterPartyBpn, contractAgreementId,
+        final String contractId = startTransfer(counterPartyAddress, counterPartyBpn, contractAgreementId,
                 assets.get(0).getId(), protocol, mediaType, isFinite, getEdrCallbackAddress());
 
-        return getEdr(transferId);
+        return getEdrByContractId(contractId);
     }
 
     private HttpUrl getEdrCallbackAddress() {
@@ -529,9 +553,8 @@ public class EdcApi {
 
         final ContractNegotiationRequest negotiationRequest = new ContractNegotiationRequest();
 
-        negotiationRequest.setConnectorAddress(providerConnectorDspAddress);
+        negotiationRequest.setCounterPartyAddress(providerConnectorDspAddress);
         negotiationRequest.setProtocol(protocol);
-        negotiationRequest.setConnectorId(providerBpn);
         negotiationRequest.setProviderId(providerBpn);
 
         final Offer offer = new Offer();
@@ -634,7 +657,8 @@ public class EdcApi {
     }
 
     private List<Dataset> assetsFromCatalogResult(@NotNull final CatalogResult catalogResult,
-                                                  @NotNull final String assetId) {
+                                                  @NotNull final String assetId,
+                                                  final boolean throwIfNoneFound) throws BtpException {
         final List<Dataset> assets = new ArrayList<>(5);
 
         catalogResult.getDataset().forEach(x -> {
@@ -642,6 +666,17 @@ public class EdcApi {
                 assets.add(x);
             }
         });
+
+        if(throwIfNoneFound && assets.isEmpty()) {
+            String assetList = "";
+            for (Dataset dataset :catalogResult.getDataset()) {
+                assetList += "  \"" + dataset.getId() + "\"";
+            }
+
+            throw new BtpException("No asset with id \"" + assetId + "\" found in catalog. Available "
+                    + String.valueOf(catalogResult.getDataset().size()) + " assets are:"
+                    + assetList);
+        }
 
         return assets;
     }

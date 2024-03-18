@@ -15,16 +15,28 @@ public enum Type {
     @JsonProperty("dcat:Catalog")
     CATALOG,
 
+    @JsonProperty("Catalog")
+    CATALOG_PLAIN,
+
     @JsonProperty("dcat:DataService")
     CATALOG_DATA_SERVICE,
+
+    @JsonProperty("DataService")
+    CATALOG_DATA_SERVICE_PLAIN,
 
     @JsonProperty("dcat:Dataset")
     CATALOG_DATASET,
 
+    @JsonProperty("Dataset")
+    CATALOG_DATASET_PLAIN,
+
     @JsonProperty("dcat:Distribution")
     CATALOG_DISTRIBUTION,
 
-    @JsonProperty("Policy")
+    @JsonProperty("Distribution")
+    CATALOG_DISTRIBUTION_PLAIN,
+
+    @JsonProperty("odrl:Set")
     POLICY,
 
     @JsonProperty("PolicyDefinitionRequestDto")
@@ -39,8 +51,11 @@ public enum Type {
     @JsonProperty("dcat:DataService")
     DCAT_DATA_SERVICE,
 
-    @JsonProperty("odrl:Set")
-    SET,
+    @JsonProperty("DataService")
+    DCAT_DATA_SERVICE_PLAIN,
+
+    @JsonProperty("Set")
+    SET_PLAIN,
 
     @JsonProperty("NegotiationInitiateRequestDto")
     NEGOTIATION_INITIATE_REQUEST,
@@ -48,14 +63,26 @@ public enum Type {
     @JsonProperty("edc:IdResponse")
     ID_RESPONSE,
 
+    @JsonProperty("IdResponse")
+    ID_RESPONSE_PLAIN,
+
     @JsonProperty("edc:ContractNegotiation")
     CONTRACT_NEGOTIATION,
+
+    @JsonProperty("ContractNegotiation")
+    CONTRACT_NEGOTIATION_PLAIN,
 
     CONSUMER,
 
     @JsonProperty("edc:TransferProcess")
     TRANSFER_PROCESS,
 
+    @JsonProperty("TransferProcess")
+    TRANSFER_PROCESS_PLAIN,
+
     @JsonProperty("edc:DataAddress")
-    DATA_ADDRESS
+    DATA_ADDRESS,
+
+    @JsonProperty("DataAddress")
+    DATA_ADDRESS_PLAIN
 }

@@ -24,6 +24,6 @@ public class IdResponse {
     @JsonProperty("@id")
     private String id = null;
 
-    @JsonProperty("edc:createdAt")
+    @JsonProperty("createdAt")
     private Long createdAt = null;
 }

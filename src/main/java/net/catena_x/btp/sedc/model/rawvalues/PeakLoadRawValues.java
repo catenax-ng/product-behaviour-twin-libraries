@@ -17,4 +17,12 @@ public class PeakLoadRawValues {
     private double averageEnvironmentTemperatureInC = 0.0;
     private double stateOfChargeAtStartNormalized = 0.0;
     private double stateOfChargeAtEndNormalized = 0.0;
+
+    /*
+    * dataCollectionPeriodInMs: Zeit seit letztem Senden
+    * Herausnehmen: SOC zum Start
+    * SOC am Ende
+    * T Batt
+    * T EM (träge)
+    *  */
 }

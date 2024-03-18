@@ -23,9 +23,8 @@ public class ContractNegotiationRequest {
     @JsonProperty("@type")
     private Type type = Type.NEGOTIATION_INITIATE_REQUEST;
 
-    private String connectorAddress = null;
+    private String counterPartyAddress = null;
     private CatalogProtocol protocol = CatalogProtocol.HTTP;
-    private String connectorId = null;
     private String providerId = null;
     private Offer offer = null;
 }

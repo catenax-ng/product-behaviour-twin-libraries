@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.catena_x.btp.libraries.edc.model.policy.PolicyRestriction;
+import net.catena_x.btp.libraries.edc.model.policy.PolicyTarget;
 
 import java.util.List;
 
@@ -36,5 +37,5 @@ public class Policy {
     private List<PolicyRestriction> obligation = null;
 
     @JsonProperty("odrl:target")
-    private String target = null;
+    private PolicyTarget target = null;
 }

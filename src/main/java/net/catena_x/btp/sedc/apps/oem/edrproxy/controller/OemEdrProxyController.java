@@ -25,24 +25,26 @@ public class OemEdrProxyController {
 
     @PostMapping(value = "/edrcallback", produces = MediaType.APPLICATION_JSON_VALUE)
     public synchronized ResponseEntity<DefaultApiResult> edrCallback(@RequestBody @NotNull final Edr edr) {
-        logger.info("Received EDR for id \"" + edr.getId()
+        logger.info("Received EDR \"" + edr.getId()
+                + "\" for contract id \"" + edr.getContractId()
                 + "\": Endpoint=\"" + edr.getEndpoint() + "\", "
                 + "\": AuthCode=\"" + edr.getAuthCode() + "\", "
                 + "\": AuthKey=\"" + edr.getAuthKey() + "\".");
 
-        edrs.put(edr.getId(), edr);
+        edrs.put(edr.getContractId(), edr);
         return apiHelper.ok("Ok.");
     }
 
-    @GetMapping(value = "/edr/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Edr> input(@PathVariable @NotNull final String id) {
-        final Edr edr = edrs.get(id);
+    @GetMapping(value = "/edr/bycontract/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Edr> getByContractId
+            (@PathVariable @NotNull final String contractId) {
+        final Edr edr = edrs.get(contractId);
 
         if(edr == null) {
-            logger.info("Request for unknown id \"" + id + "\"!");
+            logger.info("Request for unknown contract id \"" + contractId + "\"!");
             return new ResponseEntity(new Edr(), HttpStatus.NOT_FOUND);
         } else {
-            logger.info("Request for id \"" + id + "\" successful.");
+            logger.info("Request for contract id \"" + contractId + "\" successful.");
             return new ResponseEntity(edr, HttpStatus.OK);
         }
     }

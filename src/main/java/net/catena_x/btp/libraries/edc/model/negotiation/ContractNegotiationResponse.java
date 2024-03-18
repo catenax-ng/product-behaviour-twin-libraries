@@ -28,28 +28,28 @@ public class ContractNegotiationResponse {
     @JsonProperty("@id")
     private String id = null;
 
-    @JsonProperty("edc:type")
+    @JsonProperty("type")
     private Type edcType = Type.CONSUMER;
 
-    @JsonProperty("edc:protocol")
+    @JsonProperty("protocol")
     private CatalogProtocol protocol = null;
 
-    @JsonProperty("edc:state")
+    @JsonProperty("state")
     private ContractNegotiationState state = null;
 
-    @JsonProperty("edc:counterPartyId")
+    @JsonProperty("counterPartyId")
     private String counterPartyId = null;
 
-    @JsonProperty("edc:counterPartyAddress")
+    @JsonProperty("counterPartyAddress")
     private String counterPartyAddress = null;
 
-    @JsonProperty("edc:callbackAddresses")
+    @JsonProperty("callbackAddresses")
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
     private List<String> callbackAddresses = null;
 
-    @JsonProperty("edc:createdAt")
+    @JsonProperty("createdAt")
     private Long createdAt = null;
 
-    @JsonProperty("edc:contractAgreementId")
+    @JsonProperty("contractAgreementId")
     private String contractAgreementId = null;
 }

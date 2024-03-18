@@ -26,4 +26,28 @@ public class BtpException extends Exception {
                            @NotNull final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
+
+    public String getMessageTopLevel() {
+        return super.getMessage();
+    }
+
+    @Override
+    public String getMessage() {
+        final String message = super.getMessage();
+
+        Throwable cause = getCause();
+        for (int i = 0;  i < 20; i++) {
+            if(cause == null){
+                return message;
+            }
+
+            if(message.indexOf(cause.getMessage()) < 0) {
+                return message + " {cause: " + cause.getMessage() + "}";
+            }
+
+            cause = cause.getCause();
+        }
+
+        return message;
+    }
 }

@@ -85,8 +85,6 @@ public class ResultSender implements SenderInterface<PeakLoadResult> {
                     Threads.sleepWithoutExceptions(edcNegotiationDelayInSeconds * 1000L);
                 }
 
-                logger.info("Received EDR for rawdata stream: " + edr.getEndpoint());
-
                 receiver.open(edr, getConfiguration(configBlock.getStream().getStreamId()), null);
                 logger.info("Rawdata stream opened.");
 

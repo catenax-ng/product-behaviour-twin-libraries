@@ -30,7 +30,7 @@ public class AssetDefinition {
 
     private Map<String, String> properties = new HashMap<>();
 
-    private Map<String, String> privateProperties = new HashMap<>();
+    //private Map<String, String> privateProperties = new HashMap<>();
 
     private DataAddress dataAddress = null;
 }

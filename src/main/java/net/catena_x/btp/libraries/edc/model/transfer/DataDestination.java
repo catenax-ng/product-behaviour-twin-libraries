@@ -18,8 +18,5 @@ public class DataDestination {
     @JsonProperty("@type")
     private Type basicType = null;
 
-    @JsonProperty("edc:type")
-    private FormatId edcType = null;
-
     private FormatId type = FormatId.HTTP_PROXY;
 }

@@ -36,52 +36,52 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
             HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-
-        logger.info("HttpRequestMethodNotSupported: " + ex.getMethod() + " " + ex.getMessage());
-
+        logger.warn("Http request method not supported: " + ex.getMethod() + " " + ex.getMessage());
         super.handleHttpRequestMethodNotSupported(ex, headers, status, request);
         return handle(headers, status, request, "Http request method not supported!");
     }
 
     @Override protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(
             HttpMediaTypeNotSupportedException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        logger.info("HttpMediaTypeNotSupported: " + ex.getContentType() + " " + ex.getMessage());
-
+        logger.warn("Http media type not supported: " + ex.getContentType() + " " + ex.getMessage());
         super.handleHttpMediaTypeNotSupported(ex, headers, status, request);
         return handle(headers, status, request, "Http media type not supported!");
     }
 
     @Override protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(
             HttpMediaTypeNotAcceptableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        logger.info("HttpMediaTypeNotAcceptable: " + ex.getMessage());
+        logger.warn("Http media type not acceptable: " + ex.getMessage());
         return handle(headers, status, request, "Http media type not acceptable!");
     }
 
     @Override protected ResponseEntity<Object> handleMissingPathVariable(
             MissingPathVariableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        logger.warn("Missing path variable: " + ex.getMessage());
         return handle(headers, status, request, "Missing path variable!");
     }
 
     @Override protected ResponseEntity<Object> handleMissingServletRequestParameter(
             MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        logger.warn("Missing servlet request parameter: " + ex.getMessage());
         return handle(headers, status, request, "Missing servlet request parameter!");
     }
 
     @Override protected ResponseEntity<Object> handleServletRequestBindingException(
             ServletRequestBindingException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        logger.warn("Servlet request binding error: " + ex.getMessage());
         return handle(headers, status, request, "Servlet request binding error!");
     }
 
     @Override protected ResponseEntity<Object> handleConversionNotSupported(
             ConversionNotSupportedException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        logger.info("ConversionNotSupported: " + ex.getMessage());
-
+        logger.info("Conversion not supported: " + ex.getMessage());
         return handle(headers, status, request, "Conversion not supported!");
     }
 
     @Override protected ResponseEntity<Object> handleTypeMismatch(
             TypeMismatchException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        return handle(headers, status, request, "Type missmatch!");
+        logger.info("Type mismatch: " + ex.getMessage());
+        return handle(headers, status, request, "Type mismatch!");
     }
 
     @Override protected ResponseEntity<Object> handleHttpMessageNotReadable(
@@ -90,48 +90,49 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         final ContentCachingRequestWrapper nativeRequest =
                 (ContentCachingRequestWrapper)((ServletWebRequest)request).getNativeRequest();
         final String requestEntityAsString = new String(nativeRequest.getContentAsByteArray());
-
         logger.info("HttpMessageNotReadable: " + ex.getHttpInputMessage() + " " + ex.getMessage() + " \nBody: \n"
                 + requestEntityAsString);
-
         return handle(headers, status, request, "Http message not readable!");
     }
 
     @Override protected ResponseEntity<Object> handleHttpMessageNotWritable(
             HttpMessageNotWritableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        logger.info("Http message not writable: " + ex.getMessage());
         return handle(headers, status, request, "Http message not writable!");
     }
 
     @Override protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        logger.info("Method argument not valid: " + ex.getMessage());
         return handle(headers, status, request, "Method argument not valid!");
     }
 
     @Override protected ResponseEntity<Object> handleMissingServletRequestPart(
             MissingServletRequestPartException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        logger.info("Missing servlet request part: " + ex.getMessage());
         return handle(headers, status, request, "Missing servlet request part!");
     }
 
     @Override protected ResponseEntity<Object> handleBindException(
             BindException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        logger.info("Bind error: " + ex.getMessage());
         return handle(headers, status, request, "Bind error!");
     }
 
     @Override protected ResponseEntity<Object> handleNoHandlerFoundException(
             NoHandlerFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        logger.info("No handler found: " + ex.getMessage());
         return handle(headers, status, request, "No handler found!");
     }
 
     @Override @Nullable protected ResponseEntity<Object> handleAsyncRequestTimeoutException(
             AsyncRequestTimeoutException ex, HttpHeaders headers, HttpStatusCode status, WebRequest webRequest) {
-
+        logger.info("Async request timeout: " + ex.getMessage());
         final ResponseEntity<Object> response = super.handleAsyncRequestTimeoutException(
                                                             ex, headers, status, webRequest);
-
         if(response == null){
             return null;
         }
-
         return handle(headers, status, webRequest, "Async request timed out!");
     }
 

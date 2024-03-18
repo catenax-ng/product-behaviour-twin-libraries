@@ -160,10 +160,10 @@ public class OemDataCollectorController {
                     ResultReceiver.startReceivingResultsAsync(connection.getReceiver().getRawReceiver(),
                             connection.getStreamId(), ringBuffer);
                 } catch (final BtpException exception) {
-                    logger.error("Starting calcualtions failed: " + exception.getMessage());
+                    logger.error("Starting calculations failed: " + exception.getMessage());
                     started = false;
                 } catch (final Exception exception) {
-                    logger.error("Starting calcualtions failed: " + exception.getMessage());
+                    logger.error("Starting calculations failed: " + exception.getMessage());
                     started = false;
                 }
             }).start();
@@ -215,25 +215,43 @@ public class OemDataCollectorController {
 
             return apiHelper.ok("Started processing...");
         } catch (final BtpException exception) {
-            logger.error("Starting calcualtions failed: " + exception.getMessage());
+            logger.error("Starting calculations failed: " + exception.getMessage());
             started = false;
             return apiHelper.failed(exception.getMessage());
         } catch (final Exception exception) {
-            logger.error("Starting calcualtions failed: " + exception.getMessage());
+            logger.error("Starting calculations failed: " + exception.getMessage());
             started = false;
             return apiHelper.failed(exception.getMessage());
         }
     }
 
-    @PostMapping(value = "peakload/input", produces = MediaType.ALL_VALUE)
-    public ResponseEntity<StreamingResponseBody> input(@RequestBody @NotNull final ConfigBlock configBlock,
+    //FA @PostMapping(value = "peakload/input", produces = MediaType.ALL_VALUE)
+    @GetMapping(value = "peakload/input", produces = MediaType.ALL_VALUE)
+    public ResponseEntity<StreamingResponseBody> input(/*//FA@RequestBody @NotNull final ConfigBlock configBlock,*/
                                                        @NotNull final HttpServletResponse response) {
+
+        //FA
+        final ConfigBlock configBlock = new ConfigBlock();
+        configBlock.setStream(new Stream());
+        configBlock.getStream().setVersion("V1");
+        configBlock.getStream().setStreamId("ABC");
+        configBlock.getStream().setStreamType("PeakLoadResultStream");
+        configBlock.getStream().setTimestamp(Instant.now());
+        configBlock.setBackchannel(null);
+
+        logger.info("<>/peakload/input: Version 1.0.1");
+        logger.info("Request for rawdata stream.");
+
         try {
-            logger.info("Request for rawdata stream.");
             response.setHeader(HttpHeaders.TRANSFER_ENCODING, "chunked");
             final CalculationConnection connection = calculateinConnections.get(configBlock.getStream().getStreamId());
             if (connection == null) {
-                logger.error("Requested unknown stream id \"" + configBlock.getStream().getStreamId() + "\"!");
+                String streamIdList = "";
+                for (String stream : calculateinConnections.keySet()) {
+                    streamIdList += "  " + stream;
+                }
+                logger.error("Requested unknown stream id \"" + configBlock.getStream().getStreamId()
+                        + "\"! Avaliable (" + String.valueOf(calculateinConnections.size()) + "): " + streamIdList);
                 return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
             }
 
@@ -253,7 +271,8 @@ public class OemDataCollectorController {
         final ConfigBlock configBlock = new ConfigBlock();
         configBlock.setStream(new Stream());
         configBlock.getStream().setVersion("V1");
-        configBlock.getStream().setStreamId(UUID.randomUUID().toString());
+//FA configBlock.getStream().setStreamId(UUID.randomUUID().toString());
+        configBlock.getStream().setStreamId("ABC");
         configBlock.getStream().setStreamType("PeakLoadRequestStream");
         configBlock.getStream().setTimestamp(Instant.now());
 

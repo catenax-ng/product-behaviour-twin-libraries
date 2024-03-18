@@ -21,6 +21,9 @@ public class Dataset {
     @JsonProperty("@id")
     private String id = null;
 
+    @JsonProperty("id")
+    private String Id = null;
+
     @JsonProperty("@type")
     private Type type = Type.CATALOG_DATASET;
 
@@ -32,9 +35,6 @@ public class Dataset {
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
     private List<Distribution> distribution = null;
 
-    @JsonProperty("edc:description")
+    @JsonProperty("description")
     private String description = null;
-
-    @JsonProperty("edc:id")
-    private String edcId = null;
 }
