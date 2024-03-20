@@ -59,7 +59,6 @@ public abstract class ReceiverChannelImplBase {
         final URL url = new URL(partnerStreamUrl);
         final HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("POST");
-        connection.setRequestMethod("GET");
 
         connection.addRequestProperty("Content-Type", MediaType.APPLICATION_JSON_VALUE);
         connection.addRequestProperty("Accept", MediaType.ALL_VALUE);
